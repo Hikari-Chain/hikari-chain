@@ -1,7 +1,7 @@
 package params
 
 const (
-	BondDenom = "ul"
+	BondDenom = "ulight"
 
 	Bech32PrefixAccAddr = "hikari"
 )

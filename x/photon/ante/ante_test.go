@@ -86,7 +86,7 @@ func TestValidateFeeDecorator(t *testing.T) {
 			},
 		},
 		{
-			name: "fail: MsgUpdateParams fee uatone",
+			name: "fail: MsgUpdateParams fee ulight",
 			tx: func() sdk.Tx {
 				txBuilder := txConfig.NewTxBuilder()
 				txBuilder.SetMsgs(&types.MsgUpdateParams{})
@@ -99,7 +99,7 @@ func TestValidateFeeDecorator(t *testing.T) {
 			},
 			expectedError: fmt.Sprintf(
 				"fee denom %s not allowed; only fee denom %s is allowed: invalid fee token",
-				"ul",
+				"ulight",
 				types.Denom,
 			),
 		},

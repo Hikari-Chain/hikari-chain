@@ -440,7 +440,7 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 // NOTE: in SDK >= v0.47 the submit-proposal does not have a --deposit flag
 // Instead, the deposit is added to the "deposit" field of the proposal JSON (usually stored as a file)
 // you can use `hikarid tx gov draft-proposal` to create a proposal file that you can use
-// min initial deposit of 100uatone is required in e2e tests, otherwise the proposal would be dropped
+// min initial deposit of 100ulight is required in e2e tests, otherwise the proposal would be dropped
 func (s *IntegrationTestSuite) submitGovProposal(chainAAPIEndpoint, sender string, proposalID int, proposalType string, submitFlags []string, depositFlags []string, voteFlags []string, voteCommand string, expectedStatusAfterVote govtypesv1beta1.ProposalStatus) {
 	s.T().Logf("Submitting Gov Proposal: %s", proposalType)
 	sflags := submitFlags

@@ -298,28 +298,28 @@ func TestAnteHandle(t *testing.T) {
 				txBuilder.SetMsgs(testdata.NewTestMsg(addrs[0], addrs[1]))
 				txBuilder.SetGasLimit(42)
 				txBuilder.SetFeeAmount(sdk.NewCoins(
-					sdk.NewInt64Coin("ul", 420),
+					sdk.NewInt64Coin("ulight", 420),
 				))
 				return txBuilder.GetTx()
 			},
 			setup: func(m mocks) {
 				m.DynamicfeeKeeper.EXPECT().GetParams(m.ctx).
 					Return(types.DefaultParams(), nil).Times(2)
-				m.DynamicfeeKeeper.EXPECT().GetMinGasPrice(m.ctx, "ul").
-					Return(sdk.NewInt64DecCoin("ul", 10), nil)
+				m.DynamicfeeKeeper.EXPECT().GetMinGasPrice(m.ctx, "ulight").
+					Return(sdk.NewInt64DecCoin("ulight", 10), nil)
 				m.AccountKeeper.EXPECT().GetAccount(gomock.Any(), addrs[0]).
 					Return(acc1)
 				m.BankKeeper.EXPECT().SendCoinsFromAccountToModule(gomock.Any(),
 					addrs[0], authtypes.FeeCollectorName,
-					sdk.NewCoins(sdk.NewInt64Coin("ul", 420)))
+					sdk.NewCoins(sdk.NewInt64Coin("ulight", 420)))
 				// second call to GetMinGasPrice for tx priority computation
 				ctx := m.ctx.WithMinGasPrices(sdk.NewDecCoins(
-					sdk.NewInt64DecCoin("ul", 10),
+					sdk.NewInt64DecCoin("ulight", 10),
 				))
 				m.DynamicfeeKeeper.EXPECT().GetMinGasPrice(ctx, types.DefaultFeeDenom).
 					Return(sdk.NewInt64DecCoin(types.DefaultFeeDenom, 1), nil)
 			},
-			expectedMinGasPrices: "10.000000000000000000ul",
+			expectedMinGasPrices: "10.000000000000000000ulight",
 			expectedTxPriority:   1000000,
 		},
 		{

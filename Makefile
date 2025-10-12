@@ -263,26 +263,26 @@ localnetd=./build/hikarid --home $(localnet_home)
 
 localnet-start: build
 	rm -rf ~/.hikari-localnet
-	$(localnetd) init localnet --default-denom ul --chain-id localnet
+	$(localnetd) init localnet --default-denom ulight --chain-id localnet
 	$(localnetd) config set client chain-id localnet
 	$(localnetd) config set client keyring-backend test
 	$(localnetd) keys add val
-	$(localnetd) genesis add-genesis-account val 1000000000000ul,1000000000uphoton
+	$(localnetd) genesis add-genesis-account val 1000000000000ulight,1000000000uphoton
 	$(localnetd) keys add user
-	$(localnetd) genesis add-genesis-account user 1000000000ul,1000000000uphoton
-	$(localnetd) genesis gentx val 1000000000ul
+	$(localnetd) genesis add-genesis-account user 1000000000ulight,1000000000uphoton
+	$(localnetd) genesis gentx val 1000000000ulight
 	$(localnetd) genesis collect-gentxs
 	# Add treasury DAO address
-	$(localnetd) genesis add-genesis-account hikari1qqqqqqqqqqqqqqqqqqqqqqqqqqqqp0d8vxhrn 5388766663072ul
+	$(localnetd) genesis add-genesis-account hikari1qqqqqqqqqqqqqqqqqqqqqqqqqqqqp0d8vxhrn 5388766663072ulight
 	# Add CP funds
-	$(localnetd) genesis add-genesis-account hikari1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8u0nnle 5388766663072ul
-	jq '.app_state.distribution.fee_pool.community_pool = [ { "denom": "ul", "amount": "5388766663072.000000000000000000" }]' $(localnet_home)/config/genesis.json > /tmp/gen
+	$(localnetd) genesis add-genesis-account hikari1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8u0nnle 5388766663072ulight
+	jq '.app_state.distribution.fee_pool.community_pool = [ { "denom": "ulight", "amount": "5388766663072.000000000000000000" }]' $(localnet_home)/config/genesis.json > /tmp/gen
 	mv /tmp/gen $(localnet_home)/config/genesis.json
 	# Previous add-genesis-account call added the auth module account as a BaseAccount, we need to remove it
 	jq 'del(.app_state.auth.accounts[] | select(.address == "hikari1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8u0nnle"))' $(localnet_home)/config/genesis.json > /tmp/gen
 	mv /tmp/gen $(localnet_home)/config/genesis.json
 	# Set validator gas prices
-	sed -i.bak 's#^minimum-gas-prices = .*#minimum-gas-prices = "0.01ul,0.01uphoton"#g' $(localnet_home)/config/app.toml
+	sed -i.bak 's#^minimum-gas-prices = .*#minimum-gas-prices = "0.01ulight,0.01uphoton"#g' $(localnet_home)/config/app.toml
 	# enable REST API
 	$(localnetd) config set app api.enable true
 	# Decrease voting period to 5min

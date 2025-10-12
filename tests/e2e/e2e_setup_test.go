@@ -79,13 +79,13 @@ var (
 	runInCI           = os.Getenv("GITHUB_ACTIONS") == "true"
 	atomoneConfigPath = filepath.Join(atomoneHomePath, "config")
 	initBalance       = sdk.NewCoins(
-		sdk.NewInt64Coin(ulDenom, 10_000_000_000_000), // 10,000,000l
-		sdk.NewInt64Coin(uphotonDenom, 10_000_000_000),    // 10,000photon
+		sdk.NewInt64Coin(ulDenom, 10_000_000_000_000),  // 10,000,000l
+		sdk.NewInt64Coin(uphotonDenom, 10_000_000_000), // 10,000photon
 	)
 	initBalanceStr    = initBalance.String()
 	stakingAmountCoin = sdk.NewInt64Coin(ulDenom, 6_000_000_000_000) // 6,000,000l
 	tokenAmount       = sdk.NewInt64Coin(ulDenom, 100_000_000)       // 100l
-	standardFees      = sdk.NewInt64Coin(uphotonDenom, 330_000)          // 0.33photon
+	standardFees      = sdk.NewInt64Coin(uphotonDenom, 330_000)      // 0.33photon
 	proposalCounter   = 0
 )
 
@@ -154,8 +154,8 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	// The boostrapping phase is as follows:
 	//
-	// 1. Initialize AtomOne validator nodes.
-	// 2. Create and initialize AtomOne validator genesis files (both chains)
+	// 1. Initialize Hikari Chain validator nodes.
+	// 2. Create and initialize Hikari Chain validator genesis files (both chains)
 	// 3. Start both networks.
 	// 4. Create and run IBC relayer (Hermes and TSRelayer) containers.
 
@@ -581,7 +581,7 @@ func (s *IntegrationTestSuite) initValidatorConfigs(c *chain) {
 
 // runValidators runs the validators in the chain
 func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
-	s.T().Logf("starting AtomOne %s validator containers...", c.id)
+	s.T().Logf("starting Hikari Chain %s validator containers...", c.id)
 
 	const dockerImage = "cosmos/hikarid-e2e"
 
@@ -618,7 +618,7 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 		s.Require().NoError(err)
 
 		s.valResources[c.id][i] = resource
-		s.T().Logf("started AtomOne %s validator container: %s", c.id, resource.Container.ID)
+		s.T().Logf("started Hikari Chain %s validator container: %s", c.id, resource.Container.ID)
 	}
 
 	rpcClient := s.rpcClient(s.chainA, 0)

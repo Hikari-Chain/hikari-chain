@@ -2,10 +2,10 @@
 # > docker build -t hikari .
 # > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.hikari:/root/.hikari hikari hikarid init
 # > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.hikari:/root/.hikari hikari hikarid start
-FROM golang:1.22-alpine AS build-env
+FROM golang:1.24.5-alpine AS build-env
 
 # Set up dependencies
-ENV PACKAGES curl make git libc-dev bash gcc linux-headers eudev-dev python3
+ENV PACKAGES="curl make git libc-dev bash gcc linux-headers eudev-dev python3"
 
 # Set working directory for the build
 WORKDIR /go/src/github.com/Hikari-Chain/hikari-chain
