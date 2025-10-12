@@ -1,14 +1,14 @@
 # Simple usage with a mounted data directory:
-# > docker build -t atomone .
-# > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.atomone:/root/.atomone atomone hikarid init
-# > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.atomone:/root/.atomone atomone hikarid start
+# > docker build -t hikari .
+# > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.hikari:/root/.hikari hikari hikarid init
+# > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.hikari:/root/.hikari hikari hikarid start
 FROM golang:1.22-alpine AS build-env
 
 # Set up dependencies
 ENV PACKAGES curl make git libc-dev bash gcc linux-headers eudev-dev python3
 
 # Set working directory for the build
-WORKDIR /go/src/github.com/atomone-hub/atomone
+WORKDIR /go/src/github.com/Hikari-Chain/hikari-chain
 
 # Add source files
 COPY . .
