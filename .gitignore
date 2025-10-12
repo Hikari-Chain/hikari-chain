@@ -51,3 +51,7 @@ contract_tests/*
 
 go.work.sum
 
+.vs
+.claude
+CLAUDE.md
+
