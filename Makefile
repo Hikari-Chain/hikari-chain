@@ -326,7 +326,12 @@ test-docker-push: test-docker
 ###############################################################################
 protoVer=0.17.0
 protoImageName=ghcr.io/cosmos/proto-builder:$(protoVer)
-protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(protoImageName)
+ifeq ($(OS),Windows_NT) 
+  workspace="//workspace"
+else
+  workspace="/workspace"
+endif
+protoImage="$(DOCKER)" run --rm -v "$(CURDIR)":/workspace --workdir $(workspace) $(protoImageName)
 
 proto-all: proto-format proto-lint proto-gen
 
