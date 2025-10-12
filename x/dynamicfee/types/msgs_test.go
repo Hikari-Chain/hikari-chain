@@ -7,7 +7,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/atomone-hub/atomone/x/dynamicfee/types"
+	"github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types"
 )
 
 func TestMsgUpdateParams(t *testing.T) {

@@ -12,16 +12,16 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"cosmossdk.io/math"
-	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
+	coredaostypes "github.com/Hikari-Chain/hikari-chain/x/coredaos/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
-	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+	dynamicfeetypes "github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types"
+	govtypes "github.com/Hikari-Chain/hikari-chain/x/gov/types"
+	govtypesv1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
+	govtypesv1beta1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1beta1"
+	photontypes "github.com/Hikari-Chain/hikari-chain/x/photon/types"
 )
 
 /*
@@ -125,11 +125,11 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		sender := senderAddress.String()
 		recipientAddress, _ := s.chainA.validators[1].keyInfo.GetAddress()
 		recipient := recipientAddress.String()
-		sendAmount := sdk.NewInt64Coin(uatoneDenom, 10_000_000) // 10atone
+		sendAmount := sdk.NewInt64Coin(ulDenom, 10_000_000) // 10atone
 		s.writeGovCommunitySpendProposal(s.chainA, sendAmount, recipient)
 
-		beforeSenderBalance := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
-		beforeRecipientBalance := s.queryBalance(chainAAPIEndpoint, recipient, uatoneDenom)
+		beforeSenderBalance := s.queryBalance(chainAAPIEndpoint, sender, ulDenom)
+		beforeRecipientBalance := s.queryBalance(chainAAPIEndpoint, recipient, ulDenom)
 
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
@@ -141,7 +141,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		// Check that sender is refunded with the proposal deposit
 		s.Require().Eventually(
 			func() bool {
-				afterSenderBalance := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
+				afterSenderBalance := s.queryBalance(chainAAPIEndpoint, sender, ulDenom)
 				return afterSenderBalance.IsEqual(beforeSenderBalance)
 			},
 			10*time.Second,
@@ -150,7 +150,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		// Check that recipient received the community pool spend
 		s.Require().Eventually(
 			func() bool {
-				afterRecipientBalance := s.queryBalance(chainAAPIEndpoint, recipient, uatoneDenom)
+				afterRecipientBalance := s.queryBalance(chainAAPIEndpoint, recipient, ulDenom)
 				return afterRecipientBalance.Sub(sendAmount).IsEqual(beforeRecipientBalance)
 			},
 			10*time.Second,
@@ -164,11 +164,11 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		sender := senderAddress.String()
 		recipientAddress, _ := s.chainA.validators[1].keyInfo.GetAddress()
 		recipient := recipientAddress.String()
-		sendAmount := sdk.NewInt64Coin(uatoneDenom, 10_000_000) // 10atone
+		sendAmount := sdk.NewInt64Coin(ulDenom, 10_000_000) // 10atone
 		s.writeGovCommunitySpendProposal(s.chainA, sendAmount, recipient)
 
-		beforeSenderBalance := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
-		beforeRecipientBalance := s.queryBalance(chainAAPIEndpoint, recipient, uatoneDenom)
+		beforeSenderBalance := s.queryBalance(chainAAPIEndpoint, sender, ulDenom)
+		beforeRecipientBalance := s.queryBalance(chainAAPIEndpoint, recipient, ulDenom)
 
 		initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
 		deposit := s.queryGovMinDeposit(chainAAPIEndpoint)
@@ -182,7 +182,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		// Check that sender is not refunded with the proposal deposit
 		s.Require().Eventually(
 			func() bool {
-				afterSenderBalance := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
+				afterSenderBalance := s.queryBalance(chainAAPIEndpoint, sender, ulDenom)
 				return afterSenderBalance.Add(deposit).Add(initialDeposit).
 					IsEqual(beforeSenderBalance)
 			},
@@ -193,7 +193,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		// proposal was rejected
 		s.Require().Eventually(
 			func() bool {
-				afterRecipientBalance := s.queryBalance(chainAAPIEndpoint, recipient, uatoneDenom)
+				afterRecipientBalance := s.queryBalance(chainAAPIEndpoint, recipient, ulDenom)
 				return afterRecipientBalance.IsEqual(beforeRecipientBalance)
 			},
 			10*time.Second,
@@ -439,7 +439,7 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 
 // NOTE: in SDK >= v0.47 the submit-proposal does not have a --deposit flag
 // Instead, the deposit is added to the "deposit" field of the proposal JSON (usually stored as a file)
-// you can use `atomoned tx gov draft-proposal` to create a proposal file that you can use
+// you can use `hikarid tx gov draft-proposal` to create a proposal file that you can use
 // min initial deposit of 100uatone is required in e2e tests, otherwise the proposal would be dropped
 func (s *IntegrationTestSuite) submitGovProposal(chainAAPIEndpoint, sender string, proposalID int, proposalType string, submitFlags []string, depositFlags []string, voteFlags []string, voteCommand string, expectedStatusAfterVote govtypesv1beta1.ProposalStatus) {
 	s.T().Logf("Submitting Gov Proposal: %s", proposalType)
@@ -687,14 +687,14 @@ func (s *IntegrationTestSuite) generateConstitutionAmendment(c *chain, newConsti
 
 	govCommand := "generate-constitution-amendment"
 	cmd := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		govtypes.ModuleName,
 		govCommand,
 		configFile(newConstitutionFilename),
 	}
 
-	s.T().Logf("Executing atomoned tx gov %s on chain %s", govCommand, c.id)
+	s.T().Logf("Executing hikarid tx gov %s on chain %s", govCommand, c.id)
 	var msg govtypesv1.MsgProposeConstitutionAmendment
 	s.executeAtomoneTxCommand(ctx, c, cmd, 0, s.parseGenerateConstitutionAmendmentOutput(&msg))
 	s.T().Logf("Successfully executed %s", govCommand)

@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/atomone-hub/atomone/x/photon/types"
+	"github.com/Hikari-Chain/hikari-chain/x/photon/types"
 	"github.com/stretchr/testify/require"
 )
 

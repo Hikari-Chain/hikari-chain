@@ -18,10 +18,10 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	"github.com/atomone-hub/atomone/x/gov"
-	"github.com/atomone-hub/atomone/x/gov/keeper"
-	"github.com/atomone-hub/atomone/x/gov/types"
-	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	"github.com/Hikari-Chain/hikari-chain/x/gov"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/keeper"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/types"
+	v1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
 )
 
 func TestTickExpiredDepositPeriod(t *testing.T) {

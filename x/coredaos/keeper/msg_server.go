@@ -9,9 +9,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/atomone-hub/atomone/x/coredaos/types"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	"github.com/Hikari-Chain/hikari-chain/x/coredaos/types"
+	govtypes "github.com/Hikari-Chain/hikari-chain/x/gov/types"
+	govtypesv1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
 )
 
 var _ types.MsgServer = (*MsgServer)(nil)

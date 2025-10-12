@@ -8,7 +8,7 @@ import (
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 
-	"github.com/atomone-hub/atomone/x/photon/types"
+	"github.com/Hikari-Chain/hikari-chain/x/photon/types"
 )
 
 // Simulation operation weights constants

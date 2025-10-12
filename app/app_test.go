@@ -10,9 +10,9 @@ import (
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	atomone "github.com/atomone-hub/atomone/app"
-	atomonehelpers "github.com/atomone-hub/atomone/app/helpers"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	atomone "github.com/Hikari-Chain/hikari-chain/app"
+	atomonehelpers "github.com/Hikari-Chain/hikari-chain/app/helpers"
+	govtypes "github.com/Hikari-Chain/hikari-chain/x/gov/types"
 )
 
 func TestAtomOneApp_BlockedModuleAccountAddrs(t *testing.T) {

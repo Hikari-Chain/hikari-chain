@@ -39,18 +39,18 @@ import (
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	appparams "github.com/atomone-hub/atomone/app/params"
-	_ "github.com/atomone-hub/atomone/cmd/atomoned/cmd"
-	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+	appparams "github.com/Hikari-Chain/hikari-chain/app/params"
+	_ "github.com/Hikari-Chain/hikari-chain/cmd/hikarid/cmd"
+	photontypes "github.com/Hikari-Chain/hikari-chain/x/photon/types"
 )
 
 const (
-	atomonedBinary               = "atomoned"
+	hikaridBinary                = "hikarid"
 	txCommand                    = "tx"
 	queryCommand                 = "query"
 	keysCommand                  = "keys"
 	atomoneHomePath              = "/home/nonroot/.atomone"
-	uatoneDenom                  = appparams.BondDenom
+	ulDenom                      = appparams.BondDenom
 	uphotonDenom                 = photontypes.Denom
 	minGasPrice                  = "0.00001"
 	gas                          = 200000
@@ -79,12 +79,12 @@ var (
 	runInCI           = os.Getenv("GITHUB_ACTIONS") == "true"
 	atomoneConfigPath = filepath.Join(atomoneHomePath, "config")
 	initBalance       = sdk.NewCoins(
-		sdk.NewInt64Coin(uatoneDenom, 10_000_000_000_000), // 10,000,000atone
+		sdk.NewInt64Coin(ulDenom, 10_000_000_000_000), // 10,000,000l
 		sdk.NewInt64Coin(uphotonDenom, 10_000_000_000),    // 10,000photon
 	)
 	initBalanceStr    = initBalance.String()
-	stakingAmountCoin = sdk.NewInt64Coin(uatoneDenom, 6_000_000_000_000) // 6,000,000atone
-	tokenAmount       = sdk.NewInt64Coin(uatoneDenom, 100_000_000)       // 100atone
+	stakingAmountCoin = sdk.NewInt64Coin(ulDenom, 6_000_000_000_000) // 6,000,000l
+	tokenAmount       = sdk.NewInt64Coin(ulDenom, 100_000_000)       // 100l
 	standardFees      = sdk.NewInt64Coin(uphotonDenom, 330_000)          // 0.33photon
 	proposalCounter   = 0
 )
@@ -260,7 +260,7 @@ func (s *IntegrationTestSuite) initNodes(c *chain) {
 	}
 
 	s.Require().NoError(
-		modifyGenesis(s.cdc, val0ConfigDir, "", initBalanceStr, addrAll, uatoneDenom),
+		modifyGenesis(s.cdc, val0ConfigDir, "", initBalanceStr, addrAll, ulDenom),
 	)
 	// copy the genesis file to the remaining validators
 	for _, val := range c.validators[1:] {
@@ -403,7 +403,7 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 	}
 	stakingModuleBalances := banktypes.Balance{
 		Address: authtypes.NewModuleAddress(stakingtypes.NotBondedPoolName).String(),
-		Coins:   sdk.NewCoins(sdk.NewCoin(uatoneDenom, math.NewInt(slashingShares))),
+		Coins:   sdk.NewCoins(sdk.NewCoin(ulDenom, math.NewInt(slashingShares))),
 	}
 	bankGenState.Balances = append(
 		bankGenState.Balances,
@@ -417,13 +417,13 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 	// update the denom metadata for the bank module
 	bankGenState.DenomMetadata = append(bankGenState.DenomMetadata, banktypes.Metadata{
 		Description: "An example stable token",
-		Display:     uatoneDenom,
-		Base:        uatoneDenom,
-		Symbol:      uatoneDenom,
-		Name:        uatoneDenom,
+		Display:     ulDenom,
+		Base:        ulDenom,
+		Symbol:      ulDenom,
+		Name:        ulDenom,
 		DenomUnits: []*banktypes.DenomUnit{
 			{
-				Denom:    uatoneDenom,
+				Denom:    ulDenom,
 				Exponent: 0,
 			},
 		},
@@ -570,7 +570,7 @@ func (s *IntegrationTestSuite) initValidatorConfigs(c *chain) {
 		appConfig := srvconfig.DefaultConfig()
 		appConfig.API.Enable = true
 		appConfig.API.Address = "tcp://0.0.0.0:1317"
-		appConfig.MinGasPrices = fmt.Sprintf("%s%s,%s%s", minGasPrice, uatoneDenom,
+		appConfig.MinGasPrices = fmt.Sprintf("%s%s,%s%s", minGasPrice, ulDenom,
 			minGasPrice, uphotonDenom)
 		appConfig.GRPC.Address = "0.0.0.0:9090"
 
@@ -583,7 +583,7 @@ func (s *IntegrationTestSuite) initValidatorConfigs(c *chain) {
 func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 	s.T().Logf("starting AtomOne %s validator containers...", c.id)
 
-	const dockerImage = "cosmos/atomoned-e2e"
+	const dockerImage = "cosmos/hikarid-e2e"
 
 	s.valResources[c.id] = make([]*dockertest.Resource, len(c.validators))
 	for i, val := range c.validators {

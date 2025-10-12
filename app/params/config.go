@@ -1,9 +1,9 @@
 package params
 
 const (
-	BondDenom = "uatone"
+	BondDenom = "ul"
 
-	Bech32PrefixAccAddr = "atone"
+	Bech32PrefixAccAddr = "hikari"
 )
 
 var (

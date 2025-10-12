@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/atomone-hub/atomone/x/photon"
-	"github.com/atomone-hub/atomone/x/photon/testutil"
-	"github.com/atomone-hub/atomone/x/photon/types"
+	"github.com/Hikari-Chain/hikari-chain/x/photon"
+	"github.com/Hikari-Chain/hikari-chain/x/photon/testutil"
+	"github.com/Hikari-Chain/hikari-chain/x/photon/types"
 )
 
 func TestGenesis(t *testing.T) {

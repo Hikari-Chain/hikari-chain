@@ -1,0 +1,13 @@
+syntax = "proto3";
+package hikari.photon.v1;
+
+import "gogoproto/gogo.proto";
+import "hikari/photon/v1/photon.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/Hikari-Chain/hikari-chain/x/photon/types";
+
+// GenesisState defines the x/photon module's genesis state.
+message GenesisState {
+	Params params = 1 [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}

@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/atomone-hub/atomone/x/coredaos/keeper"
-	"github.com/atomone-hub/atomone/x/coredaos/types"
+	"github.com/Hikari-Chain/hikari-chain/x/coredaos/keeper"
+	"github.com/Hikari-Chain/hikari-chain/x/coredaos/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.

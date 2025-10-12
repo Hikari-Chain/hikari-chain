@@ -3,8 +3,8 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/atomone-hub/atomone/x/gov/exported"
-	v5 "github.com/atomone-hub/atomone/x/gov/migrations/v5"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/exported"
+	v5 "github.com/Hikari-Chain/hikari-chain/x/gov/migrations/v5"
 )
 
 // Migrator is a struct for handling in-place store migrations.

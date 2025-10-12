@@ -3,7 +3,7 @@ package types
 import (
 	"cosmossdk.io/math"
 
-	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+	photontypes "github.com/Hikari-Chain/hikari-chain/x/photon/types"
 )
 
 // Note: We use the same default values as Ethereum for the EIP-1559 dynamic

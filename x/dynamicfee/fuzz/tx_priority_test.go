@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"pgregory.net/rapid"
 
-	"github.com/atomone-hub/atomone/x/dynamicfee/ante"
+	"github.com/Hikari-Chain/hikari-chain/x/dynamicfee/ante"
 )
 
 type input struct {

@@ -1,4 +1,4 @@
-module github.com/atomone-hub/atomone
+module github.com/Hikari-Chain/hikari-chain
 
 go 1.24.5
 

@@ -17,12 +17,12 @@ fi
 
 # Build genesis file incl account for passed address
 coins="10000000000stake,100000000000samoleans"
-atomoned init --chain-id $CHAINID $CHAINID
-atomoned keys add validator --keyring-backend="test"
-atomoned add-genesis-account $(atomoned keys show validator -a --keyring-backend="test") $coins
-atomoned add-genesis-account $GENACCT $coins
-atomoned gentx validator 5000000000stake --keyring-backend="test" --chain-id $CHAINID
-atomoned collect-gentxs
+hikarid init --chain-id $CHAINID $CHAINID
+hikarid keys add validator --keyring-backend="test"
+hikarid add-genesis-account $(hikarid keys show validator -a --keyring-backend="test") $coins
+hikarid add-genesis-account $GENACCT $coins
+hikarid gentx validator 5000000000stake --keyring-backend="test" --chain-id $CHAINID
+hikarid collect-gentxs
 
 # Set proper defaults and change ports
 echo "Setting rpc listen address"
@@ -33,4 +33,4 @@ sed -i '' 's/timeout_propose = "3s"/timeout_propose = "1s"/g' ~/.atomone/config/
 sed -i '' 's/index_all_keys = false/index_all_keys = true/g' ~/.atomone/config/config.toml
 
 # Start the atomone
-atomoned start --pruning=nothing
+hikarid start --pruning=nothing

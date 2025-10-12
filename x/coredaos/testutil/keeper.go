@@ -16,9 +16,9 @@ import (
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/atomone-hub/atomone/x/coredaos/keeper"
-	"github.com/atomone-hub/atomone/x/coredaos/types"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	"github.com/Hikari-Chain/hikari-chain/x/coredaos/keeper"
+	"github.com/Hikari-Chain/hikari-chain/x/coredaos/types"
+	govtypes "github.com/Hikari-Chain/hikari-chain/x/gov/types"
 )
 
 type Mocks struct {

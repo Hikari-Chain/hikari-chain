@@ -22,8 +22,8 @@ import (
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+	govtypes "github.com/Hikari-Chain/hikari-chain/x/gov/types"
+	photontypes "github.com/Hikari-Chain/hikari-chain/x/photon/types"
 )
 
 const (
@@ -80,9 +80,9 @@ func (s *IntegrationTestSuite) execEncode(
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("%s - Executing atomoned encoding with %v", c.id, txPath)
+	s.T().Logf("%s - Executing hikarid encoding with %v", c.id, txPath)
 	atomoneCommand := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		"encode",
 		txPath,
@@ -112,9 +112,9 @@ func (s *IntegrationTestSuite) execDecode(
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("%s - Executing atomoned decoding with %v", c.id, txPath)
+	s.T().Logf("%s - Executing hikarid decoding with %v", c.id, txPath)
 	atomoneCommand := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		"decode",
 		txPath,
@@ -146,9 +146,9 @@ func (s *IntegrationTestSuite) execVestingTx( //nolint:unused
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("%s - Executing atomoned %s with %v", c.id, method, args)
+	s.T().Logf("%s - Executing hikarid %s with %v", c.id, method, args)
 	atomoneCommand := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		vestingtypes.ModuleName,
 		method,
@@ -171,7 +171,7 @@ func (s *IntegrationTestSuite) execCreatePeriodicVestingAccount( //nolint:unused
 	jsonPath string,
 	opt ...flagOption,
 ) {
-	s.T().Logf("Executing atomoned create periodic vesting account %s", c.id)
+	s.T().Logf("Executing hikarid create periodic vesting account %s", c.id)
 	s.execVestingTx(c, "create-periodic-vesting-account", []string{address, jsonPath}, opt...)
 	s.T().Logf("successfully created periodic vesting account %s with %s", address, jsonPath)
 }
@@ -184,9 +184,9 @@ func (s *IntegrationTestSuite) execUnjail(
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("Executing atomoned slashing unjail %s with options: %v", c.id, opts)
+	s.T().Logf("Executing hikarid slashing unjail %s with options: %v", c.id, opts)
 	atomoneCommand := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		slashingtypes.ModuleName,
 		"unjail",
@@ -212,7 +212,7 @@ func (s *IntegrationTestSuite) execFeeGrant(c *chain, valIdx int, granter, grant
 	s.T().Logf("granting %s fee from %s on chain %s", grantee, granter, c.id)
 
 	atomoneCommand := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		feegrant.ModuleName,
 		"grant",
@@ -237,7 +237,7 @@ func (s *IntegrationTestSuite) execFeeGrantRevoke(c *chain, valIdx int, granter,
 	s.T().Logf("revoking %s fee grant from %s on chain %s", grantee, granter, c.id)
 
 	atomoneCommand := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		feegrant.ModuleName,
 		"revoke",
@@ -271,7 +271,7 @@ func (s *IntegrationTestSuite) execBankSend(
 	s.T().Logf("sending %s tokens from %s to %s on chain %s", amt, from, to, c.id)
 
 	atomoneCommand := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		banktypes.ModuleName,
 		"send",
@@ -310,7 +310,7 @@ func (s *IntegrationTestSuite) execBankMultiSend(
 	}
 
 	atomoneCommand := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		banktypes.ModuleName,
 		"multi-send",
@@ -362,7 +362,7 @@ func (s *IntegrationTestSuite) execWithdrawAllRewards(c *chain, valIdx int, paye
 	defer cancel()
 
 	atomoneCommand := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		distributiontypes.ModuleName,
 		"withdraw-all-rewards",
@@ -381,10 +381,10 @@ func (s *IntegrationTestSuite) execDistributionFundCommunityPool(c *chain, valId
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("Executing atomoned tx distribution fund-community-pool on chain %s", c.id)
+	s.T().Logf("Executing hikarid tx distribution fund-community-pool on chain %s", c.id)
 
 	atomoneCommand := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		distributiontypes.ModuleName,
 		"fund-community-pool",
@@ -406,7 +406,7 @@ func (s *IntegrationTestSuite) runGovExec(c *chain, valIdx int, submitterAddr, g
 	defer cancel()
 
 	atomoneCommand := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		govtypes.ModuleName,
 		govCommand,
@@ -423,7 +423,7 @@ func (s *IntegrationTestSuite) runGovExec(c *chain, valIdx int, submitterAddr, g
 	}
 
 	atomoneCommand = concatFlags(atomoneCommand, proposalFlags, generalFlags)
-	s.T().Logf("Executing atomoned tx gov %s on chain %s", govCommand, c.id)
+	s.T().Logf("Executing hikarid tx gov %s on chain %s", govCommand, c.id)
 	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, s.defaultExecValidation(c, valIdx, nil))
 	s.T().Logf("Successfully executed %s", govCommand)
 }
@@ -434,7 +434,7 @@ func (s *IntegrationTestSuite) runGovExec(c *chain, valIdx int, submitterAddr, g
 // 	defer cancel()
 
 // 	atomoneCommand := []string{
-// 		atomonedBinary,
+// 		hikaridBinary,
 // 		keysCommand,
 // 		"add",
 // 		name,
@@ -445,7 +445,7 @@ func (s *IntegrationTestSuite) runGovExec(c *chain, valIdx int, submitterAddr, g
 
 // 	var addrRecord AddressResponse
 // 	s.executeAtomoneTxCommand(ctx, c, atomoneCommand, valIdx, func(stdOut []byte, stdErr []byte) bool {
-// 		// atomoned keys add by default returns payload to stdErr
+// 		// hikarid keys add by default returns payload to stdErr
 // 		if err := json.Unmarshal(stdErr, &addrRecord); err != nil {
 // 			return false
 // 		}
@@ -460,7 +460,7 @@ func (s *IntegrationTestSuite) runGovExec(c *chain, valIdx int, submitterAddr, g
 // 	defer cancel()
 
 // 	atomoneCommand := []string{
-// 		atomonedBinary,
+// 		hikaridBinary,
 // 		keysCommand,
 // 		"list",
 // 		"--keyring-backend=test",
@@ -478,10 +478,10 @@ func (s *IntegrationTestSuite) execDelegate(c *chain, valIdx int, amount, valOpe
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("Executing atomoned tx staking delegate %s", c.id)
+	s.T().Logf("Executing hikarid tx staking delegate %s", c.id)
 
 	atomoneCommand := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		stakingtypes.ModuleName,
 		"delegate",
@@ -504,10 +504,10 @@ func (s *IntegrationTestSuite) execUnbondDelegation(c *chain, valIdx int, amount
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("Executing atomoned tx staking unbond %s", c.id)
+	s.T().Logf("Executing hikarid tx staking unbond %s", c.id)
 
 	atomoneCommand := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		stakingtypes.ModuleName,
 		"unbond",
@@ -531,10 +531,10 @@ func (s *IntegrationTestSuite) execCancelUnbondingDelegation(c *chain, valIdx in
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("Executing atomoned tx staking cancel-unbond %s", c.id)
+	s.T().Logf("Executing hikarid tx staking cancel-unbond %s", c.id)
 
 	atomoneCommand := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		stakingtypes.ModuleName,
 		"cancel-unbond",
@@ -560,10 +560,10 @@ func (s *IntegrationTestSuite) execRedelegate(c *chain, valIdx int, amount, orig
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("Executing atomoned tx staking redelegate %s", c.id)
+	s.T().Logf("Executing hikarid tx staking redelegate %s", c.id)
 
 	atomoneCommand := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		stakingtypes.ModuleName,
 		"redelegate",
@@ -605,7 +605,7 @@ func (s *IntegrationTestSuite) getLatestBlockTime(c *chain, valIdx int) time.Tim
 // func (s *IntegrationTestSuite) verifyBalanceChange(endpoint string, expectedAmount sdk.Coin, recipientAddress string) {
 // 	s.Require().Eventually(
 // 		func() bool {
-// 			afterAtomBalance, err := s.getSpecificBalance(endpoint, recipientAddress, uatoneDenom)
+// 			afterAtomBalance, err := s.getSpecificBalance(endpoint, recipientAddress, ulDenom)
 // 			s.Require().NoError(err)
 
 // 			return afterAtomBalance.IsEqual(expectedAmount)
@@ -627,7 +627,7 @@ func (s *IntegrationTestSuite) execSetWithdrawAddress(
 
 	s.T().Logf("Setting distribution withdrawal address on chain %s for %s to %s", c.id, delegatorAddress, newWithdrawalAddress)
 	atomoneCommand := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		distributiontypes.ModuleName,
 		"set-withdraw-addr",
@@ -657,7 +657,7 @@ func (s *IntegrationTestSuite) execWithdrawReward(
 
 	s.T().Logf("Withdrawing distribution rewards on chain %s for delegator %s from %s validator", c.id, delegatorAddress, validatorAddress)
 	atomoneCommand := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		distributiontypes.ModuleName,
 		"withdraw-rewards",
@@ -703,7 +703,7 @@ func (s *IntegrationTestSuite) executeMultiSigTxCommand(c *chain, atomoneCommand
 		opt = append(opt, withKeyValue(flagOutputDocument, configFile(fmt.Sprintf("signed_%v_%s", idx, offlineTxFile))))
 		opts := applyOptions(c.id, opt)
 		atomoneCommand = []string{
-			atomonedBinary,
+			hikaridBinary,
 			txCommand,
 			"sign",
 			configFile(offlineTxFile),
@@ -716,7 +716,7 @@ func (s *IntegrationTestSuite) executeMultiSigTxCommand(c *chain, atomoneCommand
 
 	// Combine signatures
 	atomoneCommand = []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		"multisign",
 		configFile(offlineTxFile),
@@ -734,7 +734,7 @@ func (s *IntegrationTestSuite) executeMultiSigTxCommand(c *chain, atomoneCommand
 	opt = []flagOption{withKeyValue(flagFrom, multiSigKeyName)}
 	opts = applyOptions(c.id, opt)
 	atomoneCommand = []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		"broadcast",
 		configFile(fmt.Sprintf("signed_%s", offlineTxFile)),
@@ -830,10 +830,10 @@ func (s *IntegrationTestSuite) executeValidatorBond(c *chain, valIdx int, valOpe
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	s.T().Logf("Executing atomoned tx staking validator-bond %s", c.id)
+	s.T().Logf("Executing hikarid tx staking validator-bond %s", c.id)
 
 	atomoneCommand := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		stakingtypes.ModuleName,
 		"validator-bond",
@@ -867,7 +867,7 @@ func (s *IntegrationTestSuite) execPhotonMint(
 	s.T().Logf("minting photon from %s for %s on chain %s", amt, to, c.id)
 
 	atomoneCommand := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		photontypes.ModuleName,
 		"mint",
@@ -887,7 +887,7 @@ func (s *IntegrationTestSuite) execPhotonMint(
 	return
 }
 
-// signTxFileOnline signs a transaction file using the atomoned tx sign command
+// signTxFileOnline signs a transaction file using the hikarid tx sign command
 // the from flag is used to specify the keyring account to sign the transaction
 // the from account must be registered in the keyring and exist on chain (have a balance or be a genesis account)
 func (s *IntegrationTestSuite) signTxFileOnline(chain *chain, valIdx int, from string, txFilePath string) ([]byte, error) {
@@ -895,7 +895,7 @@ func (s *IntegrationTestSuite) signTxFileOnline(chain *chain, valIdx int, from s
 	defer cancel()
 
 	atomoneCommand := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		"sign",
 		filepath.Join(atomoneHomePath, txFilePath),
@@ -922,7 +922,7 @@ func (s *IntegrationTestSuite) signTxFileOnline(chain *chain, valIdx int, from s
 	return output, nil
 }
 
-// broadcastTxFile broadcasts a signed transaction file using the atomoned tx broadcast command
+// broadcastTxFile broadcasts a signed transaction file using the hikarid tx broadcast command
 // the from flag is used to specify the keyring account to sign the transaction
 // the from account must be registered in the keyring and exist on chain (have a balance or be a genesis account)
 func (s *IntegrationTestSuite) broadcastTxFile(chain *chain, valIdx int, from string, txFilePath string) ([]byte, error) {
@@ -930,7 +930,7 @@ func (s *IntegrationTestSuite) broadcastTxFile(chain *chain, valIdx int, from st
 	defer cancel()
 
 	broadcastTxCmd := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		"broadcast",
 		filepath.Join(atomoneHomePath, txFilePath),

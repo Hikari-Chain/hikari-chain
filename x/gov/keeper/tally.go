@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	v1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
 )
 
 // Tally iterates over the votes and updates the tally of a proposal based on the voting power of the

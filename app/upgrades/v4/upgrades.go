@@ -7,7 +7,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/atomone-hub/atomone/app/keepers"
+	"github.com/Hikari-Chain/hikari-chain/app/keepers"
 )
 
 // CreateUpgradeHandler returns a upgrade handler for AtomOne v4

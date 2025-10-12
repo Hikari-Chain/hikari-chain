@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	"github.com/atomone-hub/atomone/x/coredaos/types"
+	"github.com/Hikari-Chain/hikari-chain/x/coredaos/types"
 )
 
 // Hooks wrapper struct for gov keeper

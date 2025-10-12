@@ -13,7 +13,7 @@ LEDGER_ENABLED ?= false
 TM_VERSION := $(shell go list -f {{.Version}} -m github.com/cometbft/cometbft)
 DOCKER := $(shell which docker)
 BUILDDIR ?= $(CURDIR)/build
-TEST_DOCKER_REPO=cosmos/contrib-atomonetest
+TEST_DOCKER_REPO=cosmos/contrib-hikaritest
 
 GO_SYSTEM_VERSION = $(shell go env GOVERSION | cut -c 3-)
 GO_REQUIRED_VERSION = $(shell go list -f {{.GoVersion}} -m)
@@ -50,7 +50,7 @@ else
   endif
 endif
 
-ifeq (cleveldb,$(findstring cleveldb,$(ATOMONE_BUILD_OPTIONS)))
+ifeq (cleveldb,$(findstring cleveldb,$(HIKARI_BUILD_OPTIONS)))
   build_tags += gcc cleveldb
 endif
 build_tags += $(BUILD_TAGS)
@@ -63,28 +63,28 @@ build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
 
 # process linker flags
 
-ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=atomone \
-		  -X github.com/cosmos/cosmos-sdk/version.AppName=atomoned \
+ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=hikari \
+		  -X github.com/cosmos/cosmos-sdk/version.AppName=hikarid \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
 		  -X github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep) \
 			-X github.com/cometbft/cometbft/version.TMCoreSemVer=$(TM_VERSION)
 
-ifeq (cleveldb,$(findstring cleveldb,$(ATOMONE_BUILD_OPTIONS)))
+ifeq (cleveldb,$(findstring cleveldb,$(HIKARI_BUILD_OPTIONS)))
   ldflags += -X github.com/cosmos/cosmos-sdk/types.DBBackend=cleveldb
 endif
-ifeq (,$(findstring nostrip,$(ATOMONE_BUILD_OPTIONS)))
+ifeq (,$(findstring nostrip,$(HIKARI_BUILD_OPTIONS)))
   ldflags += -w -s
 endif
 ifneq ($(strip $(MIN_VOTING_PERIOD)),)
-	ldflags += -X github.com/atomone-hub/atomone/x/gov/types/v1.MinVotingPeriod=$(MIN_VOTING_PERIOD)
+	ldflags += -X github.com/Hikari-Chain/hikari-chain/x/gov/types/v1.MinVotingPeriod=$(MIN_VOTING_PERIOD)
 endif
 ldflags += $(LDFLAGS)
 ldflags := $(strip $(ldflags))
 
 BUILD_FLAGS := -tags "$(build_tags)" -ldflags '$(ldflags)'
 # check for nostrip option
-ifeq (,$(findstring nostrip,$(ATOMONE_BUILD_OPTIONS)))
+ifeq (,$(findstring nostrip,$(HIKARI_BUILD_OPTIONS)))
   BUILD_FLAGS += -trimpath
 endif
 
@@ -99,7 +99,7 @@ print_tm_version:
 
 check_go_version:
 ifneq ($(GO_SYSTEM_VERSION), $(GO_REQUIRED_VERSION))
-	@echo 'ERROR: Go version $(GO_REQUIRED_VERSION) is required for building AtomOne'
+	@echo 'ERROR: Go version $(GO_REQUIRED_VERSION) is required for building Hikari Chain'
 	@echo '--> You can install it using:'
 	@echo 'go install golang.org/dl/go$(GO_REQUIRED_VERSION)@latest && go$(GO_REQUIRED_VERSION) download'
 	@echo '--> Then prefix your make command with:'
@@ -209,7 +209,7 @@ endif
 .PHONY: run-tests $(TEST_TARGETS)
 
 docker-build-debug:
-	@docker build -t cosmos/atomoned-e2e -f e2e.Dockerfile --build-arg GO_VERSION=$(GO_REQUIRED_VERSION) .
+	@docker build -t cosmos/hikarid-e2e -f e2e.Dockerfile --build-arg GO_VERSION=$(GO_REQUIRED_VERSION) .
 
 docker-build-hermes:
 	@cd tests/e2e/docker; docker build -t ghcr.io/cosmos/hermes-e2e:1.0.0 -f hermes.Dockerfile .
@@ -258,31 +258,31 @@ format: lint-fix
 ###                                Localnet                                 ###
 ###############################################################################
 
-localnet_home=~/.atomone-localnet
-localnetd=./build/atomoned --home $(localnet_home)
+localnet_home=~/.hikari-localnet
+localnetd=./build/hikarid --home $(localnet_home)
 
 localnet-start: build
-	rm -rf ~/.atomone-localnet
-	$(localnetd) init localnet --default-denom uatone --chain-id localnet
+	rm -rf ~/.hikari-localnet
+	$(localnetd) init localnet --default-denom ul --chain-id localnet
 	$(localnetd) config set client chain-id localnet
 	$(localnetd) config set client keyring-backend test
 	$(localnetd) keys add val
-	$(localnetd) genesis add-genesis-account val 1000000000000uatone,1000000000uphoton
+	$(localnetd) genesis add-genesis-account val 1000000000000ul,1000000000uphoton
 	$(localnetd) keys add user
-	$(localnetd) genesis add-genesis-account user 1000000000uatone,1000000000uphoton
-	$(localnetd) genesis gentx val 1000000000uatone
+	$(localnetd) genesis add-genesis-account user 1000000000ul,1000000000uphoton
+	$(localnetd) genesis gentx val 1000000000ul
 	$(localnetd) genesis collect-gentxs
 	# Add treasury DAO address
-	$(localnetd) genesis add-genesis-account atone1qqqqqqqqqqqqqqqqqqqqqqqqqqqqp0dqtalx52 5388766663072uatone
+	$(localnetd) genesis add-genesis-account hikari1qqqqqqqqqqqqqqqqqqqqqqqqqqqqp0d8vxhrn 5388766663072ul
 	# Add CP funds
-	$(localnetd) genesis add-genesis-account atone1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8flcml8 5388766663072uatone
-	jq '.app_state.distribution.fee_pool.community_pool = [ { "denom": "uatone", "amount": "5388766663072.000000000000000000" }]' $(localnet_home)/config/genesis.json > /tmp/gen
+	$(localnetd) genesis add-genesis-account hikari1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8u0nnle 5388766663072ul
+	jq '.app_state.distribution.fee_pool.community_pool = [ { "denom": "ul", "amount": "5388766663072.000000000000000000" }]' $(localnet_home)/config/genesis.json > /tmp/gen
 	mv /tmp/gen $(localnet_home)/config/genesis.json
 	# Previous add-genesis-account call added the auth module account as a BaseAccount, we need to remove it
-	jq 'del(.app_state.auth.accounts[] | select(.address == "atone1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8flcml8"))' $(localnet_home)/config/genesis.json > /tmp/gen
+	jq 'del(.app_state.auth.accounts[] | select(.address == "hikari1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8u0nnle"))' $(localnet_home)/config/genesis.json > /tmp/gen
 	mv /tmp/gen $(localnet_home)/config/genesis.json
 	# Set validator gas prices
-	sed -i.bak 's#^minimum-gas-prices = .*#minimum-gas-prices = "0.01uatone,0.01uphoton"#g' $(localnet_home)/config/app.toml
+	sed -i.bak 's#^minimum-gas-prices = .*#minimum-gas-prices = "0.01ul,0.01uphoton"#g' $(localnet_home)/config/app.toml
 	# enable REST API
 	$(localnetd) config set app api.enable true
 	# Decrease voting period to 5min

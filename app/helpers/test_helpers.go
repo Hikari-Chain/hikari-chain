@@ -27,7 +27,7 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	atomoneapp "github.com/atomone-hub/atomone/app"
+	atomoneapp "github.com/Hikari-Chain/hikari-chain/app"
 )
 
 // SimAppChainID hardcoded chainID for simulation
@@ -122,7 +122,7 @@ func setup() (*atomoneapp.AtomOneApp, atomoneapp.GenesisState) {
 	db := dbm.NewMemDB()
 	appOptions := make(simtestutil.AppOptionsMap, 0)
 	appOptions[server.FlagInvCheckPeriod] = 5
-	appOptions[server.FlagMinGasPrices] = "0uatone"
+	appOptions[server.FlagMinGasPrices] = "0ul"
 
 	atomoneApp := atomoneapp.NewAtomOneApp(
 		log.NewNopLogger(),

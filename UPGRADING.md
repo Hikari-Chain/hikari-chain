@@ -68,7 +68,7 @@ both a reference to this proposal and an `UPGRADE_HEIGHT` are added to the
 [release notes][v3].
 If and when this proposal reaches consensus, the upgrade height will be used to
 halt the "old" chain binaries. You can check the proposal on one of the block
-explorers or using the `atomoned` CLI tool.
+explorers or using the `hikarid` CLI tool.
 Neither core developers nor core funding entities control the governance.
 
 ## Upgrade date
@@ -92,7 +92,7 @@ upon upgrade. See below [upgrade using cosmovisor](#method-ii-upgrade-using-cosm
 section.
 
 It is critically important for validator operators to back-up the
-`.atomone/data/priv_validator_state.json` file after stopping the atomoned
+`.atomone/data/priv_validator_state.json` file after stopping the hikarid
 process. This file is updated every block as your validator participates in
 consensus rounds. It is a critical file needed to prevent double-signing, in
 case the upgrade fails and the previous chain needs to be restarted.
@@ -137,7 +137,7 @@ ERR UPGRADE "v3" NEEDED at height: <UPGRADE_HEIGHT>: upgrade to v3 and applying 
 ```
 
 Stop the node, and switch the binary to **AtomOne v3.0.1** and re-start by
-`atomoned start`.
+`hikarid start`.
 
 It may take several minutes to a few hours until validators with a total sum
 voting power > 2/3 to complete their node upgrades. After that, the chain can
@@ -160,15 +160,15 @@ into `$ATOMONE_HOME/cosmovisor/genesis/bin`:
 
 ```shell
 mkdir -p $ATOMONE_HOME/cosmovisor/genesis/bin
-cp $(which atomoned) $ATOMONE_HOME/cosmovisor/genesis/bin
+cp $(which hikarid) $ATOMONE_HOME/cosmovisor/genesis/bin
 ```
 
-- Build AtomOne `v3.0.1`, and move atomoned `v3.0.1` to
+- Build AtomOne `v3.0.1`, and move hikarid `v3.0.1` to
   `$ATOMONE_HOME/cosmovisor/upgrades/v3/bin`
 
 ```shell
 mkdir -p  $ATOMONE_HOME/cosmovisor/upgrades/v3/bin
-cp $(which atomoned) $ATOMONE_HOME/cosmovisor/upgrades/v3/bin
+cp $(which hikarid) $ATOMONE_HOME/cosmovisor/upgrades/v3/bin
 ```
 
 At this moment, you should have the following structure:
@@ -178,17 +178,17 @@ At this moment, you should have the following structure:
 ├── current -> genesis or upgrades/<name>
 ├── genesis
 │   └── bin
-│       └── atomoned  # old: v2.0.0
+│       └── hikarid  # old: v2.0.0
 └── upgrades
     └── v3
         └── bin
-            └── atomoned  # new: v3.0.1
+            └── hikarid  # new: v3.0.1
 ```
 
 - Export the environmental variables:
 
 ```shell
-export DAEMON_NAME=atomoned
+export DAEMON_NAME=hikarid
 # please change to your own atomone home dir
 # please note `DAEMON_HOME` has to be absolute path
 export DAEMON_HOME=$ATOMONE_HOME
@@ -233,7 +233,7 @@ Steps to skip this upgrade proposal are simply to resume the `atomone-1`
 network with the (downgraded) v2.0.0 binary using the following command:
 
 ```shell
-atomoned start --unsafe-skip-upgrade <UPGRADE_HEIGHT>
+hikarid start --unsafe-skip-upgrade <UPGRADE_HEIGHT>
 ```
 
 Note: There is no particular need to restore a state snapshot prior to the

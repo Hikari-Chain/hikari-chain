@@ -10,7 +10,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
-	"github.com/atomone-hub/atomone/x/gov/types"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/types"
 )
 
 // AccountKeeper extends gov's actual expected AccountKeeper with additional

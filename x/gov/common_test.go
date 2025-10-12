@@ -30,11 +30,11 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	"github.com/atomone-hub/atomone/x/gov/keeper"
-	govtestutil "github.com/atomone-hub/atomone/x/gov/testutil"
-	"github.com/atomone-hub/atomone/x/gov/types"
-	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/keeper"
+	govtestutil "github.com/Hikari-Chain/hikari-chain/x/gov/testutil"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/types"
+	v1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/types/v1beta1"
 )
 
 var (

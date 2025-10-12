@@ -10,7 +10,7 @@ import (
 
 	"cosmossdk.io/math"
 
-	"github.com/atomone-hub/atomone/x/dynamicfee/types"
+	"github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types"
 )
 
 // TestLearningRate ensures that the learning rate is always

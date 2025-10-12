@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/atomone-hub/atomone/x/coredaos/types"
+	"github.com/Hikari-Chain/hikari-chain/x/coredaos/types"
 )
 
 type Keeper struct {

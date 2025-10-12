@@ -7,7 +7,7 @@ package ante_test
 import (
 	reflect "reflect"
 
-	types "github.com/atomone-hub/atomone/x/photon/types"
+	types "github.com/Hikari-Chain/hikari-chain/x/photon/types"
 	types0 "github.com/cosmos/cosmos-sdk/types"
 	gomock "github.com/golang/mock/gomock"
 )

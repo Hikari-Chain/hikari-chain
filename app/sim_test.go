@@ -23,8 +23,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 	simcli "github.com/cosmos/cosmos-sdk/x/simulation/client/cli"
 
-	"github.com/atomone-hub/atomone/ante"
-	atomone "github.com/atomone-hub/atomone/app"
+	"github.com/Hikari-Chain/hikari-chain/ante"
+	atomone "github.com/Hikari-Chain/hikari-chain/app"
 )
 
 // AppChainID hardcoded chainID for simulation

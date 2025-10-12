@@ -8,7 +8,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	govtypesv1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
 )
 
 // GovKeeper defines the expected interface needed to interact with the

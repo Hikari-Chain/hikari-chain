@@ -11,8 +11,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 
-	"github.com/atomone-hub/atomone/x/gov/simulation"
-	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/simulation"
+	v1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
 )
 
 func TestProposalMsgs(t *testing.T) {

@@ -10,8 +10,8 @@ import (
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	"github.com/atomone-hub/atomone/app/keepers"
-	photonkeeper "github.com/atomone-hub/atomone/x/photon/keeper"
+	"github.com/Hikari-Chain/hikari-chain/app/keepers"
+	photonkeeper "github.com/Hikari-Chain/hikari-chain/x/photon/keeper"
 )
 
 // CreateUpgradeHandler returns a upgrade handler for AtomOne v2

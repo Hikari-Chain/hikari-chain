@@ -15,10 +15,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
-	"github.com/atomone-hub/atomone/x/gov"
-	"github.com/atomone-hub/atomone/x/gov/client/testutil"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	"github.com/Hikari-Chain/hikari-chain/x/gov"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/client/testutil"
+	govtypes "github.com/Hikari-Chain/hikari-chain/x/gov/types"
+	v1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
 )
 
 func TestImportExportQueues_ErrorUnconsistentState(t *testing.T) {

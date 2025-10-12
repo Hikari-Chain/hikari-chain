@@ -21,9 +21,9 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	dynamicfeetypes "github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types"
+	govtypes "github.com/Hikari-Chain/hikari-chain/x/gov/types"
+	govv1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
 )
 
 func getGenDoc(path string) (*genutiltypes.AppGenesis, error) {
@@ -203,8 +203,8 @@ func modifyGenesis(cdc codec.Codec, path, moniker, amountStr string, addrAll []s
 	maxConstitutionAmendmentQuorum := "0.8"
 	minLawQuorum := "0.2"
 	maxLawQuorum := "0.8"
-	depositAmount := sdk.NewInt64Coin(uatoneDenom, 1_000_000_000)      // 1,000atone
-	initialDepositAmount := sdk.NewInt64Coin(uatoneDenom, 100_000_000) // 100atone
+	depositAmount := sdk.NewInt64Coin(ulDenom, 1_000_000_000)      // 1,000atone
+	initialDepositAmount := sdk.NewInt64Coin(ulDenom, 100_000_000) // 100atone
 
 	maxDepositPeriod := 10 * time.Minute
 	votingPeriod := 15 * time.Second

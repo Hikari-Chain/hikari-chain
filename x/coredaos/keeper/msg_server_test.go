@@ -10,9 +10,9 @@ import (
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/atomone-hub/atomone/x/coredaos/testutil"
-	"github.com/atomone-hub/atomone/x/coredaos/types"
-	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	"github.com/Hikari-Chain/hikari-chain/x/coredaos/testutil"
+	"github.com/Hikari-Chain/hikari-chain/x/coredaos/types"
+	govtypesv1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
 )
 
 func TestMsgServerUpdateParams(t *testing.T) {

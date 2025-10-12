@@ -12,13 +12,13 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	atomoneerrors "github.com/atomone-hub/atomone/types/errors"
-	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	govv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	atomoneerrors "github.com/Hikari-Chain/hikari-chain/types/errors"
+	govv1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
+	govv1beta1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1beta1"
 )
 
 var (
-	minStakedTokens       = math.LegacyNewDec(1000000) // 1_000_000 uatone (or 1 atone)
+	minStakedTokens       = math.LegacyNewDec(1000000) // 1_000_000 ul (or 1 l)
 	maxDelegationsChecked = 100                        // number of delegation to check for the minStakedTokens
 )
 

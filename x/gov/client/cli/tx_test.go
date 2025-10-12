@@ -23,12 +23,12 @@ import (
 	testutilmod "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/atomone-hub/atomone/x/gov"
-	"github.com/atomone-hub/atomone/x/gov/client/cli"
-	govclitestutil "github.com/atomone-hub/atomone/x/gov/client/testutil"
-	"github.com/atomone-hub/atomone/x/gov/types"
-	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	"github.com/Hikari-Chain/hikari-chain/x/gov"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/client/cli"
+	govclitestutil "github.com/Hikari-Chain/hikari-chain/x/gov/client/testutil"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/types"
+	v1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/types/v1beta1"
 )
 
 type CLITestSuite struct {

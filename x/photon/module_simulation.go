@@ -4,8 +4,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 
-	"github.com/atomone-hub/atomone/x/photon/simulation"
-	"github.com/atomone-hub/atomone/x/photon/types"
+	"github.com/Hikari-Chain/hikari-chain/x/photon/simulation"
+	"github.com/Hikari-Chain/hikari-chain/x/photon/types"
 )
 
 // GenerateGenesisState creates a randomized GenState of the module.

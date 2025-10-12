@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/atomone-hub/atomone/x/dynamicfee/types"
+	"github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types"
 )
 
 func TestGenesis(t *testing.T) {

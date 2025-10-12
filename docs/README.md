@@ -17,7 +17,7 @@ key's randomness comes from physical sources rather than computer algorithms.
 First, generate the mnenonic:
 
 ```sh
-$ atomoned keys mnemonic --unsafe-entropy
+$ hikarid keys mnemonic --unsafe-entropy
 > > WARNING: Generate at least 256-bits of entropy and enter the results here:
 ```
 
@@ -34,7 +34,7 @@ Write the output mnenomic in a safe place, then run the following command to
 generate the key:
 
 ```sh
-$ atomoned keys add <NAME> --recover
+$ hikarid keys add <NAME> --recover
 > Enter your bip39 mnemonic
 ```
 
@@ -54,7 +54,7 @@ localnet.
 3. Run `make localnet-start` to start a new localnet.
 4. Run `make localnet-submit-upgrade-proposal` to submit the upgrade proposal
    and give it enough yes votes for passing the tally.
-5. Wait for 5 minutes (the voting period) and run `atomoned --home ~/.atomone-localnet q gov proposals`
+5. Wait for 5 minutes (the voting period) and run `hikarid --home ~/.atomone-localnet q gov proposals`
    to check that the proposal has passed.
 6. Wait for the block height that was registered in the upgrade proposal. Once
    reached the localnet should stop producing blocks, and return an error like:

@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
+	coredaostypes "github.com/Hikari-Chain/hikari-chain/x/coredaos/types"
 
 	"cosmossdk.io/math"
 	evidencetypes "cosmossdk.io/x/evidence/types"
@@ -23,10 +23,10 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	channeltypes "github.com/cosmos/ibc-go/v10/modules/core/04-channel/types"
 
-	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
-	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
-	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+	dynamicfeetypes "github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types"
+	govtypesv1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
+	govtypesv1beta1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1beta1"
+	photontypes "github.com/Hikari-Chain/hikari-chain/x/photon/types"
 )
 
 func (s *IntegrationTestSuite) waitAtomOneTx(endpoint, txHash string, msgResp codec.ProtoMarshaler) (err error) {

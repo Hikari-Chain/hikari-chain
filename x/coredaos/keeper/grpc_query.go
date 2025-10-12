@@ -8,7 +8,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/atomone-hub/atomone/x/coredaos/types"
+	"github.com/Hikari-Chain/hikari-chain/x/coredaos/types"
 )
 
 var _ types.QueryServer = Querier{}

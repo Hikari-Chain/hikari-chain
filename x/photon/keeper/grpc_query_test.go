@@ -5,9 +5,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	appparams "github.com/atomone-hub/atomone/app/params"
-	"github.com/atomone-hub/atomone/x/photon/testutil"
-	"github.com/atomone-hub/atomone/x/photon/types"
+	appparams "github.com/Hikari-Chain/hikari-chain/app/params"
+	"github.com/Hikari-Chain/hikari-chain/x/photon/testutil"
+	"github.com/Hikari-Chain/hikari-chain/x/photon/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -25,13 +25,13 @@ func TestParamsQuery(t *testing.T) {
 func TestConversionRateQuery(t *testing.T) {
 	tests := []struct {
 		name             string
-		uatoneSupply     int64
+		ulSupply         int64
 		uphotonSupply    int64
 		expectedResponse *types.QueryConversionRateResponse
 	}{
 		{
 			name:          "nominal case",
-			uatoneSupply:  100_000_000_000_000, // 100,000,000atone
+			ulSupply:      100_000_000_000_000, // 100,000,000l
 			uphotonSupply: 100_000_000_000,     // 100,000photon
 			expectedResponse: &types.QueryConversionRateResponse{
 				ConversionRate: "9.999000000000000000",
@@ -39,7 +39,7 @@ func TestConversionRateQuery(t *testing.T) {
 		},
 		{
 			name:          "max supply of photon exceeded",
-			uatoneSupply:  100_000_000_000_000, // 100,000,000atone
+			ulSupply:      100_000_000_000_000, // 100,000,000l
 			uphotonSupply: types.MaxSupply + 1,
 			expectedResponse: &types.QueryConversionRateResponse{
 				ConversionRate: "0.000000000000000000",
@@ -51,7 +51,7 @@ func TestConversionRateQuery(t *testing.T) {
 			k, m, ctx := testutil.SetupPhotonKeeper(t)
 			m.StakingKeeper.EXPECT().BondDenom(ctx).Return(appparams.BondDenom, nil)
 			m.BankKeeper.EXPECT().GetSupply(ctx, appparams.BondDenom).
-				Return(sdk.NewInt64Coin(appparams.BondDenom, tt.uatoneSupply))
+				Return(sdk.NewInt64Coin(appparams.BondDenom, tt.ulSupply))
 			m.BankKeeper.EXPECT().GetSupply(ctx, types.Denom).
 				Return(sdk.NewInt64Coin(appparams.BondDenom, tt.uphotonSupply))
 

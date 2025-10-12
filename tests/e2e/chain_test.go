@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	atomone "github.com/atomone-hub/atomone/app"
+	atomone "github.com/Hikari-Chain/hikari-chain/app"
 
 	"cosmossdk.io/log"
 	tmrand "github.com/cometbft/cometbft/libs/rand"

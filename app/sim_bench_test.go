@@ -13,7 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 	simcli "github.com/cosmos/cosmos-sdk/x/simulation/client/cli"
 
-	atomone "github.com/atomone-hub/atomone/app"
+	atomone "github.com/Hikari-Chain/hikari-chain/app"
 )
 
 // Profile with:

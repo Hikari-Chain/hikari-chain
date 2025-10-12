@@ -11,7 +11,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/atomone-hub/atomone/x/dynamicfee/types"
+	"github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types"
 )
 
 // BankSendGasConsumption is the gas consumption of the bank send that occur during dynamicfee handler execution.

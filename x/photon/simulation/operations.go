@@ -10,9 +10,9 @@ import (
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 
-	"github.com/atomone-hub/atomone/app/params"
-	"github.com/atomone-hub/atomone/x/photon/keeper"
-	"github.com/atomone-hub/atomone/x/photon/types"
+	"github.com/Hikari-Chain/hikari-chain/app/params"
+	"github.com/Hikari-Chain/hikari-chain/x/photon/keeper"
+	"github.com/Hikari-Chain/hikari-chain/x/photon/types"
 )
 
 // Photon message types

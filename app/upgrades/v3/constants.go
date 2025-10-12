@@ -3,8 +3,8 @@ package v3
 import (
 	storetypes "cosmossdk.io/store/types"
 
-	"github.com/atomone-hub/atomone/app/upgrades"
-	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
+	"github.com/Hikari-Chain/hikari-chain/app/upgrades"
+	dynamicfeetypes "github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types"
 )
 
 const (

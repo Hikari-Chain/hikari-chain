@@ -14,10 +14,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	govutils "github.com/atomone-hub/atomone/x/gov/client/utils"
-	"github.com/atomone-hub/atomone/x/gov/types"
-	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	govutils "github.com/Hikari-Chain/hikari-chain/x/gov/client/utils"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/types"
+	v1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/types/v1beta1"
 )
 
 // Proposal flags

@@ -1097,8 +1097,8 @@ and with the passage of time.
 At any time, one can do:
 
 ```bash
-atomoned query gov min-deposit
-atomoned query gov min-initial-deposit
+hikarid query gov min-deposit
+hikarid query gov min-initial-deposit
 ```
 
 to see the current required deposit thresholds.
@@ -1127,7 +1127,7 @@ A user can query and interact with the `gov` module using the CLI.
 The `query` commands allow users to query `gov` state.
 
 ```bash
-atomoned query gov --help
+hikarid query gov --help
 ```
 
 ##### deposit
@@ -1135,13 +1135,13 @@ atomoned query gov --help
 The `deposit` command allows users to query a deposit for a given proposal from a given depositor.
 
 ```bash
-atomoned query gov deposit [proposal-id] [depositer-addr] [flags]
+hikarid query gov deposit [proposal-id] [depositer-addr] [flags]
 ```
 
 Example:
 
 ```bash
-atomoned query gov deposit 1 atone1..
+hikarid query gov deposit 1 atone1..
 ```
 
 Example Output:
@@ -1159,13 +1159,13 @@ proposal_id: "1"
 The `deposits` command allows users to query all deposits for a given proposal.
 
 ```bash
-atomoned query gov deposits [proposal-id] [flags]
+hikarid query gov deposits [proposal-id] [flags]
 ```
 
 Example:
 
 ```bash
-atomoned query gov deposits 1
+hikarid query gov deposits 1
 ```
 
 Example Output:
@@ -1190,13 +1190,13 @@ dynamic minimum deposit required for a proposal
 to enter voting period.
 
 ```bash
-atomoned query gov min-deposit [flags]
+hikarid query gov min-deposit [flags]
 ```
 
 Example:
 
 ```bash
-atomoned query gov min-deposit
+hikarid query gov min-deposit
 ```
 
 Example Output:
@@ -1214,13 +1214,13 @@ dynamic minimum initial deposit required for a proposal to
 be submitted.
 
 ```bash
-atomoned query gov min-initial-deposit [flags]
+hikarid query gov min-initial-deposit [flags]
 ```
 
 Example:
 
 ```bash
-atomoned query gov min-initial-deposit
+hikarid query gov min-initial-deposit
 ```
 
 Example Output:
@@ -1236,13 +1236,13 @@ min_initial_deposit:
 The `param` command allows users to query a given parameter for the `gov` module.
 
 ```bash
-atomoned query gov param [param-type] [flags]
+hikarid query gov param [param-type] [flags]
 ```
 
 Example:
 
 ```bash
-atomoned query gov param voting
+hikarid query gov param voting
 ```
 
 Example Output:
@@ -1256,13 +1256,13 @@ voting_period: "172800000000000"
 The `params` command allows users to query all parameters for the `gov` module.
 
 ```bash
-atomoned query gov params [flags]
+hikarid query gov params [flags]
 ```
 
 Example:
 
 ```bash
-atomoned query gov params
+hikarid query gov params
 ```
 
 Example Output:
@@ -1294,13 +1294,13 @@ voting_params:
 The `proposal` command allows users to query a given proposal.
 
 ```bash
-atomoned query gov proposal [proposal-id] [flags]
+hikarid query gov proposal [proposal-id] [flags]
 ```
 
 Example:
 
 ```bash
-atomoned query gov proposal 1
+hikarid query gov proposal 1
 ```
 
 Example Output:
@@ -1334,13 +1334,13 @@ voting_start_time: null
 The `proposals` command allows users to query all proposals with optional filters.
 
 ```bash
-atomoned query gov proposals [flags]
+hikarid query gov proposals [flags]
 ```
 
 Example:
 
 ```bash
-atomoned query gov proposals
+hikarid query gov proposals
 ```
 
 Example Output:
@@ -1399,13 +1399,13 @@ proposals:
 The `proposer` command allows users to query the proposer for a given proposal.
 
 ```bash
-atomoned query gov proposer [proposal-id] [flags]
+hikarid query gov proposer [proposal-id] [flags]
 ```
 
 Example:
 
 ```bash
-atomoned query gov proposer 1
+hikarid query gov proposer 1
 ```
 
 Example Output:
@@ -1422,7 +1422,7 @@ The `quorums` command allows users to query the state of the dynamic quorums.
 Example:
 
 ```bash
-./build/atomoned query gov quorums
+./build/hikarid query gov quorums
 ```
 
 Example Output:
@@ -1438,13 +1438,13 @@ quorum: "0.300000000000000000"
 The `tally` command allows users to query the tally of a given proposal vote.
 
 ```bash
-atomoned query gov tally [proposal-id] [flags]
+hikarid query gov tally [proposal-id] [flags]
 ```
 
 Example:
 
 ```bash
-atomoned query gov tally 1
+hikarid query gov tally 1
 ```
 
 Example Output:
@@ -1460,13 +1460,13 @@ abstain: "0"
 The `vote` command allows users to query a vote for a given proposal.
 
 ```bash
-atomoned query gov vote [proposal-id] [voter-addr] [flags]
+hikarid query gov vote [proposal-id] [voter-addr] [flags]
 ```
 
 Example:
 
 ```bash
-atomoned query gov vote 1 atone1..
+hikarid query gov vote 1 atone1..
 ```
 
 Example Output:
@@ -1485,13 +1485,13 @@ voter: atone1..
 The `votes` command allows users to query all votes for a given proposal.
 
 ```bash
-atomoned query gov votes [proposal-id] [flags]
+hikarid query gov votes [proposal-id] [flags]
 ```
 
 Example:
 
 ```bash
-atomoned query gov votes 1
+hikarid query gov votes 1
 ```
 
 Example Output:
@@ -1514,7 +1514,7 @@ votes:
 The `tx` commands allow users to interact with the `gov` module.
 
 ```bash
-atomoned tx gov --help
+hikarid tx gov --help
 ```
 
 ##### deposit
@@ -1522,13 +1522,13 @@ atomoned tx gov --help
 The `deposit` command allows users to deposit tokens for a given proposal.
 
 ```bash
-atomoned tx gov deposit [proposal-id] [deposit] [flags]
+hikarid tx gov deposit [proposal-id] [deposit] [flags]
 ```
 
 Example:
 
 ```bash
-atomoned tx gov deposit 1 10000000atone --from atone1..
+hikarid tx gov deposit 1 10000000atone --from atone1..
 ```
 
 ##### draft-proposal
@@ -1538,7 +1538,7 @@ The command returns a `draft_proposal.json`, to be used by `submit-proposal` aft
 The `draft_metadata.json` is meant to be uploaded to [IPFS](#metadata).
 
 ```bash
-atomoned tx gov draft-proposal
+hikarid tx gov draft-proposal
 ```
 
 ##### generate-constitution-amendment
@@ -1548,7 +1548,7 @@ proposal message from the current constitution, either queried or provided as an
 the flag `--current-constitution` and the provided updated constitution `.md` file.
 
 ```bash
-atomoned tx gov generate-constitution-amendment path/to/updated/constitution.md
+hikarid tx gov generate-constitution-amendment path/to/updated/constitution.md
 ```
 
 ##### submit-proposal
@@ -1557,13 +1557,13 @@ The `submit-proposal` command allows users to submit a governance proposal along
 Messages, metadata and deposit are defined in a JSON file.
 
 ```bash
-atomoned tx gov submit-proposal [path-to-proposal-json] [flags]
+hikarid tx gov submit-proposal [path-to-proposal-json] [flags]
 ```
 
 Example:
 
 ```bash
-atomoned tx gov submit-proposal /path/to/proposal.json --from atone1..
+hikarid tx gov submit-proposal /path/to/proposal.json --from atone1..
 ```
 
 where `proposal.json` contains:
@@ -1594,25 +1594,25 @@ By default the metadata, summary and title are both limited by 255 characters, t
 The `submit-legacy-proposal` command allows users to submit a governance legacy proposal along with an initial deposit.
 
 ```bash
-atomoned tx gov submit-legacy-proposal [command] [flags]
+hikarid tx gov submit-legacy-proposal [command] [flags]
 ```
 
 Example:
 
 ```bash
-atomoned tx gov submit-legacy-proposal --title="Test Proposal" --description="testing" --type="Text" --deposit="100000000atone" --from atone1..
+hikarid tx gov submit-legacy-proposal --title="Test Proposal" --description="testing" --type="Text" --deposit="100000000atone" --from atone1..
 ```
 
 Example (`cancel-software-upgrade`):
 
 ```bash
-atomoned tx gov submit-legacy-proposal cancel-software-upgrade --title="Test Proposal" --description="testing" --deposit="100000000atone" --from atone1..
+hikarid tx gov submit-legacy-proposal cancel-software-upgrade --title="Test Proposal" --description="testing" --deposit="100000000atone" --from atone1..
 ```
 
 Example (`param-change`):
 
 ```bash
-atomoned tx gov submit-legacy-proposal param-change proposal.json --from atone1..
+hikarid tx gov submit-legacy-proposal param-change proposal.json --from atone1..
 ```
 
 ```json
@@ -1633,7 +1633,7 @@ atomoned tx gov submit-legacy-proposal param-change proposal.json --from atone1.
 Example (`software-upgrade`):
 
 ```bash
-atomoned tx gov submit-legacy-proposal software-upgrade v2 --title="Test Proposal" --description="testing, testing, 1, 2, 3" --upgrade-height 1000000 --from atone1..
+hikarid tx gov submit-legacy-proposal software-upgrade v2 --title="Test Proposal" --description="testing, testing, 1, 2, 3" --upgrade-height 1000000 --from atone1..
 ```
 
 ##### vote
@@ -1641,13 +1641,13 @@ atomoned tx gov submit-legacy-proposal software-upgrade v2 --title="Test Proposa
 The `vote` command allows users to submit a vote for a given governance proposal.
 
 ```bash
-atomoned tx gov vote [command] [flags]
+hikarid tx gov vote [command] [flags]
 ```
 
 Example:
 
 ```bash
-atomoned tx gov vote 1 yes --from atone1..
+hikarid tx gov vote 1 yes --from atone1..
 ```
 
 ##### weighted-vote
@@ -1655,13 +1655,13 @@ atomoned tx gov vote 1 yes --from atone1..
 The `weighted-vote` command allows users to submit a weighted vote for a given governance proposal.
 
 ```bash
-atomoned tx gov weighted-vote [proposal-id] [weighted-options] [flags]
+hikarid tx gov weighted-vote [proposal-id] [weighted-options] [flags]
 ```
 
 Example:
 
 ```bash
-atomoned tx gov weighted-vote 1 yes=0.5,no=0.5 --from atone1..
+hikarid tx gov weighted-vote 1 yes=0.5,no=0.5 --from atone1..
 ```
 
 ### gRPC

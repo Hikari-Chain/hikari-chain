@@ -23,7 +23,7 @@ func (s *IntegrationTestSuite) transferIBC(c *chain, valIdx int, channelID, send
 	defer cancel()
 
 	ibcCmd := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		"ibc-transfer",
 		"transfer",
@@ -95,14 +95,14 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer(channelIdA, channelIdB strin
 		chainBAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainB.id][0].GetHostPort("1317/tcp"))
 
 		// Determine ibc denom which is "ibc/"+HEX(SHA256({port}/{channel}/{denom}))
-		ibcTrace := fmt.Sprintf("transfer/%s/%s", channelIdA, uatoneDenom)
+		ibcTrace := fmt.Sprintf("transfer/%s/%s", channelIdA, ulDenom)
 		ibcDenom := fmt.Sprintf("ibc/%X", sha256.Sum256([]byte(ibcTrace)))
 
-		tokenChainA := sdk.NewInt64Coin(uatoneDenom, 1_000_000_000) // 1,000 atone
+		tokenChainA := sdk.NewInt64Coin(ulDenom, 1_000_000_000) // 1,000 atone
 		tokenChainB := sdk.NewCoin(ibcDenom, tokenChainA.Amount)    // 1,000 ibc/{port}/{channel}/{denom}
 
 		// Get balance before test
-		beforeBalanceChainA := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
+		beforeBalanceChainA := s.queryBalance(chainAAPIEndpoint, sender, ulDenom)
 		beforeBalanceChainB := s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
 
 		s.transferIBC(s.chainA, 0, channelIdA, sender, recipient, tokenChainA.String(), "")
@@ -120,7 +120,7 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer(channelIdA, channelIdB strin
 		// Now try to send back the tokens to chainA (unwind)
 		s.Run("transfer_back_to_chainA", func() {
 			// Get balance before test
-			beforeBalanceChainA := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
+			beforeBalanceChainA := s.queryBalance(chainAAPIEndpoint, sender, ulDenom)
 			beforeBalanceChainB := s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
 
 			s.transferIBC(s.chainB, 0, channelIdB, recipient, sender, tokenChainB.String(), "")
@@ -150,14 +150,14 @@ func (s *IntegrationTestSuite) testIBCv2TokenTransfer(clientIdA, clientIdB strin
 		chainBAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainB.id][0].GetHostPort("1317/tcp"))
 
 		// Determine ibc denom which is "ibc/"+HEX(SHA256({port}/{channel}/{denom}))
-		ibcTrace := fmt.Sprintf("transfer/%s/%s", clientIdA, uatoneDenom)
+		ibcTrace := fmt.Sprintf("transfer/%s/%s", clientIdA, ulDenom)
 		ibcDenom := fmt.Sprintf("ibc/%X", sha256.Sum256([]byte(ibcTrace)))
 
-		tokenChainA := sdk.NewInt64Coin(uatoneDenom, 1_000_000_000) // 1,000 atone
+		tokenChainA := sdk.NewInt64Coin(ulDenom, 1_000_000_000) // 1,000 atone
 		tokenChainB := sdk.NewCoin(ibcDenom, tokenChainA.Amount)    // 1,000 ibc/{port}/{channel}/{denom}
 
 		// Get balance before test
-		beforeBalanceChainA := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
+		beforeBalanceChainA := s.queryBalance(chainAAPIEndpoint, sender, ulDenom)
 		beforeBalanceChainB := s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
 
 		s.transferIBCv2(s.chainA, clientIdA, sender, recipient, tokenChainA)
@@ -170,7 +170,7 @@ func (s *IntegrationTestSuite) testIBCv2TokenTransfer(clientIdA, clientIdB strin
 		// Now try to send back the tokens to chainA (unwind)
 		s.Run("transferv2_back_to_chainA", func() {
 			// Get balance before test
-			beforeBalanceChainA := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
+			beforeBalanceChainA := s.queryBalance(chainAAPIEndpoint, sender, ulDenom)
 			beforeBalanceChainB := s.queryBalance(chainBAPIEndpoint, recipient, ibcDenom)
 			// Unwinding in IBCv2 requires to us the trace in plain text as denom
 			tokenTransfer := sdk.NewCoin(ibcTrace, tokenChainB.Amount)

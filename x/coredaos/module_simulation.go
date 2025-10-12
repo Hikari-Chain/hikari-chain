@@ -4,8 +4,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 
-	"github.com/atomone-hub/atomone/x/coredaos/simulation"
-	"github.com/atomone-hub/atomone/x/coredaos/types"
+	"github.com/Hikari-Chain/hikari-chain/x/coredaos/simulation"
+	"github.com/Hikari-Chain/hikari-chain/x/coredaos/types"
 )
 
 // GenerateGenesisState creates a randomized GenState of the module.

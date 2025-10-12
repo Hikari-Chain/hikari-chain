@@ -3,7 +3,7 @@ package ante
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+	photontypes "github.com/Hikari-Chain/hikari-chain/x/photon/types"
 )
 
 // PhotonKeeper defines the expected photon keeper.

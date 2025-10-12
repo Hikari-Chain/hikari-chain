@@ -9,7 +9,7 @@ import (
 	"cosmossdk.io/log"
 	"cosmossdk.io/math"
 
-	"github.com/atomone-hub/atomone/x/dynamicfee/types"
+	"github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types"
 )
 
 // TestAIMDLearningRate ensures that the additive increase

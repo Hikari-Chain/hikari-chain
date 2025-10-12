@@ -19,11 +19,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/atomone-hub/atomone/x/coredaos/client/cli"
-	"github.com/atomone-hub/atomone/x/coredaos/keeper"
-	"github.com/atomone-hub/atomone/x/coredaos/types"
-	modulev1 "github.com/atomone-hub/atomone/x/coredaos/types/module"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	"github.com/Hikari-Chain/hikari-chain/x/coredaos/client/cli"
+	"github.com/Hikari-Chain/hikari-chain/x/coredaos/keeper"
+	"github.com/Hikari-Chain/hikari-chain/x/coredaos/types"
+	modulev1 "github.com/Hikari-Chain/hikari-chain/x/coredaos/types/module"
+	govtypes "github.com/Hikari-Chain/hikari-chain/x/gov/types"
 )
 
 // ConsensusVersion is the x/coredaos module's consensus version identifier.

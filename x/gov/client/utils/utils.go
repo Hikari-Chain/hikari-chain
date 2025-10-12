@@ -3,7 +3,7 @@ package utils
 import (
 	"strings"
 
-	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/types/v1beta1"
 )
 
 // NormalizeVoteOption - normalize user specified vote option

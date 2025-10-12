@@ -2,7 +2,7 @@
  "messages": [
   {
    "@type": "/cosmos.upgrade.v1beta1.MsgSoftwareUpgrade",
-   "authority": "atone10d07y265gmmuvt4z0w9aw880jnsr700j5z0zqt",
+   "authority": "hikari10d07y265gmmuvt4z0w9aw880jnsr700jzqmdy3",
    "plan": {
     "name": "v3",
     "time": "0001-01-01T00:00:00Z",
@@ -13,7 +13,7 @@
   }
  ],
  "metadata": "ipfs://CID",
- "deposit": "512000000uatone",
+ "deposit": "512000000ul",
  "title": "v3",
  "summary": "v3"
 }

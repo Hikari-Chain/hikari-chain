@@ -11,7 +11,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/atomone-hub/atomone/x/gov/types"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/types"
 )
 
 // DefaultStartingProposalID is 1

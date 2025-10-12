@@ -1,7 +1,7 @@
 {
   "messages": [
     {
-      "@type": "/atomone.gov.v1.MsgExecLegacyContent",
+      "@type": "/hikari.gov.v1.MsgExecLegacyContent",
       "content": {
         "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
         "title": "IBC Transfers Enablement Proposal",
@@ -19,11 +19,11 @@
           }
         ]
       },
-      "authority": "atone10d07y265gmmuvt4z0w9aw880jnsr700j5z0zqt"
+      "authority": "hikari10d07y265gmmuvt4z0w9aw880jnsr700jzqmdy3"
     }
   ],
   "metadata": "ipfs://CID",
-  "deposit": "200000000uatone",
+  "deposit": "200000000ul",
   "title": "IBC Enablement",
   "summary": "summary"
 }

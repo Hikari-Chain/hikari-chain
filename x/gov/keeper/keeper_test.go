@@ -13,11 +13,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
-	"github.com/atomone-hub/atomone/x/gov/keeper"
-	govtestutil "github.com/atomone-hub/atomone/x/gov/testutil"
-	"github.com/atomone-hub/atomone/x/gov/types"
-	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/keeper"
+	govtestutil "github.com/Hikari-Chain/hikari-chain/x/gov/testutil"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/types"
+	v1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/types/v1beta1"
 )
 
 type KeeperTestSuite struct {

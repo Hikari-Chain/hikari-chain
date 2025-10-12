@@ -33,13 +33,13 @@ type (
 
 var (
 	genesisVestingKeys  = []string{continuousVestingKey, delayedVestingKey, lockedVestingKey, periodicVestingKey}
-	vestingAmountVested = sdk.NewCoin(uatoneDenom, math.NewInt(99900000000))
+	vestingAmountVested = sdk.NewCoin(ulDenom, math.NewInt(99900000000))
 	vestingAmount       = sdk.NewCoins(
-		sdk.NewInt64Coin(uatoneDenom, 350_000),
+		sdk.NewInt64Coin(ulDenom, 350_000),
 		sdk.NewInt64Coin(uphotonDenom, 10_000_000_000),
 	)
 	vestingBalance          = sdk.NewCoins(vestingAmountVested).Add(vestingAmount...)
-	vestingDelegationAmount = sdk.NewCoin(uatoneDenom, math.NewInt(500000000))
+	vestingDelegationAmount = sdk.NewCoin(ulDenom, math.NewInt(500000000))
 )
 
 func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
@@ -57,8 +57,8 @@ func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
 		s.Require().NoError(err)
 
 		//	Check address balance
-		balance := s.queryBalance(api, vestingDelayedAcc.String(), uatoneDenom)
-		s.Require().Equal(vestingBalance.AmountOf(uatoneDenom), balance.Amount)
+		balance := s.queryBalance(api, vestingDelayedAcc.String(), ulDenom)
+		s.Require().Equal(vestingBalance.AmountOf(ulDenom), balance.Amount)
 
 		// Delegate coins should succeed
 		s.execDelegate(chain, valIdx, vestingDelegationAmount.String(), valOpAddr,
@@ -80,7 +80,7 @@ func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
 		waitTime := acc.EndTime - time.Now().Unix()
 		if waitTime > vestingTxDelay {
 			//	Transfer coins should fail
-			balance := s.queryBalance(api, vestingDelayedAcc.String(), uatoneDenom)
+			balance := s.queryBalance(api, vestingDelayedAcc.String(), ulDenom)
 			s.execBankSend(
 				chain,
 				valIdx,
@@ -94,7 +94,7 @@ func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
 		}
 
 		//	Transfer coins should succeed
-		balance = s.queryBalance(api, vestingDelayedAcc.String(), uatoneDenom)
+		balance = s.queryBalance(api, vestingDelayedAcc.String(), ulDenom)
 		s.execBankSend(
 			chain,
 			valIdx,
@@ -121,8 +121,8 @@ func (s *IntegrationTestSuite) testContinuousVestingAccount(api string) {
 		s.Require().NoError(err)
 
 		//	Check address balance
-		balance := s.queryBalance(api, continuousVestingAcc.String(), uatoneDenom)
-		s.Require().Equal(vestingBalance.AmountOf(uatoneDenom), balance.Amount)
+		balance := s.queryBalance(api, continuousVestingAcc.String(), ulDenom)
+		s.Require().Equal(vestingBalance.AmountOf(ulDenom), balance.Amount)
 
 		// Delegate coins should succeed
 		s.execDelegate(chain, valIdx, vestingDelegationAmount.String(),
@@ -144,7 +144,7 @@ func (s *IntegrationTestSuite) testContinuousVestingAccount(api string) {
 		waitStartTime := acc.StartTime - time.Now().Unix()
 		if waitStartTime > vestingTxDelay {
 			//	Transfer coins should fail
-			balance := s.queryBalance(api, continuousVestingAcc.String(), uatoneDenom)
+			balance := s.queryBalance(api, continuousVestingAcc.String(), ulDenom)
 			s.execBankSend(
 				chain,
 				valIdx,
@@ -160,7 +160,7 @@ func (s *IntegrationTestSuite) testContinuousVestingAccount(api string) {
 		waitEndTime := acc.EndTime - time.Now().Unix()
 		if waitEndTime > vestingTxDelay {
 			//	Transfer coins should fail
-			balance := s.queryBalance(api, continuousVestingAcc.String(), uatoneDenom)
+			balance := s.queryBalance(api, continuousVestingAcc.String(), ulDenom)
 			s.execBankSend(
 				chain,
 				valIdx,
@@ -174,7 +174,7 @@ func (s *IntegrationTestSuite) testContinuousVestingAccount(api string) {
 		}
 
 		//	Transfer coins should succeed
-		balance = s.queryBalance(api, continuousVestingAcc.String(), uatoneDenom)
+		balance = s.queryBalance(api, continuousVestingAcc.String(), ulDenom)
 		s.execBankSend(
 			chain,
 			valIdx,
@@ -209,12 +209,12 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 		s.Require().NoError(err)
 
 		//	Check address balance
-		balance := s.queryBalance(api, periodicVestingAddr, uatoneDenom)
+		balance := s.queryBalance(api, periodicVestingAddr, ulDenom)
 
-		expectedBalance := sdk.NewCoin(uatoneDenom, math.NewInt(0))
+		expectedBalance := sdk.NewCoin(ulDenom, math.NewInt(0))
 		for _, period := range acc.VestingPeriods {
-			// _, coin := ante.Find(period.Amount, uatoneDenom)
-			_, coin := period.Amount.Find(uatoneDenom)
+			// _, coin := ante.Find(period.Amount, ulDenom)
+			_, coin := period.Amount.Find(ulDenom)
 			expectedBalance = expectedBalance.Add(coin)
 		}
 		s.Require().Equal(expectedBalance, balance)
@@ -222,7 +222,7 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 		waitStartTime := acc.StartTime - time.Now().Unix()
 		if waitStartTime > vestingTxDelay {
 			//	Transfer coins should fail
-			balance = s.queryBalance(api, periodicVestingAddr, uatoneDenom)
+			balance = s.queryBalance(api, periodicVestingAddr, ulDenom)
 			s.execBankSend(
 				chain,
 				valIdx,
@@ -239,7 +239,7 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 		waitFirstPeriod := firstPeriod - time.Now().Unix()
 		if waitFirstPeriod > vestingTxDelay {
 			//	Transfer coins should fail
-			balance = s.queryBalance(api, periodicVestingAddr, uatoneDenom)
+			balance = s.queryBalance(api, periodicVestingAddr, ulDenom)
 			s.execBankSend(
 				chain,
 				valIdx,
@@ -270,7 +270,7 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 		)
 
 		//	Transfer coins should succeed
-		balance = s.queryBalance(api, periodicVestingAddr, uatoneDenom)
+		balance = s.queryBalance(api, periodicVestingAddr, ulDenom)
 		s.execBankSend(
 			chain,
 			valIdx,
@@ -286,7 +286,7 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 			time.Sleep(time.Duration(waitSecondPeriod) * time.Second)
 
 			//	Transfer coins should succeed
-			balance = s.queryBalance(api, periodicVestingAddr, uatoneDenom)
+			balance = s.queryBalance(api, periodicVestingAddr, ulDenom)
 			s.execBankSend(
 				chain,
 				valIdx,
@@ -305,11 +305,11 @@ func generateVestingPeriod() ([]byte, error) {
 		StartTime: time.Now().Add(time.Duration(rand.Intn(20)+95) * time.Second).Unix(),
 		Periods: []period{
 			{
-				Coins:  "850000000" + uatoneDenom,
+				Coins:  "850000000" + ulDenom,
 				Length: 35,
 			},
 			{
-				Coins:  "2000000000" + uatoneDenom,
+				Coins:  "2000000000" + ulDenom,
 				Length: 35,
 			},
 		},

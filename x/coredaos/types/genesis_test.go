@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/atomone-hub/atomone/x/coredaos/types"
+	"github.com/Hikari-Chain/hikari-chain/x/coredaos/types"
 	"github.com/stretchr/testify/require"
 )
 

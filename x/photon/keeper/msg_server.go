@@ -7,8 +7,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	"github.com/atomone-hub/atomone/x/photon/types"
+	govtypes "github.com/Hikari-Chain/hikari-chain/x/gov/types"
+	"github.com/Hikari-Chain/hikari-chain/x/photon/types"
 )
 
 type msgServer struct {

@@ -1,30 +1,30 @@
 
 
 [{
-  "base": "uatone",
+  "base": "ul",
   "denom_units": [
     {
       "aliases": [
-        "microatone"
+        "microl"
       ],
-      "denom": "uatone",
+      "denom": "ul",
       "exponent": 0
     },
     {
       "aliases": [
-        "milliatone"
+        "millil"
       ],
-      "denom": "matone",
+      "denom": "ml",
       "exponent": 3
     },
     {
       "aliases": [],
-      "denom": "atone",
+      "denom": "l",
       "exponent": 6
     }
   ],
-  "description": "The native staking token of AtomOne.",
-  "display": "ATONE",
-  "name": "ATONE",
-  "symbol": "ATONE"
+  "description": "The native staking token of Hikari.",
+  "display": "L",
+  "name": "L",
+  "symbol": "L"
 }]

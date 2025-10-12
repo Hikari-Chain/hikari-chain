@@ -1,0 +1,13 @@
+syntax = "proto3";
+package hikari.coredaos.v1;
+
+import "gogoproto/gogo.proto";
+import "hikari/coredaos/v1/coredaos.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/Hikari-Chain/hikari-chain/x/coredaos/types";
+
+// GenesisState defines the x/coredaos module's genesis state.
+message GenesisState {
+	Params params = 1 [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}

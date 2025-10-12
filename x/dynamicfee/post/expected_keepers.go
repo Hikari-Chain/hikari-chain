@@ -3,7 +3,7 @@ package post
 import (
 	"context"
 
-	"github.com/atomone-hub/atomone/x/dynamicfee/types"
+	"github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types"
 )
 
 type DynamicfeeKeeper interface {

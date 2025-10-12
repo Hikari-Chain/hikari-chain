@@ -37,7 +37,7 @@ func (s *IntegrationTestSuite) execQueryEvidence(c *chain, valIdx int, hash stri
 	s.T().Logf("querying evidence %X on chain %s", hash, c.id)
 
 	atomoneCommand := []string{
-		atomonedBinary,
+		hikaridBinary,
 		queryCommand,
 		evidencetypes.ModuleName,
 		hash,

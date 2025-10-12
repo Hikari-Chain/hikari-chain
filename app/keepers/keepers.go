@@ -51,16 +51,16 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	coredaoskeeper "github.com/atomone-hub/atomone/x/coredaos/keeper"
-	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
-	dynamicfeekeeper "github.com/atomone-hub/atomone/x/dynamicfee/keeper"
-	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
-	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	govv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
-	photonkeeper "github.com/atomone-hub/atomone/x/photon/keeper"
-	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+	coredaoskeeper "github.com/Hikari-Chain/hikari-chain/x/coredaos/keeper"
+	coredaostypes "github.com/Hikari-Chain/hikari-chain/x/coredaos/types"
+	dynamicfeekeeper "github.com/Hikari-Chain/hikari-chain/x/dynamicfee/keeper"
+	dynamicfeetypes "github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types"
+	govkeeper "github.com/Hikari-Chain/hikari-chain/x/gov/keeper"
+	govtypes "github.com/Hikari-Chain/hikari-chain/x/gov/types"
+	govv1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
+	govv1beta1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1beta1"
+	photonkeeper "github.com/Hikari-Chain/hikari-chain/x/photon/keeper"
+	photontypes "github.com/Hikari-Chain/hikari-chain/x/photon/types"
 )
 
 type AppKeepers struct {

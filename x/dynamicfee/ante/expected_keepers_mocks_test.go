@@ -8,7 +8,7 @@ import (
 	context "context"
 	reflect "reflect"
 
-	types "github.com/atomone-hub/atomone/x/dynamicfee/types"
+	types "github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types"
 	types0 "github.com/cosmos/cosmos-sdk/types"
 	gomock "github.com/golang/mock/gomock"
 )

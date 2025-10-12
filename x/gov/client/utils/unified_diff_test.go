@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/atomone-hub/atomone/x/gov/client/utils"
-	"github.com/atomone-hub/atomone/x/gov/types"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/client/utils"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/types"
 	"github.com/stretchr/testify/require"
 )
 

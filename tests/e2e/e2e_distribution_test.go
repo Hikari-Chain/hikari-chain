@@ -22,7 +22,7 @@ func (s *IntegrationTestSuite) testDistribution() {
 
 		newWithdrawalAddress, _ := s.chainA.genesisAccounts[3].keyInfo.GetAddress()
 
-		beforeBalance := s.queryBalance(chainEndpoint, newWithdrawalAddress.String(), uatoneDenom)
+		beforeBalance := s.queryBalance(chainEndpoint, newWithdrawalAddress.String(), ulDenom)
 
 		s.execSetWithdrawAddress(s.chainA, 0, delegatorAddress.String(), newWithdrawalAddress.String(), atomoneHomePath)
 
@@ -41,7 +41,7 @@ func (s *IntegrationTestSuite) testDistribution() {
 		s.execWithdrawReward(s.chainA, 0, delegatorAddress.String(), valOperAddressA, atomoneHomePath)
 		s.Require().Eventually(
 			func() bool {
-				afterBalance := s.queryBalance(chainEndpoint, newWithdrawalAddress.String(), uatoneDenom)
+				afterBalance := s.queryBalance(chainEndpoint, newWithdrawalAddress.String(), ulDenom)
 				return afterBalance.IsGTE(beforeBalance)
 			},
 			10*time.Second,

@@ -17,9 +17,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 
-	appparams "github.com/atomone-hub/atomone/app/params"
-	"github.com/atomone-hub/atomone/x/photon/ante"
-	"github.com/atomone-hub/atomone/x/photon/types"
+	appparams "github.com/Hikari-Chain/hikari-chain/app/params"
+	"github.com/Hikari-Chain/hikari-chain/x/photon/ante"
+	"github.com/Hikari-Chain/hikari-chain/x/photon/types"
 )
 
 type mocks struct {
@@ -99,7 +99,7 @@ func TestValidateFeeDecorator(t *testing.T) {
 			},
 			expectedError: fmt.Sprintf(
 				"fee denom %s not allowed; only fee denom %s is allowed: invalid fee token",
-				"uatone",
+				"ul",
 				types.Denom,
 			),
 		},
