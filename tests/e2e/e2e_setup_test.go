@@ -49,7 +49,7 @@ const (
 	txCommand                    = "tx"
 	queryCommand                 = "query"
 	keysCommand                  = "keys"
-	atomoneHomePath              = "/home/nonroot/.atomone"
+	atomoneHomePath              = "/home/nonroot/.hikari"
 	ulDenom                      = appparams.BondDenom
 	uphotonDenom                 = photontypes.Denom
 	minGasPrice                  = "0.00001"
@@ -76,8 +76,10 @@ const (
 )
 
 var (
-	runInCI           = os.Getenv("GITHUB_ACTIONS") == "true"
-	atomoneConfigPath = filepath.Join(atomoneHomePath, "config")
+	runInCI = os.Getenv("GITHUB_ACTIONS") == "true"
+	// atomoneConfigPath is used inside Linux containers, so we must use forward slashes
+	// even on Windows. Using filepath.Join would create backslashes on Windows.
+	atomoneConfigPath = atomoneHomePath + "/config"
 	initBalance       = sdk.NewCoins(
 		sdk.NewInt64Coin(ulDenom, 10_000_000_000_000),  // 10,000,000l
 		sdk.NewInt64Coin(uphotonDenom, 10_000_000_000), // 10,000photon
@@ -562,6 +564,15 @@ func (s *IntegrationTestSuite) initValidatorConfigs(c *chain) {
 
 		valConfig.P2P.PersistentPeers = strings.Join(peers, ",")
 
+		// Fix paths for Linux containers - replace Windows backslashes with forward slashes
+		// These paths will be used inside Linux containers where backslashes don't work
+		valConfig.SetRoot(strings.ReplaceAll(valConfig.RootDir, "\\", "/"))
+		valConfig.DBPath = strings.ReplaceAll(valConfig.DBPath, "\\", "/")
+		valConfig.Genesis = strings.ReplaceAll(valConfig.Genesis, "\\", "/")
+		valConfig.PrivValidatorKey = strings.ReplaceAll(valConfig.PrivValidatorKey, "\\", "/")
+		valConfig.PrivValidatorState = strings.ReplaceAll(valConfig.PrivValidatorState, "\\", "/")
+		valConfig.NodeKey = strings.ReplaceAll(valConfig.NodeKey, "\\", "/")
+
 		tmconfig.WriteConfigFile(tmCfgPath, valConfig)
 
 		// set application configuration
@@ -644,7 +655,7 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 		nodeReadyTimeout,
 		time.Second,
 	) {
-		s.T().Fatalf("AtomOne node failed to produce blocks. Is docker image %q up-to-date?", dockerImage)
+		s.T().Fatalf("Hikari Chain node failed to produce blocks. Is docker image %q up-to-date?", dockerImage)
 	}
 }
 

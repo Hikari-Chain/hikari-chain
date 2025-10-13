@@ -39,7 +39,7 @@ type chain struct {
 }
 
 func newChain() (*chain, error) {
-	tmpDir, err := os.MkdirTemp("", "atomone-e2e-testnet-")
+	tmpDir, err := os.MkdirTemp("", "hikari-e2e-testnet-")
 	if err != nil {
 		return nil, err
 	}
@@ -89,6 +89,6 @@ func (c *chain) createValidator(index int) *validator {
 	return &validator{
 		chain:   c,
 		index:   index,
-		moniker: fmt.Sprintf("%s-atomone-%d", c.id, index),
+		moniker: fmt.Sprintf("%s-hikari-%d", c.id, index),
 	}
 }

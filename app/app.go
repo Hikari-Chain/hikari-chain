@@ -102,7 +102,7 @@ type AtomOneApp struct { //nolint: revive
 
 func init() {
 	var err error
-	DefaultNodeHome, err = clienthelpers.GetNodeHomeDirectory(".atomone")
+	DefaultNodeHome, err = clienthelpers.GetNodeHomeDirectory(".hikari")
 	if err != nil {
 		panic(err)
 	}

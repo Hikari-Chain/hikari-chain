@@ -40,7 +40,7 @@ type tsRelayerPath struct {
 func (s *IntegrationTestSuite) runIBCTSRelayer() (ibcV1Path tsRelayerPath, ibcV2Path tsRelayerPath) {
 	s.T().Log("starting ts-relayer container")
 
-	tmpDir, err := os.MkdirTemp("", "atomone-e2e-testnet-ts-relayer-")
+	tmpDir, err := os.MkdirTemp("", "hikari-e2e-testnet-ts-relayer-")
 	s.Require().NoError(err)
 	s.tmpDirs = append(s.tmpDirs, tmpDir)
 

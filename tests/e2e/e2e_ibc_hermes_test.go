@@ -22,7 +22,7 @@ import (
 func (s *IntegrationTestSuite) runIBCHermesRelayer() (string, string) {
 	s.T().Log("starting Hermes relayer container")
 
-	tmpDir, err := os.MkdirTemp("", "atomone-e2e-testnet-hermes-")
+	tmpDir, err := os.MkdirTemp("", "hikari-e2e-testnet-hermes-")
 	s.Require().NoError(err)
 	s.tmpDirs = append(s.tmpDirs, tmpDir)
 

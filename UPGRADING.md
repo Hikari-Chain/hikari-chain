@@ -86,13 +86,13 @@ https://www.mintscan.io/atomone/blocks/6318000).
 
 Prior to the upgrade, validators are encouraged to take a full data snapshot.
 Snapshotting depends heavily on infrastructure, but generally this can be done
-by backing up the `.atomone` directory.
+by backing up the `.hikari` directory.
 If you use Cosmovisor to upgrade, by default, Cosmovisor will backup your data
 upon upgrade. See below [upgrade using cosmovisor](#method-ii-upgrade-using-cosmovisor)
 section.
 
 It is critically important for validator operators to back-up the
-`.atomone/data/priv_validator_state.json` file after stopping the hikarid
+`.hikari/data/priv_validator_state.json` file after stopping the hikarid
 process. This file is updated every block as your validator participates in
 consensus rounds. It is a critical file needed to prevent double-signing, in
 case the upgrade fails and the previous chain needs to be restarted.

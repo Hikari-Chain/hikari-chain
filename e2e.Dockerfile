@@ -19,4 +19,4 @@ COPY --from=hikarid-builder /go/bin/hikarid /usr/local/bin/
 EXPOSE 26656 26657 1317 9090
 USER nonroot
 
-ENTRYPOINT ["hikarid", "start"]
+ENTRYPOINT ["hikarid", "start", "--home", "/home/nonroot/.hikari"]
