@@ -74,6 +74,11 @@ func (s *IntegrationTestSuite) runIBCTSRelayer() (ibcV1Path tsRelayerPath, ibcV2
 	s.tsRelayerAddGasPrice(s.chainA.id, "0.0001uphoton")
 	s.tsRelayerAddGasPrice(s.chainB.id, "0.0001uphoton")
 
+	// Give the keyring some time to persist the mnemonics and gas prices
+	// This is especially important when running the full test suite where
+	// the system may be under load after the Hermes test
+	time.Sleep(2 * time.Second)
+
 	// create IBCv1 path between the two AtomOne chains
 	s.tsRelayerAddPath(
 		s.chainA.id, s.valResources[s.chainA.id][0].Container.Name[1:],
