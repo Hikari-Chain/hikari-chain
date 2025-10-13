@@ -7,7 +7,7 @@ import (
 	"math/rand"
 	"os"
 	"os/exec"
-	"path/filepath"
+	"path"
 	"strconv"
 	"strings"
 	"testing"
@@ -78,7 +78,7 @@ const (
 var (
 	runInCI = os.Getenv("GITHUB_ACTIONS") == "true"
 	// atomoneConfigPath is used inside Linux containers, so we must use forward slashes
-	// even on Windows. Using filepath.Join would create backslashes on Windows.
+	// even on Windows. Using path.Join would create backslashes on Windows.
 	atomoneConfigPath = atomoneHomePath + "/config"
 	initBalance       = sdk.NewCoins(
 		sdk.NewInt64Coin(ulDenom, 10_000_000_000_000),  // 10,000,000l
@@ -267,8 +267,8 @@ func (s *IntegrationTestSuite) initNodes(c *chain) {
 	// copy the genesis file to the remaining validators
 	for _, val := range c.validators[1:] {
 		_, err := copyFile(
-			filepath.Join(val0ConfigDir, "config", "genesis.json"),
-			filepath.Join(val.configDir(), "config", "genesis.json"),
+			path.Join(val0ConfigDir, "config", "genesis.json"),
+			path.Join(val.configDir(), "config", "genesis.json"),
 		)
 		s.Require().NoError(err)
 	}
@@ -519,13 +519,13 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 
 	// write the updated genesis file to each validator.
 	for _, val := range c.validators {
-		err = writeFile(filepath.Join(val.configDir(), "config", "genesis.json"), bz)
+		err = writeFile(path.Join(val.configDir(), "config", "genesis.json"), bz)
 		s.Require().NoError(err)
 
-		err = writeFile(filepath.Join(val.configDir(), vestingPeriodFile), vestingPeriod)
+		err = writeFile(path.Join(val.configDir(), vestingPeriodFile), vestingPeriod)
 		s.Require().NoError(err)
 
-		err = writeFile(filepath.Join(val.configDir(), rawTxFile), rawTx)
+		err = writeFile(path.Join(val.configDir(), rawTxFile), rawTx)
 		s.Require().NoError(err)
 	}
 }
@@ -533,7 +533,7 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 // initValidatorConfigs initializes the validator configs for the given chain.
 func (s *IntegrationTestSuite) initValidatorConfigs(c *chain) {
 	for i, val := range c.validators {
-		tmCfgPath := filepath.Join(val.configDir(), "config", "config.toml")
+		tmCfgPath := path.Join(val.configDir(), "config", "config.toml")
 
 		vpr := viper.New()
 		vpr.SetConfigFile(tmCfgPath)
@@ -576,7 +576,7 @@ func (s *IntegrationTestSuite) initValidatorConfigs(c *chain) {
 		tmconfig.WriteConfigFile(tmCfgPath, valConfig)
 
 		// set application configuration
-		appCfgPath := filepath.Join(val.configDir(), "config", "app.toml")
+		appCfgPath := path.Join(val.configDir(), "config", "app.toml")
 
 		appConfig := srvconfig.DefaultConfig()
 		appConfig.API.Enable = true

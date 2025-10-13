@@ -1,4 +1,4 @@
-ARG GO_VERSION=1.24.5
+ARG GO_VERSION=1.25.2
 ARG IMG_TAG=latest
 
 # Compile the hikarid binary

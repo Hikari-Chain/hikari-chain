@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net"
 	"os"
-	"path/filepath"
+	"path"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -241,14 +241,14 @@ func initTestnetFiles(
 	// generate private keys, node IDs, and initial transactions
 	for i := 0; i < args.numValidators; i++ {
 		nodeDirName := fmt.Sprintf("%s%d", args.nodeDirPrefix, i)
-		nodeDir := filepath.Join(args.outputDir, nodeDirName, args.nodeDaemonHome)
-		gentxsDir := filepath.Join(args.outputDir, "gentxs")
+		nodeDir := path.Join(args.outputDir, nodeDirName, args.nodeDaemonHome)
+		gentxsDir := path.Join(args.outputDir, "gentxs")
 
 		nodeConfig.SetRoot(nodeDir)
 		nodeConfig.Moniker = nodeDirName
 		nodeConfig.RPC.ListenAddress = "tcp://0.0.0.0:26657"
 
-		if err := os.MkdirAll(filepath.Join(nodeDir, "config"), nodeDirPerm); err != nil {
+		if err := os.MkdirAll(path.Join(nodeDir, "config"), nodeDirPerm); err != nil {
 			_ = os.RemoveAll(args.outputDir)
 			return err
 		}
@@ -347,7 +347,7 @@ func initTestnetFiles(
 			return err
 		}
 
-		srvconfig.WriteConfigFile(filepath.Join(nodeDir, "config", "app.toml"), atomoneConfig)
+		srvconfig.WriteConfigFile(path.Join(nodeDir, "config", "app.toml"), atomoneConfig)
 	}
 
 	if err := initGenFiles(clientCtx, mbm, args.chainID, genAccounts, genBalances, genFiles, args.numValidators); err != nil {
@@ -425,8 +425,8 @@ func collectGenFiles(
 
 	for i := 0; i < numValidators; i++ {
 		nodeDirName := fmt.Sprintf("%s%d", nodeDirPrefix, i)
-		nodeDir := filepath.Join(outputDir, nodeDirName, nodeDaemonHome)
-		gentxsDir := filepath.Join(outputDir, "gentxs")
+		nodeDir := path.Join(outputDir, nodeDirName, nodeDaemonHome)
+		gentxsDir := path.Join(outputDir, "gentxs")
 		nodeConfig.Moniker = nodeDirName
 
 		nodeConfig.SetRoot(nodeDir)
@@ -484,7 +484,7 @@ func calculateIP(ip string, i int) (string, error) {
 }
 
 func writeFile(name string, dir string, contents []byte) error {
-	file := filepath.Join(dir, name)
+	file := path.Join(dir, name)
 
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return fmt.Errorf("could not create directory %q: %w", dir, err)

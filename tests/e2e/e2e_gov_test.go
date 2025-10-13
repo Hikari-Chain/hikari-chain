@@ -3,7 +3,7 @@ package e2e
 import (
 	"context"
 	"fmt"
-	"path/filepath"
+	"path"
 	"strconv"
 	"strings"
 	"time"
@@ -531,7 +531,7 @@ func (s *IntegrationTestSuite) writeStakingParamChangeProposal(c *chain, params 
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
 	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, s.cdc.MustMarshalJSON(&params), initialDeposit)
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
+	err := writeFile(path.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -556,7 +556,7 @@ func (s *IntegrationTestSuite) writeCoreDAOsParamChangeProposal(c *chain, params
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
 	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, s.cdc.MustMarshalJSON(&params), initialDeposit)
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
+	err := writeFile(path.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -581,7 +581,7 @@ func (s *IntegrationTestSuite) writeDynamicfeeParamChangeProposal(c *chain, para
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
 	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, s.cdc.MustMarshalJSON(&params), initialDeposit)
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
+	err := writeFile(path.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -597,7 +597,7 @@ func (s *IntegrationTestSuite) writeTextProposal(c *chain) {
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
 	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
 	propMsgBody := fmt.Sprintf(template, initialDeposit)
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalTextFilename), []byte(propMsgBody))
+	err := writeFile(path.Join(c.validators[0].configDir(), "config", proposalTextFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -623,7 +623,7 @@ func (s *IntegrationTestSuite) writePhotonParamChangeProposal(c *chain, params p
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
 	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, s.cdc.MustMarshalJSON(&params), initialDeposit)
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
+	err := writeFile(path.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -650,7 +650,7 @@ func (s *IntegrationTestSuite) writeGovConstitutionAmendmentProposal(c *chain, a
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
 	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, amendment, initialDeposit)
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalConstitutionAmendmentFilename), []byte(propMsgBody))
+	err := writeFile(path.Join(c.validators[0].configDir(), "config", proposalConstitutionAmendmentFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -674,12 +674,12 @@ func (s *IntegrationTestSuite) writeGovLawProposal(c *chain) {
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
 	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, initialDeposit)
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalLawFilename), []byte(propMsgBody))
+	err := writeFile(path.Join(c.validators[0].configDir(), "config", proposalLawFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
 func (s *IntegrationTestSuite) generateConstitutionAmendment(c *chain, newConstitution string) govtypesv1.MsgProposeConstitutionAmendment {
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", newConstitutionFilename), []byte(newConstitution))
+	err := writeFile(path.Join(c.validators[0].configDir(), "config", newConstitutionFilename), []byte(newConstitution))
 	s.Require().NoError(err)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
@@ -740,7 +740,7 @@ func (s *IntegrationTestSuite) writeGovCommunitySpendProposal(c *chain, amount s
 	`
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, recipient,
 		amount.Denom, amount.Amount.String(), initialDeposit.String())
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCommunitySpendFilename), []byte(propMsgBody))
+	err := writeFile(path.Join(c.validators[0].configDir(), "config", proposalCommunitySpendFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -773,7 +773,7 @@ func (s *IntegrationTestSuite) writeGovSoftwareUpgradeProposal(c *chain, height 
 	}
 	`
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, height, initialDeposit.String())
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalSoftwareUpgradeFilename), []byte(propMsgBody))
+	err := writeFile(path.Join(c.validators[0].configDir(), "config", proposalSoftwareUpgradeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -799,11 +799,11 @@ func (s *IntegrationTestSuite) writeGovCancelUpgradeProposal(c *chain) {
 	}
 	`
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, initialDeposit.String())
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCancelUpgradeFilename), []byte(propMsgBody))
+	err := writeFile(path.Join(c.validators[0].configDir(), "config", proposalCancelUpgradeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
 func configFile(filename string) string {
-	filepath := filepath.Join(atomoneConfigPath, filename)
+	filepath := path.Join(atomoneConfigPath, filename)
 	return filepath
 }

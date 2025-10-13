@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -33,8 +32,8 @@ func (s *IntegrationTestSuite) runIBCHermesRelayer() (string, string) {
 
 	s.Require().NoError(os.MkdirAll(hermesCfgPath, 0o755))
 	_, err = copyFile(
-		filepath.Join("./scripts/", "hermes_bootstrap.sh"),
-		filepath.Join(hermesCfgPath, "hermes_bootstrap.sh"),
+		path.Join("./scripts/", "hermes_bootstrap.sh"),
+		path.Join(hermesCfgPath, "hermes_bootstrap.sh"),
 	)
 	s.Require().NoError(err)
 
@@ -51,12 +50,12 @@ func (s *IntegrationTestSuite) runIBCHermesRelayer() (string, string) {
 				"3031/tcp": {{HostIP: "", HostPort: "3031"}},
 			},
 			Env: []string{
-				fmt.Sprintf("ATOMONE_A_E2E_CHAIN_ID=%s", s.chainA.id),
-				fmt.Sprintf("ATOMONE_B_E2E_CHAIN_ID=%s", s.chainB.id),
-				fmt.Sprintf("ATOMONE_A_E2E_RLY_MNEMONIC=%s", rlyA.mnemonic),
-				fmt.Sprintf("ATOMONE_B_E2E_RLY_MNEMONIC=%s", rlyB.mnemonic),
-				fmt.Sprintf("ATOMONE_A_E2E_VAL_HOST=%s", s.valResources[s.chainA.id][0].Container.Name[1:]),
-				fmt.Sprintf("ATOMONE_B_E2E_VAL_HOST=%s", s.valResources[s.chainB.id][0].Container.Name[1:]),
+				fmt.Sprintf("HIKARI_A_E2E_CHAIN_ID=%s", s.chainA.id),
+				fmt.Sprintf("HIKARI_B_E2E_CHAIN_ID=%s", s.chainB.id),
+				fmt.Sprintf("HIKARI_A_E2E_RLY_MNEMONIC=%s", rlyA.mnemonic),
+				fmt.Sprintf("HIKARI_B_E2E_RLY_MNEMONIC=%s", rlyB.mnemonic),
+				fmt.Sprintf("HIKARI_A_E2E_VAL_HOST=%s", s.valResources[s.chainA.id][0].Container.Name[1:]),
+				fmt.Sprintf("HIKARI_B_E2E_VAL_HOST=%s", s.valResources[s.chainB.id][0].Container.Name[1:]),
 			},
 			User: "root",
 			Entrypoint: []string{

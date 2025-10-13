@@ -3,7 +3,7 @@ package e2e
 import (
 	"encoding/json"
 	"math/rand"
-	"path/filepath"
+	"path"
 	"time"
 
 	"cosmossdk.io/math"
@@ -201,7 +201,7 @@ func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint
 		s.execCreatePeriodicVestingAccount(
 			chain,
 			periodicVestingAddr,
-			filepath.Join(atomoneHomePath, vestingPeriodFile),
+			path.Join(atomoneHomePath, vestingPeriodFile),
 			withKeyValue(flagFrom, sender.String()),
 		)
 

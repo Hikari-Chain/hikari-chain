@@ -2,7 +2,7 @@ package e2e
 
 import (
 	"encoding/base64"
-	"path/filepath"
+	"path"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -17,7 +17,7 @@ func (s *IntegrationTestSuite) testEncode() {
 	_, encoded, err := buildRawTx(s.txConfig)
 	s.Require().NoError(err)
 
-	got := s.execEncode(chain, filepath.Join(atomoneHomePath, rawTxFile))
+	got := s.execEncode(chain, path.Join(atomoneHomePath, rawTxFile))
 	s.T().Logf("encoded tx: %s", got)
 	s.Require().Equal(encoded, got)
 }

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"path/filepath"
+	"path"
 	"strings"
 	"time"
 
@@ -820,7 +820,7 @@ func (s *IntegrationTestSuite) noValidationStoreOutput(chain *chain, valIdx int,
 		if filename == "" {
 			return nil
 		}
-		err := writeFile(filepath.Join(chain.validators[valIdx].configDir(), "config", filename), stdOut)
+		err := writeFile(path.Join(chain.validators[valIdx].configDir(), "config", filename), stdOut)
 		s.Require().NoError(err)
 		return nil
 	}
@@ -898,7 +898,7 @@ func (s *IntegrationTestSuite) signTxFileOnline(chain *chain, valIdx int, from s
 		hikaridBinary,
 		txCommand,
 		"sign",
-		filepath.Join(atomoneHomePath, txFilePath),
+		path.Join(atomoneHomePath, txFilePath),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, chain.id),
 		fmt.Sprintf("--%s=%s", flags.FlagHome, atomoneHomePath),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, from),
@@ -933,7 +933,7 @@ func (s *IntegrationTestSuite) broadcastTxFile(chain *chain, valIdx int, from st
 		hikaridBinary,
 		txCommand,
 		"broadcast",
-		filepath.Join(atomoneHomePath, txFilePath),
+		path.Join(atomoneHomePath, txFilePath),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, chain.id),
 		fmt.Sprintf("--%s=%s", flags.FlagHome, atomoneHomePath),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, from),
