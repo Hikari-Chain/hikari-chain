@@ -24,11 +24,11 @@ import (
 	simcli "github.com/cosmos/cosmos-sdk/x/simulation/client/cli"
 
 	"github.com/Hikari-Chain/hikari-chain/ante"
-	atomone "github.com/Hikari-Chain/hikari-chain/app"
+	hikari "github.com/Hikari-Chain/hikari-chain/app"
 )
 
 // AppChainID hardcoded chainID for simulation
-const AppChainID = "atomone-app"
+const AppChainID = "hikari-app"
 
 func init() {
 	simcli.GetSimulatorFlags()
@@ -64,7 +64,7 @@ func TestAppStateDeterminism(t *testing.T) {
 
 	appHashList := make([]json.RawMessage, numTimesToRunPerSeed)
 	appOptions := make(simtestutil.AppOptionsMap, 0)
-	appOptions[flags.FlagHome] = atomone.DefaultNodeHome
+	appOptions[flags.FlagHome] = hikari.DefaultNodeHome
 	appOptions[server.FlagInvCheckPeriod] = simcli.FlagPeriodValue
 
 	for i := 0; i < numSeeds; i++ {
@@ -83,7 +83,7 @@ func TestAppStateDeterminism(t *testing.T) {
 			}
 
 			db := dbm.NewMemDB()
-			app := atomone.NewAtomOneApp(
+			app := hikari.NewHikariApp(
 				logger,
 				db,
 				nil,

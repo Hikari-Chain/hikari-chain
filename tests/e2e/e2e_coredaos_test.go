@@ -30,7 +30,7 @@ func (s *IntegrationTestSuite) testCoreDAOs() {
 	submitGovFlags := []string{configFile(proposalParamChangeFilename)}
 	depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 	voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
-	s.submitGovProposal(chainAAPIEndpoint, senderAddress.String(), proposalCounter, "atomone.coredaos.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
+	s.submitGovProposal(chainAAPIEndpoint, senderAddress.String(), proposalCounter, "hikari.coredaos.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
 	newParams := s.queryCoreDAOsParams(chainAAPIEndpoint)
 	s.Require().Equal(newParams.Params.SteeringDaoAddress, steeringDAOAddress.String())

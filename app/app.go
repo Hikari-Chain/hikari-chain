@@ -108,8 +108,8 @@ func init() {
 	}
 }
 
-// NewAtomOneApp returns a reference to an initialized AtomOne.
-func NewAtomOneApp(
+// NewHikariApp returns a reference to an initialized AtomOne.
+func NewHikariApp(
 	logger log.Logger,
 	db dbm.DB,
 	traceStore io.Writer,

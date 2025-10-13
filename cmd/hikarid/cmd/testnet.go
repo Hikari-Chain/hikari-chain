@@ -44,7 +44,7 @@ import (
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	atomone "github.com/Hikari-Chain/hikari-chain/app"
+	hikari "github.com/Hikari-Chain/hikari-chain/app"
 )
 
 var (
@@ -540,16 +540,16 @@ func startTestnet(cmd *cobra.Command, args startArgs) error {
 }
 
 func NewTestNetworkFixture() network.TestFixture {
-	dir, err := os.MkdirTemp("", atomone.DefaultNodeHome)
+	dir, err := os.MkdirTemp("", hikari.DefaultNodeHome)
 	if err != nil {
 		panic(fmt.Sprintf("failed creating temporary directory: %v", err))
 	}
 	defer os.RemoveAll(dir)
 
-	app := atomone.NewAtomOneApp(log.NewNopLogger(), dbm.NewMemDB(), nil, true, simtestutil.NewAppOptionsWithFlagHome(dir))
+	app := hikari.NewHikariApp(log.NewNopLogger(), dbm.NewMemDB(), nil, true, simtestutil.NewAppOptionsWithFlagHome(dir))
 
 	appCtr := func(val network.ValidatorI) servertypes.Application {
-		return atomone.NewAtomOneApp(
+		return hikari.NewHikariApp(
 			val.GetCtx().Logger, dbm.NewMemDB(), nil, true,
 			simtestutil.NewAppOptionsWithFlagHome(val.GetCtx().Config.RootDir),
 			baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.GetAppConfig().Pruning)),

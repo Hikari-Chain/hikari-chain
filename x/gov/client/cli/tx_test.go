@@ -114,10 +114,10 @@ func (s *CLITestSuite) TestNewCmdSubmitProposal() {
 	{
 		"messages": [
 			{
-				"@type": "/atomone.gov.v1.MsgExecLegacyContent",
+				"@type": "/hikari.gov.v1.MsgExecLegacyContent",
 				"authority": "%s",
 				"content": {
-					"@type": "/atomone.gov.v1beta1.TextProposal",
+					"@type": "/hikari.gov.v1beta1.TextProposal",
 					"title": "My awesome title",
 					"description": "My awesome description"
 				}

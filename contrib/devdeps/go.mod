@@ -1,4 +1,4 @@
-module github.com/atomone-hub/atomone/contrib/devdeps
+module github.com/Hikari-Chain/hikari-chain/contrib/devdeps
 
 go 1.23.0
 

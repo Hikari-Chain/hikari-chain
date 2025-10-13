@@ -243,7 +243,7 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		submitGovFlags := []string{configFile(proposalParamChangeFilename)}
 		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
-		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.photon.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "hikari.photon.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
 		newParams := s.queryPhotonParams(chainAAPIEndpoint)
 		s.Assert().True(newParams.Params.MintDisabled, "expected photon param mint disabled to be true")
@@ -254,7 +254,7 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		depositGovFlags = []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags = []string{strconv.Itoa(proposalCounter), "yes"}
 		s.writePhotonParamChangeProposal(s.chainA, params.Params)
-		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.photon.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "hikari.photon.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
 		newParams = s.queryPhotonParams(chainAAPIEndpoint)
 		s.Require().False(newParams.Params.MintDisabled, "expected photon param mint disabled to be false")
@@ -275,7 +275,7 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		submitGovFlags := []string{configFile(proposalParamChangeFilename)}
 		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
-		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.dynamicfee.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "hikari.dynamicfee.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
 		newParams := s.queryDynamicfeeParams(chainAAPIEndpoint)
 		s.Require().Equal(newParams.Params.Alpha, oldAlpha.Add(math.LegacyNewDec(1)))
@@ -542,7 +542,7 @@ func (s *IntegrationTestSuite) writeCoreDAOsParamChangeProposal(c *chain, params
 	{ 
 		"messages": [
 		{
-		 "@type": "/atomone.coredaos.v1.MsgUpdateParams",
+		 "@type": "/hikari.coredaos.v1.MsgUpdateParams",
 		 "authority": "%s",
 		 "params": %s
 		}
@@ -566,7 +566,7 @@ func (s *IntegrationTestSuite) writeDynamicfeeParamChangeProposal(c *chain, para
 	{
 		"messages":[
 		  {
-			"@type": "/atomone.dynamicfee.v1.MsgUpdateParams",
+			"@type": "/hikari.dynamicfee.v1.MsgUpdateParams",
 			"authority": "%s",
 			"params": %s
 		  }
@@ -608,7 +608,7 @@ func (s *IntegrationTestSuite) writePhotonParamChangeProposal(c *chain, params p
 	{
 		"messages":[
 		  {
-			"@type": "/atomone.photon.v1.MsgUpdateParams",
+			"@type": "/hikari.photon.v1.MsgUpdateParams",
 			"authority": "%s",
 			"params": %s
 		  }
@@ -635,7 +635,7 @@ func (s *IntegrationTestSuite) writeGovConstitutionAmendmentProposal(c *chain, a
 	{
 		"messages":[
 		  {
-			"@type": "/atomone.gov.v1.MsgProposeConstitutionAmendment",
+			"@type": "/hikari.gov.v1.MsgProposeConstitutionAmendment",
 			"authority": "%s",
 			"amendment": "%s"
 		  }
@@ -661,7 +661,7 @@ func (s *IntegrationTestSuite) writeGovLawProposal(c *chain) {
 	{
 	 "messages": [
 		{
-		 "@type": "/atomone.gov.v1.MsgProposeLaw",
+		 "@type": "/hikari.gov.v1.MsgProposeLaw",
 		 "authority": "%s"
 		}
 	 ],

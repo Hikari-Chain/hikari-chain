@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	atomone "github.com/Hikari-Chain/hikari-chain/app"
+	hikari "github.com/Hikari-Chain/hikari-chain/app"
 
 	"cosmossdk.io/log"
 	tmrand "github.com/cometbft/cometbft/libs/rand"
@@ -44,7 +44,7 @@ func newChain() (*chain, error) {
 		return nil, err
 	}
 
-	tempApp := atomone.NewAtomOneApp(log.NewNopLogger(), dbm.NewMemDB(), nil, false, atomone.EmptyAppOptions{})
+	tempApp := hikari.NewHikariApp(log.NewNopLogger(), dbm.NewMemDB(), nil, false, hikari.EmptyAppOptions{})
 
 	return &chain{
 		id:       "chain-" + tmrand.Str(6),

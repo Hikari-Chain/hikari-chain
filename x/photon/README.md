@@ -81,8 +81,8 @@ tokens go to the caller's account. If `mint_disabled` is `true`, this message fa
 
 Endpoints mirror the gRPC queries, allowing retrieval of conversion rate and parameters.
 
-- `/atomone/photon/v1/conversion_rate`: Returns the current conversion rate.
-- `/atomone/photon/v1/params`: Returns `mint_disabled` and `txfee_exceptions`.
+- `/hikari/photon/v1/conversion_rate`: Returns the current conversion rate.
+- `/hikari/photon/v1/params`: Returns `mint_disabled` and `txfee_exceptions`.
 
 ## References
 

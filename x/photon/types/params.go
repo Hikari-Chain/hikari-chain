@@ -14,7 +14,7 @@ const (
 
 // NOTE(tb): Not possible to use `sdk.MsgTypeURL(types.MsgMintPhoton{})`
 // instead of plain text because at this step the msg is not registered yet.
-var defaultTxFeeExceptions = []string{"/atomone.photon.v1.MsgMintPhoton"}
+var defaultTxFeeExceptions = []string{"/hikari.photon.v1.MsgMintPhoton"}
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {

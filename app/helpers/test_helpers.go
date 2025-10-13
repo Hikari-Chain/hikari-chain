@@ -124,7 +124,7 @@ func setup() (*atomoneapp.AtomOneApp, atomoneapp.GenesisState) {
 	appOptions[server.FlagInvCheckPeriod] = 5
 	appOptions[server.FlagMinGasPrices] = "0ul"
 
-	atomoneApp := atomoneapp.NewAtomOneApp(
+	atomoneApp := atomoneapp.NewHikariApp(
 		log.NewNopLogger(),
 		db,
 		nil,

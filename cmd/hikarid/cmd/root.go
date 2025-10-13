@@ -34,7 +34,7 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 
-	atomone "github.com/Hikari-Chain/hikari-chain/app"
+	hikari "github.com/Hikari-Chain/hikari-chain/app"
 	"github.com/Hikari-Chain/hikari-chain/app/params"
 )
 
@@ -42,12 +42,12 @@ import (
 // main function.
 func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 	// we "pre"-instantiate the application for getting the injected/configured encoding configuration
-	tempApp := atomone.NewAtomOneApp(
+	tempApp := hikari.NewHikariApp(
 		log.NewNopLogger(),
 		dbm.NewMemDB(),
 		nil,
 		true,
-		simtestutil.NewAppOptionsWithFlagHome(atomone.DefaultNodeHome),
+		simtestutil.NewAppOptionsWithFlagHome(hikari.DefaultNodeHome),
 	)
 	encodingConfig := params.EncodingConfig{
 		InterfaceRegistry: tempApp.InterfaceRegistry(),
@@ -63,7 +63,7 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 		WithLegacyAmino(encodingConfig.Amino).
 		WithInput(os.Stdin).
 		WithAccountRetriever(types.AccountRetriever{}).
-		WithHomeDir(atomone.DefaultNodeHome).
+		WithHomeDir(hikari.DefaultNodeHome).
 		WithViper("")
 
 	rootCmd := &cobra.Command{
@@ -145,16 +145,16 @@ func initRootCmd(
 	encodingConfig params.EncodingConfig,
 ) {
 	rootCmd.AddCommand(
-		genutilcli.InitCmd(basicManager, atomone.DefaultNodeHome),
+		genutilcli.InitCmd(basicManager, hikari.DefaultNodeHome),
 		tmcli.NewCompletionCmd(rootCmd, true),
 		NewTestnetCmd(basicManager, banktypes.GenesisBalancesIterator{}),
 		addDebugCommands(debug.Cmd()),
 		confixcmd.ConfigCommand(),
-		pruning.Cmd(newApp, atomone.DefaultNodeHome),
+		pruning.Cmd(newApp, hikari.DefaultNodeHome),
 		snapshot.Cmd(newApp),
 	)
 
-	server.AddCommands(rootCmd, atomone.DefaultNodeHome, newApp, appExport, func(startCmd *cobra.Command) {})
+	server.AddCommands(rootCmd, hikari.DefaultNodeHome, newApp, appExport, func(startCmd *cobra.Command) {})
 
 	// add keybase, auxiliary RPC, query, and tx child commands
 	rootCmd.AddCommand(
@@ -168,7 +168,7 @@ func initRootCmd(
 
 // genesisCommand builds genesis-related `simd genesis` command. Users may provide application specific commands as a parameter
 func genesisCommand(basicManager module.BasicManager, encodingConfig params.EncodingConfig, cmds ...*cobra.Command) *cobra.Command {
-	cmd := genutilcli.GenesisCoreCommand(encodingConfig.TxConfig, basicManager, atomone.DefaultNodeHome)
+	cmd := genutilcli.GenesisCoreCommand(encodingConfig.TxConfig, basicManager, hikari.DefaultNodeHome)
 
 	for _, subCmd := range cmds {
 		cmd.AddCommand(subCmd)
@@ -231,7 +231,7 @@ func newApp(
 	appOpts servertypes.AppOptions,
 ) servertypes.Application {
 	baseappOptions := server.DefaultBaseappOptions(appOpts)
-	return atomone.NewAtomOneApp(
+	return hikari.NewHikariApp(
 		logger,
 		db,
 		traceStore,
@@ -265,7 +265,7 @@ func appExport(
 		loadLatest = true
 	}
 
-	atomoneApp := atomone.NewAtomOneApp(
+	atomoneApp := hikari.NewHikariApp(
 		logger,
 		db,
 		traceStore,
