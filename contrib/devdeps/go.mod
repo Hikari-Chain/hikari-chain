@@ -1,12 +1,12 @@
 module github.com/Hikari-Chain/hikari-chain/contrib/devdeps
 
-go 1.23.0
+go 1.25.2
 
 require (
 	github.com/golang/mock v1.6.0
 	github.com/golangci/golangci-lint v1.64.8
 	github.com/goreleaser/goreleaser v1.25.1
-	golang.org/x/vuln v1.1.3
+	golang.org/x/vuln v1.1.4
 	mvdan.cc/gofumpt v0.7.0
 )
 
