@@ -28,7 +28,7 @@ jobs:
 
   warn-if-failure:
     if: failure()
-    needs: [ run-tests, run-vulncheck, run-simulations]
+    needs: [ run-tests, run-vulncheck, run-simulations ]
     runs-on: ubuntu-latest
     steps:
       - name: Notify Slack on failure
