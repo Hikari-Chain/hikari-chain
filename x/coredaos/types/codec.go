@@ -9,12 +9,12 @@ import (
 )
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgAnnotateProposal{}, "atomone/v1/MsgAnnotateProposal")
-	legacy.RegisterAminoMsg(cdc, &MsgEndorseProposal{}, "atomone/v1/MsgEndorseProposal")
-	legacy.RegisterAminoMsg(cdc, &MsgExtendVotingPeriod{}, "atomone/v1/MsgExtendVotingPeriod")
-	legacy.RegisterAminoMsg(cdc, &MsgVetoProposal{}, "atomone/v1/MsgVetoProposal")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "atomone/x/coredaos/v1/MsgUpdateParams")
-	cdc.RegisterConcrete(&Params{}, "atomone/coredaos/v1/Params", nil)
+	legacy.RegisterAminoMsg(cdc, &MsgAnnotateProposal{}, "hikari/v1/MsgAnnotateProposal")
+	legacy.RegisterAminoMsg(cdc, &MsgEndorseProposal{}, "hikari/v1/MsgEndorseProposal")
+	legacy.RegisterAminoMsg(cdc, &MsgExtendVotingPeriod{}, "hikari/v1/MsgExtendVotingPeriod")
+	legacy.RegisterAminoMsg(cdc, &MsgVetoProposal{}, "hikari/v1/MsgVetoProposal")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "hikari/x/coredaos/v1/MsgUpdateParams")
+	cdc.RegisterConcrete(&Params{}, "hikari/coredaos/v1/Params", nil)
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
