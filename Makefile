@@ -273,13 +273,13 @@ localnet-start: build
 	$(localnetd) genesis gentx val 1000000000ulight
 	$(localnetd) genesis collect-gentxs
 	# Add treasury DAO address
-	$(localnetd) genesis add-genesis-account hikari1qqqqqqqqqqqqqqqqqqqqqqqqqqqqp0d8vxhrn 5388766663072ulight
+	$(localnetd) genesis add-genesis-account hikari1qqqqqqqqqqqqqqqqqqqqqqqqqqqqp0dqeyscra 5388766663072ulight
 	# Add CP funds
-	$(localnetd) genesis add-genesis-account hikari1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8u0nnle 5388766663072ulight
+	$(localnetd) genesis add-genesis-account hikari1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8mxh9gs 5388766663072ulight
 	jq '.app_state.distribution.fee_pool.community_pool = [ { "denom": "ulight", "amount": "5388766663072.000000000000000000" }]' $(localnet_home)/config/genesis.json > /tmp/gen
 	mv /tmp/gen $(localnet_home)/config/genesis.json
 	# Previous add-genesis-account call added the auth module account as a BaseAccount, we need to remove it
-	jq 'del(.app_state.auth.accounts[] | select(.address == "hikari1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8u0nnle"))' $(localnet_home)/config/genesis.json > /tmp/gen
+	jq 'del(.app_state.auth.accounts[] | select(.address == "hikari1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8mxh9gs"))' $(localnet_home)/config/genesis.json > /tmp/gen
 	mv /tmp/gen $(localnet_home)/config/genesis.json
 	# Set validator gas prices
 	sed -i.bak 's#^minimum-gas-prices = .*#minimum-gas-prices = "0.01ulight,0.01uphoton"#g' $(localnet_home)/config/app.toml
