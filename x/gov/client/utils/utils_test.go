@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/atomone-hub/atomone/x/gov/client/utils"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/client/utils"
 )
 
 func TestNormalizeWeightedVoteOptions(t *testing.T) {

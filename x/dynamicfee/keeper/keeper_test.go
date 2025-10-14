@@ -7,8 +7,8 @@ import (
 
 	"cosmossdk.io/math"
 
-	"github.com/atomone-hub/atomone/x/dynamicfee/testutil"
-	"github.com/atomone-hub/atomone/x/dynamicfee/types"
+	"github.com/Hikari-Chain/hikari-chain/x/dynamicfee/testutil"
+	"github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 )
 

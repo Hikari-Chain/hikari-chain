@@ -13,9 +13,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/atomone-hub/atomone/x/dynamicfee/post"
-	"github.com/atomone-hub/atomone/x/dynamicfee/testutil"
-	"github.com/atomone-hub/atomone/x/dynamicfee/types"
+	"github.com/Hikari-Chain/hikari-chain/x/dynamicfee/post"
+	"github.com/Hikari-Chain/hikari-chain/x/dynamicfee/testutil"
+	"github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types"
 )
 
 type mocks struct {

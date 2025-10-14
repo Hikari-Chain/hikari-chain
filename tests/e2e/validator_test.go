@@ -96,7 +96,7 @@ func (v *validator) init() error {
 		return fmt.Errorf("failed to export app genesis state: %w", err)
 	}
 
-	tmcfg.WriteConfigFile(filepath.Join(config.RootDir, "config", "config.toml"), config)
+	tmcfg.WriteConfigFile(path.Join(config.RootDir, "config", "config.toml"), config)
 	return nil
 }
 

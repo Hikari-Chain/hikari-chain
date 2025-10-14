@@ -23,8 +23,8 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	v1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/types/v1beta1"
 )
 
 func TestParseSubmitLegacyProposal(t *testing.T) {
@@ -153,10 +153,10 @@ func TestParseSubmitProposal(t *testing.T) {
 			"amount":{"denom": "stake","amount": "10"}
 		},
 		{
-			"@type": "/atomone.gov.v1.MsgExecLegacyContent",
+			"@type": "/hikari.gov.v1.MsgExecLegacyContent",
 			"authority": "%s",
 			"content": {
-				"@type": "/atomone.gov.v1beta1.TextProposal",
+				"@type": "/hikari.gov.v1beta1.TextProposal",
 				"title": "My awesome title",
 				"description": "My awesome description"
 			}

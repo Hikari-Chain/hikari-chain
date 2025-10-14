@@ -20,10 +20,10 @@ import (
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
-	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+	coredaostypes "github.com/Hikari-Chain/hikari-chain/x/coredaos/types"
+	dynamicfeetypes "github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types"
+	govtypes "github.com/Hikari-Chain/hikari-chain/x/gov/types"
+	photontypes "github.com/Hikari-Chain/hikari-chain/x/photon/types"
 )
 
 func (appKeepers *AppKeepers) GenerateKeys() {

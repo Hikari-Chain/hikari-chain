@@ -15,9 +15,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 
-	"github.com/atomone-hub/atomone/x/gov"
-	"github.com/atomone-hub/atomone/x/gov/client/utils"
-	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	"github.com/Hikari-Chain/hikari-chain/x/gov"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/client/utils"
+	v1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
 )
 
 type TxSearchMock struct {

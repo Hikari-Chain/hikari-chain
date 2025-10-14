@@ -6,8 +6,8 @@ set -ex
 mkdir -p /root/.hermes/
 touch /root/.hermes/config.toml
 
-echo $ATOMONE_B_E2E_RLY_MNEMONIC > /root/.hermes/ATOMONE_B_E2E_RLY_MNEMONIC.txt
-echo $ATOMONE_A_E2E_RLY_MNEMONIC > /root/.hermes/ATOMONE_A_E2E_RLY_MNEMONIC.txt
+echo $HIKARI_B_E2E_RLY_MNEMONIC > /root/.hermes/HIKARI_B_E2E_RLY_MNEMONIC.txt
+echo $HIKARI_A_E2E_RLY_MNEMONIC > /root/.hermes/HIKARI_A_E2E_RLY_MNEMONIC.txt
 
 # setup Hermes relayer configuration with non-zero gas_price
 tee /root/.hermes/config.toml <<EOF
@@ -44,12 +44,12 @@ host = '127.0.0.1'
 port = 3001
 
 [[chains]]
-id = '$ATOMONE_A_E2E_CHAIN_ID'
-rpc_addr = 'http://$ATOMONE_A_E2E_VAL_HOST:26657'
-grpc_addr = 'http://$ATOMONE_A_E2E_VAL_HOST:9090'
-event_source = { mode = 'push', url = 'ws://$ATOMONE_A_E2E_VAL_HOST:26657/websocket' , batch_delay = '50ms' }
+id = '$HIKARI_A_E2E_CHAIN_ID'
+rpc_addr = 'http://$HIKARI_A_E2E_VAL_HOST:26657'
+grpc_addr = 'http://$HIKARI_A_E2E_VAL_HOST:9090'
+event_source = { mode = 'push', url = 'ws://$HIKARI_A_E2E_VAL_HOST:26657/websocket' , batch_delay = '50ms' }
 rpc_timeout = '10s'
-account_prefix = 'atone'
+account_prefix = 'hikari'
 key_name = 'rly01-gaia-a'
 store_prefix = 'ibc'
 max_gas = 6000000
@@ -60,12 +60,12 @@ trusting_period = '14days'
 trust_threshold = { numerator = '1', denominator = '3' }
 
 [[chains]]
-id = '$ATOMONE_B_E2E_CHAIN_ID'
-rpc_addr = 'http://$ATOMONE_B_E2E_VAL_HOST:26657'
-grpc_addr = 'http://$ATOMONE_B_E2E_VAL_HOST:9090'
-event_source = { mode = 'push', url = 'ws://$ATOMONE_B_E2E_VAL_HOST:26657/websocket' , batch_delay = '50ms' }
+id = '$HIKARI_B_E2E_CHAIN_ID'
+rpc_addr = 'http://$HIKARI_B_E2E_VAL_HOST:26657'
+grpc_addr = 'http://$HIKARI_B_E2E_VAL_HOST:9090'
+event_source = { mode = 'push', url = 'ws://$HIKARI_B_E2E_VAL_HOST:26657/websocket' , batch_delay = '50ms' }
 rpc_timeout = '10s'
-account_prefix = 'atone'
+account_prefix = 'hikari'
 key_name = 'rly01-gaia-b'
 store_prefix = 'ibc'
 max_gas =  6000000
@@ -111,12 +111,12 @@ host = '127.0.0.1'
 port = 3002
 
 [[chains]]
-id = '$ATOMONE_A_E2E_CHAIN_ID'
-rpc_addr = 'http://$ATOMONE_A_E2E_VAL_HOST:26657'
-grpc_addr = 'http://$ATOMONE_A_E2E_VAL_HOST:9090'
-event_source = { mode = 'push', url = 'ws://$ATOMONE_A_E2E_VAL_HOST:26657/websocket' , batch_delay = '50ms' }
+id = '$HIKARI_A_E2E_CHAIN_ID'
+rpc_addr = 'http://$HIKARI_A_E2E_VAL_HOST:26657'
+grpc_addr = 'http://$HIKARI_A_E2E_VAL_HOST:9090'
+event_source = { mode = 'push', url = 'ws://$HIKARI_A_E2E_VAL_HOST:26657/websocket' , batch_delay = '50ms' }
 rpc_timeout = '10s'
-account_prefix = 'atone'
+account_prefix = 'hikari'
 key_name = 'rly01-gaia-a'
 store_prefix = 'ibc'
 max_gas = 6000000
@@ -127,12 +127,12 @@ trusting_period = '14days'
 trust_threshold = { numerator = '1', denominator = '3' }
 
 [[chains]]
-id = '$ATOMONE_B_E2E_CHAIN_ID'
-rpc_addr = 'http://$ATOMONE_B_E2E_VAL_HOST:26657'
-grpc_addr = 'http://$ATOMONE_B_E2E_VAL_HOST:9090'
-event_source = { mode = 'push', url = 'ws://$ATOMONE_B_E2E_VAL_HOST:26657/websocket' , batch_delay = '50ms' }
+id = '$HIKARI_B_E2E_CHAIN_ID'
+rpc_addr = 'http://$HIKARI_B_E2E_VAL_HOST:26657'
+grpc_addr = 'http://$HIKARI_B_E2E_VAL_HOST:9090'
+event_source = { mode = 'push', url = 'ws://$HIKARI_B_E2E_VAL_HOST:26657/websocket' , batch_delay = '50ms' }
 rpc_timeout = '10s'
-account_prefix = 'atone'
+account_prefix = 'hikari'
 key_name = 'rly01-gaia-b'
 store_prefix = 'ibc'
 max_gas =  6000000
@@ -145,8 +145,8 @@ EOF
 
 
 # import keys
-hermes keys add  --key-name rly01-gaia-b  --chain $ATOMONE_B_E2E_CHAIN_ID --mnemonic-file /root/.hermes/ATOMONE_B_E2E_RLY_MNEMONIC.txt
+hermes keys add  --key-name rly01-gaia-b  --chain $HIKARI_B_E2E_CHAIN_ID --mnemonic-file /root/.hermes/HIKARI_B_E2E_RLY_MNEMONIC.txt
 sleep 5
-hermes keys add  --key-name rly01-gaia-a  --chain $ATOMONE_A_E2E_CHAIN_ID --mnemonic-file /root/.hermes/ATOMONE_A_E2E_RLY_MNEMONIC.txt
+hermes keys add  --key-name rly01-gaia-a  --chain $HIKARI_A_E2E_CHAIN_ID --mnemonic-file /root/.hermes/HIKARI_A_E2E_RLY_MNEMONIC.txt
 
 

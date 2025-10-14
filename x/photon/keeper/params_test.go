@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/atomone-hub/atomone/x/photon/testutil"
-	"github.com/atomone-hub/atomone/x/photon/types"
+	"github.com/Hikari-Chain/hikari-chain/x/photon/testutil"
+	"github.com/Hikari-Chain/hikari-chain/x/photon/types"
 	"github.com/stretchr/testify/require"
 )
 

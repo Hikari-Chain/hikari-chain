@@ -18,7 +18,7 @@ maximum PHOTON supply of 1 B. Minting is achieved via a single message
   - [Abstract](#abstract)
   - [Contents](#contents)
   - [Concepts](#concepts)
-    - [ATONE to PHOTON conversion](#atone-to-photon-conversion)
+    - [L to PHOTON conversion](#l-to-photon-conversion)
     - [Fee enforcement](#fee-enforcement)
   - [State](#state)
   - [Messages](#messages)
@@ -60,8 +60,8 @@ The only tracked module data are parameters, such as whether minting is enabled.
 
 ### MsgMintPhoton
 
-Burns a specified ATONE amount in exchange for newly minted PHOTON. The minted
-tokens go to the caller’s account. If `mint_disabled` is `true`, this message fails.
+Burns a specified L amount in exchange for newly minted PHOTON. The minted
+tokens go to the caller's account. If `mint_disabled` is `true`, this message fails.
 
 ## Parameters
 
@@ -81,8 +81,8 @@ tokens go to the caller’s account. If `mint_disabled` is `true`, this message 
 
 Endpoints mirror the gRPC queries, allowing retrieval of conversion rate and parameters.
 
-- `/atomone/photon/v1/conversion_rate`: Returns the current conversion rate.
-- `/atomone/photon/v1/params`: Returns `mint_disabled` and `txfee_exceptions`.
+- `/hikari/photon/v1/conversion_rate`: Returns the current conversion rate.
+- `/hikari/photon/v1/params`: Returns `mint_disabled` and `txfee_exceptions`.
 
 ## References
 

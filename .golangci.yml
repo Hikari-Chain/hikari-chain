@@ -74,7 +74,7 @@ linters-settings:
       - prefix(github.com/cosmos) # cosmos org
       - prefix(cosmossdk.io) # new modules
       - prefix(github.com/cosmos/cosmos-sdk) # cosmos sdk
-      - prefix(github.com/atomone-hub/atomone) # AtomOne
+      - prefix(github.com/Hikari-Chain/hikari-chain) # Hikari Chain
   dogsled:
     max-blank-identifiers: 3
   maligned:

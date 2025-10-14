@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/testutil"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 
-	"github.com/atomone-hub/atomone/x/gov/client/cli"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/client/cli"
 )
 
 func (s *CLITestSuite) TestCmdParams() {

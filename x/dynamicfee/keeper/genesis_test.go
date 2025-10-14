@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/atomone-hub/atomone/x/dynamicfee/testutil"
-	"github.com/atomone-hub/atomone/x/dynamicfee/types"
+	"github.com/Hikari-Chain/hikari-chain/x/dynamicfee/testutil"
+	"github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types"
 	"github.com/stretchr/testify/require"
 )
 

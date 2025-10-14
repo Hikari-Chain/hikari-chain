@@ -364,7 +364,7 @@ A user can query and interact with the `dynamicfee` module using the CLI.
 The `query` commands allow users to query `dynamicfee` state.
 
 ```shell
-atomoned query dynamicfee --help
+hikarid query dynamicfee --help
 ```
 
 ##### params
@@ -372,13 +372,13 @@ atomoned query dynamicfee --help
 The `params` command allows users to query the on-chain parameters.
 
 ```shell
-atomoned query dynamicfee params [flags]
+hikarid query dynamicfee params [flags]
 ```
 
 Example:
 
 ```shell
-atomoned query dynamicfee params
+hikarid query dynamicfee params
 ```
 
 Example Output:
@@ -401,13 +401,13 @@ window: "1"
 The `state` command allows users to query the current on-chain state.
 
 ```shell
-atomoned query dynamicfee state [flags]
+hikarid query dynamicfee state [flags]
 ```
 
 Example:
 
 ```shell
-atomoned query dynamicfee state
+hikarid query dynamicfee state
 ```
 
 Example Output:
@@ -425,13 +425,13 @@ window:
 The `gas-price` command allows users to query the current gas-price for a given denom.
 
 ```shell
-atomoned query dynamicfee gas-price [denom] [flags]
+hikarid query dynamicfee gas-price [denom] [flags]
 ```
 
 Example:
 
 ```shell
-atomoned query dynamicfee gas-price uatone
+hikarid query dynamicfee gas-price uatone
 ```
 
 Example Output:
@@ -446,13 +446,13 @@ The `gas-prices` command allows users to query the current gas-price for all
 supported denoms.
 
 ```shell
-atomoned query dynamicfee gas-prices [flags]
+hikarid query dynamicfee gas-prices [flags]
 ```
 
 Example:
 
 ```shell
-atomoned query dynamicfee gas-prices
+hikarid query dynamicfee gas-prices
 ```
 
 Example Output:

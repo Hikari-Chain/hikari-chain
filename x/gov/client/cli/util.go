@@ -12,8 +12,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	govutils "github.com/atomone-hub/atomone/x/gov/client/utils"
-	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	govutils "github.com/Hikari-Chain/hikari-chain/x/gov/client/utils"
+	govv1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
 )
 
 type legacyProposal struct {

@@ -11,7 +11,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
 
-	"github.com/atomone-hub/atomone/x/photon/types"
+	"github.com/Hikari-Chain/hikari-chain/x/photon/types"
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -34,7 +34,7 @@ func GetTxMintPhotonCmd() *cobra.Command {
 		Long: `Mint photons by burning the specified [amount].
 The amount to burn must be specified in the bond denomination.
 Note, the '--from' flag is ignored as it is implied from [to_key_or_address].`,
-		Example: fmt.Sprintf(`%s tx photon mint atom1... 1000000uatone`, version.AppName),
+		Example: fmt.Sprintf(`%s tx photon mint atom1... 1000000ul`, version.AppName),
 		Args:    cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			err = cmd.Flags().Set(flags.FlagFrom, args[0])

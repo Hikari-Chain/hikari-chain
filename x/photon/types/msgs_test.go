@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	appparams "github.com/atomone-hub/atomone/app/params"
+	appparams "github.com/Hikari-Chain/hikari-chain/app/params"
 )
 
 func TestMsgMintPhoton_ValidateBasic(t *testing.T) {

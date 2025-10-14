@@ -14,10 +14,10 @@ import (
 	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 
-	"github.com/atomone-hub/atomone/app/keepers"
-	govkeeper "github.com/atomone-hub/atomone/x/gov/keeper"
-	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+	"github.com/Hikari-Chain/hikari-chain/app/keepers"
+	govkeeper "github.com/Hikari-Chain/hikari-chain/x/gov/keeper"
+	v1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
+	photontypes "github.com/Hikari-Chain/hikari-chain/x/photon/types"
 )
 
 // CreateUpgradeHandler returns a upgrade handler for AtomOne v3
@@ -70,7 +70,7 @@ func initGovDynamicQuorum(ctx sdk.Context, govKeeper *govkeeper.Keeper) error {
 	return nil
 }
 
-// convertFundsToPhoton converts 50% of the bond denom (uatone) funds from
+// convertFundsToPhoton converts 50% of the bond denom (ul) funds from
 // community pool and 90% from treasury DAO to photons (uphoton)
 func convertFundsToPhoton(ctx sdk.Context, keepers *keepers.AppKeepers) error {
 	ctx.Logger().Info("Converting 50% of bond denom funds from community pool and 90% from treasury DAO to photons...")

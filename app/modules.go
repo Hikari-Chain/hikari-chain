@@ -39,14 +39,14 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	"github.com/atomone-hub/atomone/x/coredaos"
-	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
-	"github.com/atomone-hub/atomone/x/dynamicfee"
-	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
-	"github.com/atomone-hub/atomone/x/gov"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	"github.com/atomone-hub/atomone/x/photon"
-	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+	"github.com/Hikari-Chain/hikari-chain/x/coredaos"
+	coredaostypes "github.com/Hikari-Chain/hikari-chain/x/coredaos/types"
+	"github.com/Hikari-Chain/hikari-chain/x/dynamicfee"
+	dynamicfeetypes "github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types"
+	"github.com/Hikari-Chain/hikari-chain/x/gov"
+	govtypes "github.com/Hikari-Chain/hikari-chain/x/gov/types"
+	"github.com/Hikari-Chain/hikari-chain/x/photon"
+	photontypes "github.com/Hikari-Chain/hikari-chain/x/photon/types"
 )
 
 var maccPerms = map[string][]string{

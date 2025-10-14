@@ -17,7 +17,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/atomone-hub/atomone/x/gov/client/cli"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/client/cli"
 )
 
 type st struct {

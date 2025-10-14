@@ -9,10 +9,10 @@ on:
 jobs:
 
   run-tests:
-    uses: atomone-hub/atomone/.github/workflows/test.yml@main
+    uses: Hikari-Chain/hikari-chain/.github/workflows/test.yml@main
 
   run-simulations:
-    uses: atomone-hub/atomone/.github/workflows/sims.yml@main
+    uses: Hikari-Chain/hikari-chain/.github/workflows/sims.yml@main
 
   run-vulncheck:
     runs-on: ubuntu-latest
@@ -28,7 +28,7 @@ jobs:
 
   warn-if-failure:
     if: failure()
-    needs: [ run-tests, run-vulncheck, run-simulations]
+    needs: [ run-tests, run-vulncheck, run-simulations ]
     runs-on: ubuntu-latest
     steps:
       - name: Notify Slack on failure

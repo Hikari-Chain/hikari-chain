@@ -12,10 +12,10 @@ import (
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	govcli "github.com/atomone-hub/atomone/x/gov/client/cli"
-	"github.com/atomone-hub/atomone/x/gov/keeper"
-	"github.com/atomone-hub/atomone/x/gov/types"
-	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	govcli "github.com/Hikari-Chain/hikari-chain/x/gov/client/cli"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/keeper"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/types"
+	v1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
 )
 
 var commonArgs = []string{

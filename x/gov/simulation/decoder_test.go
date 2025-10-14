@@ -15,10 +15,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/kv"
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 
-	"github.com/atomone-hub/atomone/x/gov"
-	"github.com/atomone-hub/atomone/x/gov/simulation"
-	"github.com/atomone-hub/atomone/x/gov/types"
-	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	"github.com/Hikari-Chain/hikari-chain/x/gov"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/simulation"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/types"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/types/v1beta1"
 )
 
 var (

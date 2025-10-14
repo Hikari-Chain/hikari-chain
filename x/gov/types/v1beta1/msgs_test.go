@@ -73,7 +73,7 @@ func TestMsgDepositGetSignBytes(t *testing.T) {
 	res, err := pc.MarshalAminoJSON(msg)
 	require.NoError(t, err)
 
-	expected := `{"type":"atomone/MsgDeposit","value":{"amount":[{"amount":"1000","denom":"stake"}],"depositor":"cosmos1v9jxgu33kfsgr5","proposal_id":"0"}}`
+	expected := `{"type":"hikari/MsgDeposit","value":{"amount":[{"amount":"1000","denom":"stake"}],"depositor":"cosmos1v9jxgu33kfsgr5","proposal_id":"0"}}`
 	require.Equal(t, expected, string(res))
 }
 
@@ -179,6 +179,6 @@ func TestMsgSubmitProposal_GetSignBytes(t *testing.T) {
 	bz, err := pc.MarshalAminoJSON(msg)
 	require.NoError(t, err)
 	require.Equal(t,
-		`{"type":"atomone/MsgSubmitProposal","value":{"content":{"type":"atomone/TextProposal","value":{"description":"abcd","title":"test"}},"initial_deposit":null}}`,
+		`{"type":"hikari/MsgSubmitProposal","value":{"content":{"type":"hikari/TextProposal","value":{"description":"abcd","title":"test"}},"initial_deposit":null}}`,
 		string(bz))
 }

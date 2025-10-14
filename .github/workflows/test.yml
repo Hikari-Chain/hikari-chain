@@ -70,7 +70,7 @@ jobs:
             **/**.go
             go.mod
             go.sum
-      - name: Build AtomOne Docker Image
+      - name: Build Hikari Chain Docker Image
         run: make docker-build-debug
       - name: Build Hermes Docker Image
         run: make docker-build-hermes
@@ -116,7 +116,7 @@ jobs:
             **/**.go
             go.mod
             go.sum
-      - name: Install AtomOne
+      - name: Install Hikari Chain
         run: |
           make build
         if: env.GIT_DIFF

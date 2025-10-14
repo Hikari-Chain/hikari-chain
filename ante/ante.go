@@ -11,11 +11,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 
-	atomoneerrors "github.com/atomone-hub/atomone/types/errors"
-	dynamicfeeante "github.com/atomone-hub/atomone/x/dynamicfee/ante"
-	dynamicfeekeeper "github.com/atomone-hub/atomone/x/dynamicfee/keeper"
-	photonante "github.com/atomone-hub/atomone/x/photon/ante"
-	photonkeeper "github.com/atomone-hub/atomone/x/photon/keeper"
+	atomoneerrors "github.com/Hikari-Chain/hikari-chain/types/errors"
+	dynamicfeeante "github.com/Hikari-Chain/hikari-chain/x/dynamicfee/ante"
+	dynamicfeekeeper "github.com/Hikari-Chain/hikari-chain/x/dynamicfee/keeper"
+	photonante "github.com/Hikari-Chain/hikari-chain/x/photon/ante"
+	photonkeeper "github.com/Hikari-Chain/hikari-chain/x/photon/keeper"
 )
 
 // HandlerOptions extend the SDK's AnteHandler options by requiring the IBC

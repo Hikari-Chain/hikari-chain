@@ -10,7 +10,7 @@ import (
 	time "time"
 
 	math "cosmossdk.io/math"
-	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	v1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
 	types "github.com/cosmos/cosmos-sdk/types"
 	gomock "github.com/golang/mock/gomock"
 )

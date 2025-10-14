@@ -18,11 +18,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/atomone-hub/atomone/x/dynamicfee/client/cli"
-	"github.com/atomone-hub/atomone/x/dynamicfee/keeper"
-	"github.com/atomone-hub/atomone/x/dynamicfee/types"
-	modulev1 "github.com/atomone-hub/atomone/x/dynamicfee/types/module"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	"github.com/Hikari-Chain/hikari-chain/x/dynamicfee/client/cli"
+	"github.com/Hikari-Chain/hikari-chain/x/dynamicfee/keeper"
+	"github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types"
+	modulev1 "github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types/module"
+	govtypes "github.com/Hikari-Chain/hikari-chain/x/gov/types"
 )
 
 // ConsensusVersion is the x/dynamicfee module's consensus version identifier.

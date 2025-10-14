@@ -48,8 +48,8 @@ func (s *IntegrationTestSuite) testDynamicfeeQuery() {
 			valIdx        = 0
 			chainEndpoint = fmt.Sprintf("http://%s", s.valResources[c.id][valIdx].GetHostPort("1317/tcp"))
 		)
-		atoneGasPrice := s.queryDynamicfeeGasPrice(chainEndpoint, "uatone")
-		s.Require().Equal("uatone", atoneGasPrice.Price.Denom)
+		atoneGasPrice := s.queryDynamicfeeGasPrice(chainEndpoint, "ulight")
+		s.Require().Equal("ulight", atoneGasPrice.Price.Denom)
 		s.Require().True(atoneGasPrice.Price.Amount.IsPositive())
 		photonGasPrice := s.queryDynamicfeeGasPrice(chainEndpoint, "uphoton")
 		s.Require().Equal("uphoton", photonGasPrice.Price.Denom)
@@ -63,7 +63,7 @@ func (s *IntegrationTestSuite) testDynamicfeeQuery() {
 			chainEndpoint = fmt.Sprintf("http://%s", s.valResources[c.id][valIdx].GetHostPort("1317/tcp"))
 		)
 		gasPrices := s.queryDynamicfeeGasPrices(chainEndpoint)
-		atoneAmount := gasPrices.Prices.AmountOf("uatone")
+		atoneAmount := gasPrices.Prices.AmountOf("ulight")
 		photonAmount := gasPrices.Prices.AmountOf("uphoton")
 		s.Require().True(atoneAmount.IsPositive())
 		s.Require().True(photonAmount.IsPositive())
@@ -81,7 +81,7 @@ func (s *IntegrationTestSuite) testDynamicfeeGasPriceChange() {
 		sender, _ := c.genesisAccounts[0].keyInfo.GetAddress()
 		// Initialize array of recipients account
 		var destAccounts []string
-		tokenAmount := sdk.NewInt64Coin(uatoneDenom, 100_000) // 0.1atone
+		tokenAmount := sdk.NewInt64Coin(ulDenom, 100_000) // 0.1atone
 		for i := range len(c.genesisAccounts) {
 			address, _ := c.genesisAccounts[i].keyInfo.GetAddress()
 			destAccounts = append(destAccounts, address.String())

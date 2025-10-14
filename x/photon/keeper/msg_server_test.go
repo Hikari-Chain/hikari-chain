@@ -8,9 +8,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	appparams "github.com/atomone-hub/atomone/app/params"
-	"github.com/atomone-hub/atomone/x/photon/testutil"
-	"github.com/atomone-hub/atomone/x/photon/types"
+	appparams "github.com/Hikari-Chain/hikari-chain/app/params"
+	"github.com/Hikari-Chain/hikari-chain/x/photon/testutil"
+	"github.com/Hikari-Chain/hikari-chain/x/photon/types"
 )
 
 func TestMsgServerMintPhoton(t *testing.T) {

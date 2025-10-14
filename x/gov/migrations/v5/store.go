@@ -6,8 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	appparams "github.com/atomone-hub/atomone/app/params"
-	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	appparams "github.com/Hikari-Chain/hikari-chain/app/params"
+	govv1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
 )
 
 var ParamsKey = []byte{0x30}

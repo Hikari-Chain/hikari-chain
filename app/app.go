@@ -52,16 +52,16 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 
-	atomoneante "github.com/atomone-hub/atomone/ante"
-	"github.com/atomone-hub/atomone/app/keepers"
-	"github.com/atomone-hub/atomone/app/upgrades"
-	v3 "github.com/atomone-hub/atomone/app/upgrades/v3"
-	v4 "github.com/atomone-hub/atomone/app/upgrades/v4"
-	"github.com/atomone-hub/atomone/client/docs"
-	atomonepost "github.com/atomone-hub/atomone/post"
-	"github.com/atomone-hub/atomone/x/gov"
-	govclient "github.com/atomone-hub/atomone/x/gov/client"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	atomoneante "github.com/Hikari-Chain/hikari-chain/ante"
+	"github.com/Hikari-Chain/hikari-chain/app/keepers"
+	"github.com/Hikari-Chain/hikari-chain/app/upgrades"
+	v3 "github.com/Hikari-Chain/hikari-chain/app/upgrades/v3"
+	v4 "github.com/Hikari-Chain/hikari-chain/app/upgrades/v4"
+	"github.com/Hikari-Chain/hikari-chain/client/docs"
+	atomonepost "github.com/Hikari-Chain/hikari-chain/post"
+	"github.com/Hikari-Chain/hikari-chain/x/gov"
+	govclient "github.com/Hikari-Chain/hikari-chain/x/gov/client"
+	govtypes "github.com/Hikari-Chain/hikari-chain/x/gov/types"
 )
 
 var (
@@ -102,14 +102,14 @@ type AtomOneApp struct { //nolint: revive
 
 func init() {
 	var err error
-	DefaultNodeHome, err = clienthelpers.GetNodeHomeDirectory(".atomone")
+	DefaultNodeHome, err = clienthelpers.GetNodeHomeDirectory(".hikari")
 	if err != nil {
 		panic(err)
 	}
 }
 
-// NewAtomOneApp returns a reference to an initialized AtomOne.
-func NewAtomOneApp(
+// NewHikariApp returns a reference to an initialized AtomOne.
+func NewHikariApp(
 	logger log.Logger,
 	db dbm.DB,
 	traceStore io.Writer,

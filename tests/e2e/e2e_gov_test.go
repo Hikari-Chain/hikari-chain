@@ -3,7 +3,7 @@ package e2e
 import (
 	"context"
 	"fmt"
-	"path/filepath"
+	"path"
 	"strconv"
 	"strings"
 	"time"
@@ -12,16 +12,16 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"cosmossdk.io/math"
-	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
+	coredaostypes "github.com/Hikari-Chain/hikari-chain/x/coredaos/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
-	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+	dynamicfeetypes "github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types"
+	govtypes "github.com/Hikari-Chain/hikari-chain/x/gov/types"
+	govtypesv1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
+	govtypesv1beta1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1beta1"
+	photontypes "github.com/Hikari-Chain/hikari-chain/x/photon/types"
 )
 
 /*
@@ -125,11 +125,11 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		sender := senderAddress.String()
 		recipientAddress, _ := s.chainA.validators[1].keyInfo.GetAddress()
 		recipient := recipientAddress.String()
-		sendAmount := sdk.NewInt64Coin(uatoneDenom, 10_000_000) // 10atone
+		sendAmount := sdk.NewInt64Coin(ulDenom, 10_000_000) // 10atone
 		s.writeGovCommunitySpendProposal(s.chainA, sendAmount, recipient)
 
-		beforeSenderBalance := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
-		beforeRecipientBalance := s.queryBalance(chainAAPIEndpoint, recipient, uatoneDenom)
+		beforeSenderBalance := s.queryBalance(chainAAPIEndpoint, sender, ulDenom)
+		beforeRecipientBalance := s.queryBalance(chainAAPIEndpoint, recipient, ulDenom)
 
 		// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
 		proposalCounter++
@@ -141,7 +141,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		// Check that sender is refunded with the proposal deposit
 		s.Require().Eventually(
 			func() bool {
-				afterSenderBalance := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
+				afterSenderBalance := s.queryBalance(chainAAPIEndpoint, sender, ulDenom)
 				return afterSenderBalance.IsEqual(beforeSenderBalance)
 			},
 			10*time.Second,
@@ -150,7 +150,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		// Check that recipient received the community pool spend
 		s.Require().Eventually(
 			func() bool {
-				afterRecipientBalance := s.queryBalance(chainAAPIEndpoint, recipient, uatoneDenom)
+				afterRecipientBalance := s.queryBalance(chainAAPIEndpoint, recipient, ulDenom)
 				return afterRecipientBalance.Sub(sendAmount).IsEqual(beforeRecipientBalance)
 			},
 			10*time.Second,
@@ -164,11 +164,11 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		sender := senderAddress.String()
 		recipientAddress, _ := s.chainA.validators[1].keyInfo.GetAddress()
 		recipient := recipientAddress.String()
-		sendAmount := sdk.NewInt64Coin(uatoneDenom, 10_000_000) // 10atone
+		sendAmount := sdk.NewInt64Coin(ulDenom, 10_000_000) // 10atone
 		s.writeGovCommunitySpendProposal(s.chainA, sendAmount, recipient)
 
-		beforeSenderBalance := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
-		beforeRecipientBalance := s.queryBalance(chainAAPIEndpoint, recipient, uatoneDenom)
+		beforeSenderBalance := s.queryBalance(chainAAPIEndpoint, sender, ulDenom)
+		beforeRecipientBalance := s.queryBalance(chainAAPIEndpoint, recipient, ulDenom)
 
 		initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
 		deposit := s.queryGovMinDeposit(chainAAPIEndpoint)
@@ -182,7 +182,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		// Check that sender is not refunded with the proposal deposit
 		s.Require().Eventually(
 			func() bool {
-				afterSenderBalance := s.queryBalance(chainAAPIEndpoint, sender, uatoneDenom)
+				afterSenderBalance := s.queryBalance(chainAAPIEndpoint, sender, ulDenom)
 				return afterSenderBalance.Add(deposit).Add(initialDeposit).
 					IsEqual(beforeSenderBalance)
 			},
@@ -193,7 +193,7 @@ func (s *IntegrationTestSuite) testGovCommunityPoolSpend() {
 		// proposal was rejected
 		s.Require().Eventually(
 			func() bool {
-				afterRecipientBalance := s.queryBalance(chainAAPIEndpoint, recipient, uatoneDenom)
+				afterRecipientBalance := s.queryBalance(chainAAPIEndpoint, recipient, ulDenom)
 				return afterRecipientBalance.IsEqual(beforeRecipientBalance)
 			},
 			10*time.Second,
@@ -243,7 +243,7 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		submitGovFlags := []string{configFile(proposalParamChangeFilename)}
 		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
-		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.photon.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "hikari.photon.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
 		newParams := s.queryPhotonParams(chainAAPIEndpoint)
 		s.Assert().True(newParams.Params.MintDisabled, "expected photon param mint disabled to be true")
@@ -254,7 +254,7 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		depositGovFlags = []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags = []string{strconv.Itoa(proposalCounter), "yes"}
 		s.writePhotonParamChangeProposal(s.chainA, params.Params)
-		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.photon.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "hikari.photon.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
 		newParams = s.queryPhotonParams(chainAAPIEndpoint)
 		s.Require().False(newParams.Params.MintDisabled, "expected photon param mint disabled to be false")
@@ -275,7 +275,7 @@ func (s *IntegrationTestSuite) testGovParamChange() {
 		submitGovFlags := []string{configFile(proposalParamChangeFilename)}
 		depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
-		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "atomone.dynamicfee.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
+		s.submitGovProposal(chainAAPIEndpoint, sender, proposalCounter, "hikari.dynamicfee.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
 		newParams := s.queryDynamicfeeParams(chainAAPIEndpoint)
 		s.Require().Equal(newParams.Params.Alpha, oldAlpha.Add(math.LegacyNewDec(1)))
@@ -439,8 +439,8 @@ func (s *IntegrationTestSuite) testGovDynamicQuorum() {
 
 // NOTE: in SDK >= v0.47 the submit-proposal does not have a --deposit flag
 // Instead, the deposit is added to the "deposit" field of the proposal JSON (usually stored as a file)
-// you can use `atomoned tx gov draft-proposal` to create a proposal file that you can use
-// min initial deposit of 100uatone is required in e2e tests, otherwise the proposal would be dropped
+// you can use `hikarid tx gov draft-proposal` to create a proposal file that you can use
+// min initial deposit of 100ulight is required in e2e tests, otherwise the proposal would be dropped
 func (s *IntegrationTestSuite) submitGovProposal(chainAAPIEndpoint, sender string, proposalID int, proposalType string, submitFlags []string, depositFlags []string, voteFlags []string, voteCommand string, expectedStatusAfterVote govtypesv1beta1.ProposalStatus) {
 	s.T().Logf("Submitting Gov Proposal: %s", proposalType)
 	sflags := submitFlags
@@ -531,7 +531,7 @@ func (s *IntegrationTestSuite) writeStakingParamChangeProposal(c *chain, params 
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
 	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, s.cdc.MustMarshalJSON(&params), initialDeposit)
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
+	err := writeFile(path.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -542,7 +542,7 @@ func (s *IntegrationTestSuite) writeCoreDAOsParamChangeProposal(c *chain, params
 	{ 
 		"messages": [
 		{
-		 "@type": "/atomone.coredaos.v1.MsgUpdateParams",
+		 "@type": "/hikari.coredaos.v1.MsgUpdateParams",
 		 "authority": "%s",
 		 "params": %s
 		}
@@ -556,7 +556,7 @@ func (s *IntegrationTestSuite) writeCoreDAOsParamChangeProposal(c *chain, params
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
 	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, s.cdc.MustMarshalJSON(&params), initialDeposit)
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
+	err := writeFile(path.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -566,7 +566,7 @@ func (s *IntegrationTestSuite) writeDynamicfeeParamChangeProposal(c *chain, para
 	{
 		"messages":[
 		  {
-			"@type": "/atomone.dynamicfee.v1.MsgUpdateParams",
+			"@type": "/hikari.dynamicfee.v1.MsgUpdateParams",
 			"authority": "%s",
 			"params": %s
 		  }
@@ -581,7 +581,7 @@ func (s *IntegrationTestSuite) writeDynamicfeeParamChangeProposal(c *chain, para
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
 	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, s.cdc.MustMarshalJSON(&params), initialDeposit)
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
+	err := writeFile(path.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -597,7 +597,7 @@ func (s *IntegrationTestSuite) writeTextProposal(c *chain) {
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
 	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
 	propMsgBody := fmt.Sprintf(template, initialDeposit)
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalTextFilename), []byte(propMsgBody))
+	err := writeFile(path.Join(c.validators[0].configDir(), "config", proposalTextFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -608,7 +608,7 @@ func (s *IntegrationTestSuite) writePhotonParamChangeProposal(c *chain, params p
 	{
 		"messages":[
 		  {
-			"@type": "/atomone.photon.v1.MsgUpdateParams",
+			"@type": "/hikari.photon.v1.MsgUpdateParams",
 			"authority": "%s",
 			"params": %s
 		  }
@@ -623,7 +623,7 @@ func (s *IntegrationTestSuite) writePhotonParamChangeProposal(c *chain, params p
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
 	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, s.cdc.MustMarshalJSON(&params), initialDeposit)
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
+	err := writeFile(path.Join(c.validators[0].configDir(), "config", proposalParamChangeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -635,7 +635,7 @@ func (s *IntegrationTestSuite) writeGovConstitutionAmendmentProposal(c *chain, a
 	{
 		"messages":[
 		  {
-			"@type": "/atomone.gov.v1.MsgProposeConstitutionAmendment",
+			"@type": "/hikari.gov.v1.MsgProposeConstitutionAmendment",
 			"authority": "%s",
 			"amendment": "%s"
 		  }
@@ -650,7 +650,7 @@ func (s *IntegrationTestSuite) writeGovConstitutionAmendmentProposal(c *chain, a
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
 	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, amendment, initialDeposit)
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalConstitutionAmendmentFilename), []byte(propMsgBody))
+	err := writeFile(path.Join(c.validators[0].configDir(), "config", proposalConstitutionAmendmentFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -661,7 +661,7 @@ func (s *IntegrationTestSuite) writeGovLawProposal(c *chain) {
 	{
 	 "messages": [
 		{
-		 "@type": "/atomone.gov.v1.MsgProposeLaw",
+		 "@type": "/hikari.gov.v1.MsgProposeLaw",
 		 "authority": "%s"
 		}
 	 ],
@@ -674,12 +674,12 @@ func (s *IntegrationTestSuite) writeGovLawProposal(c *chain) {
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][0].GetHostPort("1317/tcp"))
 	initialDeposit := s.queryGovMinInitialDeposit(chainAAPIEndpoint)
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, initialDeposit)
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalLawFilename), []byte(propMsgBody))
+	err := writeFile(path.Join(c.validators[0].configDir(), "config", proposalLawFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
 func (s *IntegrationTestSuite) generateConstitutionAmendment(c *chain, newConstitution string) govtypesv1.MsgProposeConstitutionAmendment {
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", newConstitutionFilename), []byte(newConstitution))
+	err := writeFile(path.Join(c.validators[0].configDir(), "config", newConstitutionFilename), []byte(newConstitution))
 	s.Require().NoError(err)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
@@ -687,14 +687,14 @@ func (s *IntegrationTestSuite) generateConstitutionAmendment(c *chain, newConsti
 
 	govCommand := "generate-constitution-amendment"
 	cmd := []string{
-		atomonedBinary,
+		hikaridBinary,
 		txCommand,
 		govtypes.ModuleName,
 		govCommand,
 		configFile(newConstitutionFilename),
 	}
 
-	s.T().Logf("Executing atomoned tx gov %s on chain %s", govCommand, c.id)
+	s.T().Logf("Executing hikarid tx gov %s on chain %s", govCommand, c.id)
 	var msg govtypesv1.MsgProposeConstitutionAmendment
 	s.executeAtomoneTxCommand(ctx, c, cmd, 0, s.parseGenerateConstitutionAmendmentOutput(&msg))
 	s.T().Logf("Successfully executed %s", govCommand)
@@ -740,7 +740,7 @@ func (s *IntegrationTestSuite) writeGovCommunitySpendProposal(c *chain, amount s
 	`
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, recipient,
 		amount.Denom, amount.Amount.String(), initialDeposit.String())
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCommunitySpendFilename), []byte(propMsgBody))
+	err := writeFile(path.Join(c.validators[0].configDir(), "config", proposalCommunitySpendFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -773,7 +773,7 @@ func (s *IntegrationTestSuite) writeGovSoftwareUpgradeProposal(c *chain, height 
 	}
 	`
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, height, initialDeposit.String())
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalSoftwareUpgradeFilename), []byte(propMsgBody))
+	err := writeFile(path.Join(c.validators[0].configDir(), "config", proposalSoftwareUpgradeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -799,11 +799,11 @@ func (s *IntegrationTestSuite) writeGovCancelUpgradeProposal(c *chain) {
 	}
 	`
 	propMsgBody := fmt.Sprintf(template, govModuleAddress, initialDeposit.String())
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalCancelUpgradeFilename), []byte(propMsgBody))
+	err := writeFile(path.Join(c.validators[0].configDir(), "config", proposalCancelUpgradeFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
 func configFile(filename string) string {
-	filepath := filepath.Join(atomoneConfigPath, filename)
+	filepath := path.Join(atomoneConfigPath, filename)
 	return filepath
 }

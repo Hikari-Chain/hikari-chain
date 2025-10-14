@@ -3,8 +3,8 @@ package v4
 import (
 	store "cosmossdk.io/store/types"
 
-	"github.com/atomone-hub/atomone/app/upgrades"
-	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
+	"github.com/Hikari-Chain/hikari-chain/app/upgrades"
+	coredaostypes "github.com/Hikari-Chain/hikari-chain/x/coredaos/types"
 )
 
 const (

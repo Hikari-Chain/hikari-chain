@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	atomone "github.com/atomone-hub/atomone/app"
+	hikari "github.com/Hikari-Chain/hikari-chain/app"
 
 	"cosmossdk.io/log"
 	tmrand "github.com/cometbft/cometbft/libs/rand"
@@ -39,12 +39,12 @@ type chain struct {
 }
 
 func newChain() (*chain, error) {
-	tmpDir, err := os.MkdirTemp("", "atomone-e2e-testnet-")
+	tmpDir, err := os.MkdirTemp("", "hikari-e2e-testnet-")
 	if err != nil {
 		return nil, err
 	}
 
-	tempApp := atomone.NewAtomOneApp(log.NewNopLogger(), dbm.NewMemDB(), nil, false, atomone.EmptyAppOptions{})
+	tempApp := hikari.NewHikariApp(log.NewNopLogger(), dbm.NewMemDB(), nil, false, hikari.EmptyAppOptions{})
 
 	return &chain{
 		id:       "chain-" + tmrand.Str(6),
@@ -89,6 +89,6 @@ func (c *chain) createValidator(index int) *validator {
 	return &validator{
 		chain:   c,
 		index:   index,
-		moniker: fmt.Sprintf("%s-atomone-%d", c.id, index),
+		moniker: fmt.Sprintf("%s-hikari-%d", c.id, index),
 	}
 }

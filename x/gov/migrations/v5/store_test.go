@@ -10,10 +10,10 @@ import (
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 
-	appparams "github.com/atomone-hub/atomone/app/params"
-	"github.com/atomone-hub/atomone/x/gov"
-	v5 "github.com/atomone-hub/atomone/x/gov/migrations/v5"
-	govv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
+	appparams "github.com/Hikari-Chain/hikari-chain/app/params"
+	"github.com/Hikari-Chain/hikari-chain/x/gov"
+	v5 "github.com/Hikari-Chain/hikari-chain/x/gov/migrations/v5"
+	govv1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
 )
 
 func TestMigrateStore(t *testing.T) {

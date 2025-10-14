@@ -13,7 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 	simcli "github.com/cosmos/cosmos-sdk/x/simulation/client/cli"
 
-	atomone "github.com/atomone-hub/atomone/app"
+	hikari "github.com/Hikari-Chain/hikari-chain/app"
 )
 
 // Profile with:
@@ -41,7 +41,7 @@ func BenchmarkFullAppSimulation(b *testing.B) {
 	appOptions := make(simtestutil.AppOptionsMap, 0)
 	appOptions[server.FlagInvCheckPeriod] = simcli.FlagPeriodValue
 
-	app := atomone.NewAtomOneApp(
+	app := hikari.NewHikariApp(
 		logger,
 		db,
 		nil,

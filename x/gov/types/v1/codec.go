@@ -11,14 +11,14 @@ import (
 // RegisterLegacyAminoCodec registers all the necessary types and interfaces for the
 // governance module.
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgSubmitProposal{}, "atomone/v1/MsgSubmitProposal")
-	legacy.RegisterAminoMsg(cdc, &MsgDeposit{}, "atomone/v1/MsgDeposit")
-	legacy.RegisterAminoMsg(cdc, &MsgVote{}, "atomone/v1/MsgVote")
-	legacy.RegisterAminoMsg(cdc, &MsgVoteWeighted{}, "atomone/v1/MsgVoteWeighted")
-	legacy.RegisterAminoMsg(cdc, &MsgExecLegacyContent{}, "atomone/v1/MsgExecLegacyContent")
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "atomone/x/gov/v1/MsgUpdateParams")
+	legacy.RegisterAminoMsg(cdc, &MsgSubmitProposal{}, "hikari/v1/MsgSubmitProposal")
+	legacy.RegisterAminoMsg(cdc, &MsgDeposit{}, "hikari/v1/MsgDeposit")
+	legacy.RegisterAminoMsg(cdc, &MsgVote{}, "hikari/v1/MsgVote")
+	legacy.RegisterAminoMsg(cdc, &MsgVoteWeighted{}, "hikari/v1/MsgVoteWeighted")
+	legacy.RegisterAminoMsg(cdc, &MsgExecLegacyContent{}, "hikari/v1/MsgExecLegacyContent")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "hikari/x/gov/v1/MsgUpdateParams")
 	legacy.RegisterAminoMsg(cdc, &MsgProposeConstitutionAmendment{}, "atomone/x/gov/v1/MsgProposeAmendment")
-	legacy.RegisterAminoMsg(cdc, &MsgProposeLaw{}, "atomone/x/gov/v1/MsgProposeLaw")
+	legacy.RegisterAminoMsg(cdc, &MsgProposeLaw{}, "hikari/x/gov/v1/MsgProposeLaw")
 }
 
 // RegisterInterfaces registers the interfaces types with the Interface Registry.

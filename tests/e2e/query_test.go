@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
+	coredaostypes "github.com/Hikari-Chain/hikari-chain/x/coredaos/types"
 
 	"cosmossdk.io/math"
 	evidencetypes "cosmossdk.io/x/evidence/types"
@@ -23,10 +23,10 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	channeltypes "github.com/cosmos/ibc-go/v10/modules/core/04-channel/types"
 
-	dynamicfeetypes "github.com/atomone-hub/atomone/x/dynamicfee/types"
-	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
-	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+	dynamicfeetypes "github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types"
+	govtypesv1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
+	govtypesv1beta1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1beta1"
+	photontypes "github.com/Hikari-Chain/hikari-chain/x/photon/types"
 )
 
 func (s *IntegrationTestSuite) waitAtomOneTx(endpoint, txHash string, msgResp codec.ProtoMarshaler) (err error) {
@@ -99,7 +99,7 @@ func (s *IntegrationTestSuite) queryAllBalances(endpoint, addr string) (sdk.Coin
 }
 
 func (s *IntegrationTestSuite) queryCoreDAOsParams(endpoint string) coredaostypes.QueryParamsResponse { //nolint:unused
-	body, err := httpGet(fmt.Sprintf("%s/atomone/coredaos/v1/params", endpoint))
+	body, err := httpGet(fmt.Sprintf("%s/hikari/coredaos/v1/params", endpoint))
 	s.Require().NoError(err, "failed to execute HTTP request")
 
 	var params coredaostypes.QueryParamsResponse
@@ -177,7 +177,7 @@ func (s *IntegrationTestSuite) queryDelegatorTotalRewards(endpoint, delegatorAdd
 func (s *IntegrationTestSuite) queryGovProposal(endpoint string, proposalID int) (govtypesv1beta1.QueryProposalResponse, error) {
 	var govProposalResp govtypesv1beta1.QueryProposalResponse
 
-	path := fmt.Sprintf("%s/atomone/gov/v1beta1/proposals/%d", endpoint, proposalID)
+	path := fmt.Sprintf("%s/hikari/gov/v1beta1/proposals/%d", endpoint, proposalID)
 
 	body, err := httpGet(path)
 	if err != nil {
@@ -192,7 +192,7 @@ func (s *IntegrationTestSuite) queryGovProposal(endpoint string, proposalID int)
 
 func (s *IntegrationTestSuite) queryGovV1Proposal(endpoint string, proposalID int) govtypesv1.QueryProposalResponse {
 	var govProposalResp govtypesv1.QueryProposalResponse
-	path := fmt.Sprintf("%s/atomone/gov/v1/proposals/%d", endpoint, proposalID)
+	path := fmt.Sprintf("%s/hikari/gov/v1/proposals/%d", endpoint, proposalID)
 	body, err := httpGet(path)
 	s.Require().NoError(err, "failed to execute HTTP request")
 	err = s.cdc.UnmarshalJSON(body, &govProposalResp)
@@ -202,7 +202,7 @@ func (s *IntegrationTestSuite) queryGovV1Proposal(endpoint string, proposalID in
 
 func (s *IntegrationTestSuite) queryGovMinInitialDeposit(endpoint string) sdk.Coin {
 	var govMinInitialDepositResp govtypesv1.QueryMinInitialDepositResponse
-	path := fmt.Sprintf("%s/atomone/gov/v1/mininitialdeposit", endpoint)
+	path := fmt.Sprintf("%s/hikari/gov/v1/mininitialdeposit", endpoint)
 	body, err := httpGet(path)
 	s.Require().NoError(err)
 	err = s.cdc.UnmarshalJSON(body, &govMinInitialDepositResp)
@@ -212,7 +212,7 @@ func (s *IntegrationTestSuite) queryGovMinInitialDeposit(endpoint string) sdk.Co
 
 func (s *IntegrationTestSuite) queryGovMinDeposit(endpoint string) sdk.Coin {
 	var govMinDepositResp govtypesv1.QueryMinDepositResponse
-	path := fmt.Sprintf("%s/atomone/gov/v1/mindeposit", endpoint)
+	path := fmt.Sprintf("%s/hikari/gov/v1/mindeposit", endpoint)
 	body, err := httpGet(path)
 	s.Require().NoError(err)
 	err = s.cdc.UnmarshalJSON(body, &govMinDepositResp)
@@ -221,7 +221,7 @@ func (s *IntegrationTestSuite) queryGovMinDeposit(endpoint string) sdk.Coin {
 }
 
 func (s *IntegrationTestSuite) queryGovQuorums(endpoint string) govtypesv1.QueryQuorumsResponse {
-	body, err := httpGet(fmt.Sprintf("%s/atomone/gov/v1/quorums", endpoint))
+	body, err := httpGet(fmt.Sprintf("%s/hikari/gov/v1/quorums", endpoint))
 	s.Require().NoError(err)
 	var res govtypesv1.QueryQuorumsResponse
 	err = s.cdc.UnmarshalJSON(body, &res)
@@ -230,7 +230,7 @@ func (s *IntegrationTestSuite) queryGovQuorums(endpoint string) govtypesv1.Query
 }
 
 func (s *IntegrationTestSuite) queryGovParams(endpoint string, param string) govtypesv1.QueryParamsResponse {
-	body, err := httpGet(fmt.Sprintf("%s/atomone/gov/v1/params/%s", endpoint, param))
+	body, err := httpGet(fmt.Sprintf("%s/hikari/gov/v1/params/%s", endpoint, param))
 	s.Require().NoError(err)
 	var res govtypesv1.QueryParamsResponse
 	err = s.cdc.UnmarshalJSON(body, &res)
@@ -343,7 +343,7 @@ func (s *IntegrationTestSuite) queryStakingParams(endpoint string) stakingtypes.
 
 func (s *IntegrationTestSuite) queryConstitution(endpoint string) govtypesv1.QueryConstitutionResponse {
 	var res govtypesv1.QueryConstitutionResponse
-	body, err := httpGet(fmt.Sprintf("%s/atomone/gov/v1/constitution", endpoint))
+	body, err := httpGet(fmt.Sprintf("%s/hikari/gov/v1/constitution", endpoint))
 	s.Require().NoError(err)
 	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
@@ -351,7 +351,7 @@ func (s *IntegrationTestSuite) queryConstitution(endpoint string) govtypesv1.Que
 }
 
 func (s *IntegrationTestSuite) queryPhotonConversionRate(endpoint string) math.LegacyDec {
-	body, err := httpGet(fmt.Sprintf("%s/atomone/photon/v1/conversion_rate", endpoint))
+	body, err := httpGet(fmt.Sprintf("%s/hikari/photon/v1/conversion_rate", endpoint))
 	s.Require().NoError(err)
 	var resp photontypes.QueryConversionRateResponse
 	err = s.cdc.UnmarshalJSON(body, &resp)
@@ -360,7 +360,7 @@ func (s *IntegrationTestSuite) queryPhotonConversionRate(endpoint string) math.L
 }
 
 func (s *IntegrationTestSuite) queryPhotonParams(endpoint string) photontypes.QueryParamsResponse {
-	body, err := httpGet(fmt.Sprintf("%s/atomone/photon/v1/params", endpoint))
+	body, err := httpGet(fmt.Sprintf("%s/hikari/photon/v1/params", endpoint))
 	s.Require().NoError(err)
 	var res photontypes.QueryParamsResponse
 	err = s.cdc.UnmarshalJSON(body, &res)
@@ -369,7 +369,7 @@ func (s *IntegrationTestSuite) queryPhotonParams(endpoint string) photontypes.Qu
 }
 
 func (s *IntegrationTestSuite) queryDynamicfeeParams(endpoint string) dynamicfeetypes.ParamsResponse {
-	body, err := httpGet(fmt.Sprintf("%s/atomone/dynamicfee/v1/params", endpoint))
+	body, err := httpGet(fmt.Sprintf("%s/hikari/dynamicfee/v1/params", endpoint))
 	s.Require().NoError(err)
 	var res dynamicfeetypes.ParamsResponse
 	err = s.cdc.UnmarshalJSON(body, &res)
@@ -378,7 +378,7 @@ func (s *IntegrationTestSuite) queryDynamicfeeParams(endpoint string) dynamicfee
 }
 
 func (s *IntegrationTestSuite) queryDynamicfeeState(endpoint string) dynamicfeetypes.StateResponse {
-	body, err := httpGet(fmt.Sprintf("%s/atomone/dynamicfee/v1/state", endpoint))
+	body, err := httpGet(fmt.Sprintf("%s/hikari/dynamicfee/v1/state", endpoint))
 	s.Require().NoError(err)
 	var res dynamicfeetypes.StateResponse
 	err = s.cdc.UnmarshalJSON(body, &res)
@@ -388,7 +388,7 @@ func (s *IntegrationTestSuite) queryDynamicfeeState(endpoint string) dynamicfeet
 
 func (s *IntegrationTestSuite) queryDynamicfeeStateAtHeight(endpoint string, height string) dynamicfeetypes.StateResponse {
 	headers := addHeader(nil, "x-cosmos-block-height", height)
-	body, err := httpGetWithHeader(fmt.Sprintf("%s/atomone/dynamicfee/v1/state", endpoint), headers)
+	body, err := httpGetWithHeader(fmt.Sprintf("%s/hikari/dynamicfee/v1/state", endpoint), headers)
 	s.Require().NoError(err)
 	var res dynamicfeetypes.StateResponse
 	err = s.cdc.UnmarshalJSON(body, &res)
@@ -397,7 +397,7 @@ func (s *IntegrationTestSuite) queryDynamicfeeStateAtHeight(endpoint string, hei
 }
 
 func (s *IntegrationTestSuite) queryDynamicfeeGasPrice(endpoint string, denom string) dynamicfeetypes.GasPriceResponse {
-	body, err := httpGet(fmt.Sprintf("%s/atomone/dynamicfee/v1/gas_price/%s", endpoint, denom))
+	body, err := httpGet(fmt.Sprintf("%s/hikari/dynamicfee/v1/gas_price/%s", endpoint, denom))
 	s.Require().NoError(err)
 	var res dynamicfeetypes.GasPriceResponse
 	err = s.cdc.UnmarshalJSON(body, &res)
@@ -406,7 +406,7 @@ func (s *IntegrationTestSuite) queryDynamicfeeGasPrice(endpoint string, denom st
 }
 
 func (s *IntegrationTestSuite) queryDynamicfeeGasPrices(endpoint string) dynamicfeetypes.GasPricesResponse {
-	body, err := httpGet(fmt.Sprintf("%s/atomone/dynamicfee/v1/gas_prices", endpoint))
+	body, err := httpGet(fmt.Sprintf("%s/hikari/dynamicfee/v1/gas_prices", endpoint))
 	s.Require().NoError(err)
 	var res dynamicfeetypes.GasPricesResponse
 	err = s.cdc.UnmarshalJSON(body, &res)

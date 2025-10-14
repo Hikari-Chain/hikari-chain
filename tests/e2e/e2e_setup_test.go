@@ -7,7 +7,7 @@ import (
 	"math/rand"
 	"os"
 	"os/exec"
-	"path/filepath"
+	"path"
 	"strconv"
 	"strings"
 	"testing"
@@ -39,18 +39,18 @@ import (
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	appparams "github.com/atomone-hub/atomone/app/params"
-	_ "github.com/atomone-hub/atomone/cmd/atomoned/cmd"
-	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+	appparams "github.com/Hikari-Chain/hikari-chain/app/params"
+	_ "github.com/Hikari-Chain/hikari-chain/cmd/hikarid/cmd"
+	photontypes "github.com/Hikari-Chain/hikari-chain/x/photon/types"
 )
 
 const (
-	atomonedBinary               = "atomoned"
+	hikaridBinary                = "hikarid"
 	txCommand                    = "tx"
 	queryCommand                 = "query"
 	keysCommand                  = "keys"
-	atomoneHomePath              = "/home/nonroot/.atomone"
-	uatoneDenom                  = appparams.BondDenom
+	atomoneHomePath              = "/home/nonroot/.hikari"
+	ulDenom                      = appparams.BondDenom
 	uphotonDenom                 = photontypes.Denom
 	minGasPrice                  = "0.00001"
 	gas                          = 200000
@@ -76,16 +76,18 @@ const (
 )
 
 var (
-	runInCI           = os.Getenv("GITHUB_ACTIONS") == "true"
-	atomoneConfigPath = filepath.Join(atomoneHomePath, "config")
+	runInCI = os.Getenv("GITHUB_ACTIONS") == "true"
+	// atomoneConfigPath is used inside Linux containers, so we must use forward slashes
+	// even on Windows. Using path.Join would create backslashes on Windows.
+	atomoneConfigPath = atomoneHomePath + "/config"
 	initBalance       = sdk.NewCoins(
-		sdk.NewInt64Coin(uatoneDenom, 10_000_000_000_000), // 10,000,000atone
-		sdk.NewInt64Coin(uphotonDenom, 10_000_000_000),    // 10,000photon
+		sdk.NewInt64Coin(ulDenom, 10_000_000_000_000),  // 10,000,000l
+		sdk.NewInt64Coin(uphotonDenom, 10_000_000_000), // 10,000photon
 	)
 	initBalanceStr    = initBalance.String()
-	stakingAmountCoin = sdk.NewInt64Coin(uatoneDenom, 6_000_000_000_000) // 6,000,000atone
-	tokenAmount       = sdk.NewInt64Coin(uatoneDenom, 100_000_000)       // 100atone
-	standardFees      = sdk.NewInt64Coin(uphotonDenom, 330_000)          // 0.33photon
+	stakingAmountCoin = sdk.NewInt64Coin(ulDenom, 6_000_000_000_000) // 6,000,000l
+	tokenAmount       = sdk.NewInt64Coin(ulDenom, 100_000_000)       // 100l
+	standardFees      = sdk.NewInt64Coin(uphotonDenom, 330_000)      // 0.33photon
 	proposalCounter   = 0
 )
 
@@ -154,8 +156,8 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	// The boostrapping phase is as follows:
 	//
-	// 1. Initialize AtomOne validator nodes.
-	// 2. Create and initialize AtomOne validator genesis files (both chains)
+	// 1. Initialize Hikari Chain validator nodes.
+	// 2. Create and initialize Hikari Chain validator genesis files (both chains)
 	// 3. Start both networks.
 	// 4. Create and run IBC relayer (Hermes and TSRelayer) containers.
 
@@ -260,13 +262,13 @@ func (s *IntegrationTestSuite) initNodes(c *chain) {
 	}
 
 	s.Require().NoError(
-		modifyGenesis(s.cdc, val0ConfigDir, "", initBalanceStr, addrAll, uatoneDenom),
+		modifyGenesis(s.cdc, val0ConfigDir, "", initBalanceStr, addrAll, ulDenom),
 	)
 	// copy the genesis file to the remaining validators
 	for _, val := range c.validators[1:] {
 		_, err := copyFile(
-			filepath.Join(val0ConfigDir, "config", "genesis.json"),
-			filepath.Join(val.configDir(), "config", "genesis.json"),
+			path.Join(val0ConfigDir, "config", "genesis.json"),
+			path.Join(val.configDir(), "config", "genesis.json"),
 		)
 		s.Require().NoError(err)
 	}
@@ -403,7 +405,7 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 	}
 	stakingModuleBalances := banktypes.Balance{
 		Address: authtypes.NewModuleAddress(stakingtypes.NotBondedPoolName).String(),
-		Coins:   sdk.NewCoins(sdk.NewCoin(uatoneDenom, math.NewInt(slashingShares))),
+		Coins:   sdk.NewCoins(sdk.NewCoin(ulDenom, math.NewInt(slashingShares))),
 	}
 	bankGenState.Balances = append(
 		bankGenState.Balances,
@@ -417,13 +419,13 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 	// update the denom metadata for the bank module
 	bankGenState.DenomMetadata = append(bankGenState.DenomMetadata, banktypes.Metadata{
 		Description: "An example stable token",
-		Display:     uatoneDenom,
-		Base:        uatoneDenom,
-		Symbol:      uatoneDenom,
-		Name:        uatoneDenom,
+		Display:     ulDenom,
+		Base:        ulDenom,
+		Symbol:      ulDenom,
+		Name:        ulDenom,
 		DenomUnits: []*banktypes.DenomUnit{
 			{
-				Denom:    uatoneDenom,
+				Denom:    ulDenom,
 				Exponent: 0,
 			},
 		},
@@ -517,13 +519,13 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 
 	// write the updated genesis file to each validator.
 	for _, val := range c.validators {
-		err = writeFile(filepath.Join(val.configDir(), "config", "genesis.json"), bz)
+		err = writeFile(path.Join(val.configDir(), "config", "genesis.json"), bz)
 		s.Require().NoError(err)
 
-		err = writeFile(filepath.Join(val.configDir(), vestingPeriodFile), vestingPeriod)
+		err = writeFile(path.Join(val.configDir(), vestingPeriodFile), vestingPeriod)
 		s.Require().NoError(err)
 
-		err = writeFile(filepath.Join(val.configDir(), rawTxFile), rawTx)
+		err = writeFile(path.Join(val.configDir(), rawTxFile), rawTx)
 		s.Require().NoError(err)
 	}
 }
@@ -531,7 +533,7 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 // initValidatorConfigs initializes the validator configs for the given chain.
 func (s *IntegrationTestSuite) initValidatorConfigs(c *chain) {
 	for i, val := range c.validators {
-		tmCfgPath := filepath.Join(val.configDir(), "config", "config.toml")
+		tmCfgPath := path.Join(val.configDir(), "config", "config.toml")
 
 		vpr := viper.New()
 		vpr.SetConfigFile(tmCfgPath)
@@ -562,15 +564,24 @@ func (s *IntegrationTestSuite) initValidatorConfigs(c *chain) {
 
 		valConfig.P2P.PersistentPeers = strings.Join(peers, ",")
 
+		// Fix paths for Linux containers - replace Windows backslashes with forward slashes
+		// These paths will be used inside Linux containers where backslashes don't work
+		valConfig.SetRoot(strings.ReplaceAll(valConfig.RootDir, "\\", "/"))
+		valConfig.DBPath = strings.ReplaceAll(valConfig.DBPath, "\\", "/")
+		valConfig.Genesis = strings.ReplaceAll(valConfig.Genesis, "\\", "/")
+		valConfig.PrivValidatorKey = strings.ReplaceAll(valConfig.PrivValidatorKey, "\\", "/")
+		valConfig.PrivValidatorState = strings.ReplaceAll(valConfig.PrivValidatorState, "\\", "/")
+		valConfig.NodeKey = strings.ReplaceAll(valConfig.NodeKey, "\\", "/")
+
 		tmconfig.WriteConfigFile(tmCfgPath, valConfig)
 
 		// set application configuration
-		appCfgPath := filepath.Join(val.configDir(), "config", "app.toml")
+		appCfgPath := path.Join(val.configDir(), "config", "app.toml")
 
 		appConfig := srvconfig.DefaultConfig()
 		appConfig.API.Enable = true
 		appConfig.API.Address = "tcp://0.0.0.0:1317"
-		appConfig.MinGasPrices = fmt.Sprintf("%s%s,%s%s", minGasPrice, uatoneDenom,
+		appConfig.MinGasPrices = fmt.Sprintf("%s%s,%s%s", minGasPrice, ulDenom,
 			minGasPrice, uphotonDenom)
 		appConfig.GRPC.Address = "0.0.0.0:9090"
 
@@ -581,9 +592,9 @@ func (s *IntegrationTestSuite) initValidatorConfigs(c *chain) {
 
 // runValidators runs the validators in the chain
 func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
-	s.T().Logf("starting AtomOne %s validator containers...", c.id)
+	s.T().Logf("starting Hikari Chain %s validator containers...", c.id)
 
-	const dockerImage = "cosmos/atomoned-e2e"
+	const dockerImage = "cosmos/hikarid-e2e"
 
 	s.valResources[c.id] = make([]*dockertest.Resource, len(c.validators))
 	for i, val := range c.validators {
@@ -618,7 +629,7 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 		s.Require().NoError(err)
 
 		s.valResources[c.id][i] = resource
-		s.T().Logf("started AtomOne %s validator container: %s", c.id, resource.Container.ID)
+		s.T().Logf("started Hikari Chain %s validator container: %s", c.id, resource.Container.ID)
 	}
 
 	rpcClient := s.rpcClient(s.chainA, 0)
@@ -644,7 +655,7 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 		nodeReadyTimeout,
 		time.Second,
 	) {
-		s.T().Fatalf("AtomOne node failed to produce blocks. Is docker image %q up-to-date?", dockerImage)
+		s.T().Fatalf("Hikari Chain node failed to produce blocks. Is docker image %q up-to-date?", dockerImage)
 	}
 }
 

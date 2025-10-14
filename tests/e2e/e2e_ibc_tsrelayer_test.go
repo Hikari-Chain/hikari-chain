@@ -40,7 +40,7 @@ type tsRelayerPath struct {
 func (s *IntegrationTestSuite) runIBCTSRelayer() (ibcV1Path tsRelayerPath, ibcV2Path tsRelayerPath) {
 	s.T().Log("starting ts-relayer container")
 
-	tmpDir, err := os.MkdirTemp("", "atomone-e2e-testnet-ts-relayer-")
+	tmpDir, err := os.MkdirTemp("", "hikari-e2e-testnet-ts-relayer-")
 	s.Require().NoError(err)
 	s.tmpDirs = append(s.tmpDirs, tmpDir)
 
@@ -73,6 +73,11 @@ func (s *IntegrationTestSuite) runIBCTSRelayer() (ibcV1Path tsRelayerPath, ibcV2
 	s.tsRelayerAddMnemonic(s.chainB.id, rlyB.mnemonic)
 	s.tsRelayerAddGasPrice(s.chainA.id, "0.0001uphoton")
 	s.tsRelayerAddGasPrice(s.chainB.id, "0.0001uphoton")
+
+	// Give the keyring some time to persist the mnemonics and gas prices
+	// This is especially important when running the full test suite where
+	// the system may be under load after the Hermes test
+	time.Sleep(2 * time.Second)
 
 	// create IBCv1 path between the two AtomOne chains
 	s.tsRelayerAddPath(

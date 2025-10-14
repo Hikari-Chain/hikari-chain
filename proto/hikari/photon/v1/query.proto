@@ -1,0 +1,42 @@
+syntax = "proto3";
+package hikari.photon.v1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "hikari/photon/v1/photon.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/Hikari-Chain/hikari-chain/x/photon/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/hikari/photon/v1/params";
+  }
+  // ConversionRate queries the photon's conversion rate
+  rpc ConversionRate(QueryConversionRateRequest)
+      returns (QueryConversionRateResponse) {
+    option (google.api.http).get = "/hikari/photon/v1/conversion_rate";
+  }
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [ (gogoproto.nullable) = false ];
+}
+
+// QueryConversionRateRequest is request type for the Query/ConversionRate RPC
+// method.
+message QueryConversionRateRequest {}
+
+// QueryConversionRateResponse is response type for the Query/ConversionRate RPC
+// method.
+message QueryConversionRateResponse {
+  // conversion_rate represents the factor used to convert atone to photon.
+  string conversion_rate = 1 [ (cosmos_proto.scalar) = "cosmos.Dec" ];
+}

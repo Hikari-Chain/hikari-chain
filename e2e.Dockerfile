@@ -1,13 +1,13 @@
-ARG GO_VERSION
+ARG GO_VERSION=1.25.2
 ARG IMG_TAG=latest
 
-# Compile the atomoned binary
-FROM golang:$GO_VERSION-alpine AS atomoned-builder
+# Compile the hikarid binary
+FROM golang:$GO_VERSION-alpine AS hikarid-builder
 WORKDIR /src/app/
 COPY go.mod go.sum* ./
 RUN go mod download
 COPY . .
-ENV PACKAGES curl make git libc-dev bash gcc linux-headers eudev-dev python3
+ENV PACKAGES="curl make git libc-dev bash gcc linux-headers eudev-dev python3"
 RUN apk add --no-cache $PACKAGES
 RUN CGO_ENABLED=0 make install
 
@@ -15,8 +15,8 @@ RUN CGO_ENABLED=0 make install
 FROM alpine:$IMG_TAG
 RUN adduser -D nonroot
 ARG IMG_TAG
-COPY --from=atomoned-builder /go/bin/atomoned /usr/local/bin/
+COPY --from=hikarid-builder /go/bin/hikarid /usr/local/bin/
 EXPOSE 26656 26657 1317 9090
 USER nonroot
 
-ENTRYPOINT ["atomoned", "start"]
+ENTRYPOINT ["hikarid", "start", "--home", "/home/nonroot/.hikari"]

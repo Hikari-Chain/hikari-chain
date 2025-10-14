@@ -20,7 +20,7 @@ func (s *IntegrationTestSuite) testMintPhoton() {
 			beforeSupply := s.queryBankSupply(chainEndpoint)
 			conversionRate := s.queryPhotonConversionRate(chainEndpoint)
 			s.Require().Positive(conversionRate.MustFloat64())
-			burnedAtoneAmt := sdk.NewInt64Coin(uatoneDenom, 1_000_000)
+			burnedAtoneAmt := sdk.NewInt64Coin(ulDenom, 1_000_000)
 
 			resp := s.execPhotonMint(s.chainA, valIdx, alice.String(), burnedAtoneAmt.String(),
 				false, withKeyValue(flagFees, fees),
@@ -45,15 +45,15 @@ func (s *IntegrationTestSuite) testMintPhoton() {
 			// we except the final supply to be greater or equal than the initial
 			// supply - the burned atones.
 			var (
-				_, beforeUatoneSupply = beforeSupply.Find(uatoneDenom)
-				_, afterUatoneSupply  = afterSupply.Find(uatoneDenom)
+				_, beforeUatoneSupply = beforeSupply.Find(ulDenom)
+				_, afterUatoneSupply  = afterSupply.Find(ulDenom)
 			)
 			s.Require().True(afterUatoneSupply.IsGTE(beforeUatoneSupply.Sub(burnedAtoneAmt)),
-				"after supply should be >= than initial %s supply", uatoneDenom)
+				"after supply should be >= than initial %s supply", ulDenom)
 		}
 	}
 	s.Run("mint photon", subtest(standardFees))
-	atoneFees := sdk.NewCoin(uatoneDenom, standardFees.Amount)
+	atoneFees := sdk.NewCoin(ulDenom, standardFees.Amount)
 	s.Run("mint photon with atone fees", subtest(atoneFees))
 	s.Run("mint photon wrong denom does not deduct fees", func() {
 		var (
@@ -75,8 +75,8 @@ func (s *IntegrationTestSuite) testMintPhoton() {
 		var (
 			_, beforeUphotonBalance = beforeBalance.Find(uphotonDenom)
 			_, afterUphotonBalance  = afterBalance.Find(uphotonDenom)
-			_, beforeUatoneBalance  = beforeBalance.Find(uatoneDenom)
-			_, afterUatoneBalance   = afterBalance.Find(uatoneDenom)
+			_, beforeUatoneBalance  = beforeBalance.Find(ulDenom)
+			_, afterUatoneBalance   = afterBalance.Find(ulDenom)
 		)
 
 		s.Require().True(beforeUatoneBalance.IsEqual(afterUatoneBalance),

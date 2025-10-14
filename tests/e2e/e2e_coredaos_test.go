@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strconv"
 
-	coredaostypes "github.com/atomone-hub/atomone/x/coredaos/types"
-	govtypesv1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	govtypesv1beta1 "github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	coredaostypes "github.com/Hikari-Chain/hikari-chain/x/coredaos/types"
+	govtypesv1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
+	govtypesv1beta1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1beta1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
@@ -30,7 +30,7 @@ func (s *IntegrationTestSuite) testCoreDAOs() {
 	submitGovFlags := []string{configFile(proposalParamChangeFilename)}
 	depositGovFlags := []string{strconv.Itoa(proposalCounter), s.queryGovMinDeposit(chainAAPIEndpoint).String()}
 	voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
-	s.submitGovProposal(chainAAPIEndpoint, senderAddress.String(), proposalCounter, "atomone.coredaos.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
+	s.submitGovProposal(chainAAPIEndpoint, senderAddress.String(), proposalCounter, "hikari.coredaos.v1.MsgUpdateParams", submitGovFlags, depositGovFlags, voteGovFlags, "vote", govtypesv1beta1.StatusPassed)
 
 	newParams := s.queryCoreDAOsParams(chainAAPIEndpoint)
 	s.Require().Equal(newParams.Params.SteeringDaoAddress, steeringDAOAddress.String())
@@ -52,7 +52,7 @@ func (s *IntegrationTestSuite) testCoreDAOs() {
 		proposalID := s.submitVotingPeriodLawProposal(s.chainA)
 
 		atomoneCommand := []string{
-			atomonedBinary,
+			hikaridBinary,
 			txCommand,
 			coredaostypes.ModuleName,
 			"annotate",
@@ -72,7 +72,7 @@ func (s *IntegrationTestSuite) testCoreDAOs() {
 		proposalBeforeExtension := s.queryGovV1Proposal(chainAAPIEndpoint, proposalID)
 
 		atomoneCommand := []string{
-			atomonedBinary,
+			hikaridBinary,
 			txCommand,
 			coredaostypes.ModuleName,
 			"extend-voting-period",
@@ -96,7 +96,7 @@ func (s *IntegrationTestSuite) testCoreDAOs() {
 		proposalBeforeEndorsement := s.queryGovV1Proposal(chainAAPIEndpoint, proposalID)
 
 		atomoneCommand := []string{
-			atomonedBinary,
+			hikaridBinary,
 			txCommand,
 			coredaostypes.ModuleName,
 			"endorse",
@@ -117,7 +117,7 @@ func (s *IntegrationTestSuite) testCoreDAOs() {
 		proposalBeforeVeto := s.queryGovV1Proposal(chainAAPIEndpoint, proposalID)
 
 		atomoneCommand := []string{
-			atomonedBinary,
+			hikaridBinary,
 			txCommand,
 			coredaostypes.ModuleName,
 			"veto",
@@ -138,7 +138,7 @@ func (s *IntegrationTestSuite) testCoreDAOs() {
 		validatorAddressA := sdk.ValAddress(validatorAAddr).String()
 
 		atomoneCommand := []string{
-			atomonedBinary,
+			hikaridBinary,
 			txCommand,
 			stakingtypes.ModuleName,
 			"delegate",

@@ -61,12 +61,12 @@ chance of getting changes merged into the codebase.
 
 To ensure a smooth workflow for all contributors, a general procedure for contributing has been established.
 
-1. Start by browsing [existing issues](https://github.com/atomone-hub/atomone/issues). If you are looking for something interesting or if you have something in your mind, there is a chance it had been discussed.
-   * Looking for a good place to start contributing? How about checking out some [good first issues](https://github.com/atomone-hub/atomone/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) or [bugs](https://github.com/atomone-hub/atomone/issues?q=is%3Aopen+is%3Aissue+label%3Abug)?
+1. Start by browsing [existing issues](https://github.com/Hikari-Chain/hikari-chain/issues). If you are looking for something interesting or if you have something in your mind, there is a chance it had been discussed.
+   * Looking for a good place to start contributing? How about checking out some [good first issues](https://github.com/Hikari-Chain/hikari-chain/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) or [bugs](https://github.com/Hikari-Chain/hikari-chain/issues?q=is%3Aopen+is%3Aissue+label%3Abug)?
 2. Determine whether a GitHub issue or discussion is more appropriate for your needs:
-   1. If you want to propose something new that requires specification or an additional design, or you would like to change a process, start with a [new issue](https://github.com/atomone-hub/atomone/issues/new/choose).
-   2. If the issue you want addressed is a specific proposal or a bug, then open a [new issue](https://github.com/atomone-hub/atomone/issues/new/choose).
-   3. Review existing [issues](https://github.com/atomone-hub/atomone/issues) to find an issue you'd like to help with.
+   1. If you want to propose something new that requires specification or an additional design, or you would like to change a process, start with a [new issue](https://github.com/Hikari-Chain/hikari-chain/issues/new/choose).
+   2. If the issue you want addressed is a specific proposal or a bug, then open a [new issue](https://github.com/Hikari-Chain/hikari-chain/issues/new/choose).
+   3. Review existing [issues](https://github.com/Hikari-Chain/hikari-chain/issues) to find an issue you'd like to help with.
 3. Participate in thoughtful discussion on that issue.
 4. If you would like to contribute:
    1. Ensure that the proposal has been accepted.
@@ -84,11 +84,11 @@ PRs opened before adequate design discussion has taken place in a GitHub issue h
 
 ## Architecture Decision Records (ADR)
 
-When proposing an architecture decision for AtomOne, please start by opening an [issue](https://github.com/atomone-hub/atomone/issues/new/choose) with a summary of the proposal. Once the proposal has been discussed and there is rough alignment on a high-level approach to the design, you may either start development, or write an ADR.
+When proposing an architecture decision for Hikari Chain, please start by opening an [issue](https://github.com/Hikari-Chain/hikari-chain/issues/new/choose) with a summary of the proposal. Once the proposal has been discussed and there is rough alignment on a high-level approach to the design, you may either start development, or write an ADR.
 
 If your architecture decision is a simple change, you may contribute directly without writing an ADR. However, if you are proposing a significant change, please include a corresponding ADR.
 
-To create an ADR, follow the [template](./docs/architecture/adr-template.md) and [doc](./docs/architecture/README.md). If you would like to see examples of how these are written, please refer to the current [ADRs](https://github.com/atomone-hub/atomone/tree/main/docs/architecture).
+To create an ADR, follow the [template](./docs/architecture/adr-template.md) and [doc](./docs/architecture/README.md). If you would like to see examples of how these are written, please refer to the current [ADRs](https://github.com/Hikari-Chain/hikari-chain/tree/main/docs/architecture).
 
 ## Development Procedure
 
@@ -98,7 +98,7 @@ Depending on the scope of the work, we differentiate between self-contained pull
 
 **Self-contained pull requests**:
 
-* Fork the repo (core developers must create a branch directly in the AtomOne repo),
+* Fork the repo (core developers must create a branch directly in the Hikari Chain repo),
 branch from the HEAD of `main`, make some commits, and submit a PR to `main`.
 * For developers who are core contributors and are working within the `atomone` repo, follow branch name conventions to ensure clear
 ownership of branches: `{moniker}/{issue#}-branch-name`.

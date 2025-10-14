@@ -1,6 +1,6 @@
-module github.com/atomone-hub/atomone
+module github.com/Hikari-Chain/hikari-chain
 
-go 1.24.5
+go 1.25.2
 
 replace (
 	cosmossdk.io/x/feegrant => cosmossdk.io/x/feegrant v0.1.1

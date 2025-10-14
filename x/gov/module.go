@@ -30,14 +30,14 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	govclient "github.com/atomone-hub/atomone/x/gov/client"
-	"github.com/atomone-hub/atomone/x/gov/client/cli"
-	"github.com/atomone-hub/atomone/x/gov/keeper"
-	"github.com/atomone-hub/atomone/x/gov/simulation"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
-	modulev1 "github.com/atomone-hub/atomone/x/gov/types/module"
-	v1 "github.com/atomone-hub/atomone/x/gov/types/v1"
-	"github.com/atomone-hub/atomone/x/gov/types/v1beta1"
+	govclient "github.com/Hikari-Chain/hikari-chain/x/gov/client"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/client/cli"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/keeper"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/simulation"
+	govtypes "github.com/Hikari-Chain/hikari-chain/x/gov/types"
+	modulev1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/module"
+	v1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/types/v1beta1"
 )
 
 const ConsensusVersion = 5

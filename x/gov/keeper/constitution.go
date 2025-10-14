@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/atomone-hub/atomone/x/gov/types"
+	"github.com/Hikari-Chain/hikari-chain/x/gov/types"
 )
 
 func (keeper Keeper) GetConstitution(ctx sdk.Context) (constitution string) {

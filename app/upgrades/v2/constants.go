@@ -3,8 +3,8 @@ package v2
 import (
 	store "cosmossdk.io/store/types"
 
-	"github.com/atomone-hub/atomone/app/upgrades"
-	photontypes "github.com/atomone-hub/atomone/x/photon/types"
+	"github.com/Hikari-Chain/hikari-chain/app/upgrades"
+	photontypes "github.com/Hikari-Chain/hikari-chain/x/photon/types"
 )
 
 const (

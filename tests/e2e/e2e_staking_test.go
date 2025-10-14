@@ -32,7 +32,7 @@ func (s *IntegrationTestSuite) testStaking() {
 		}
 
 		delegationAmount := math.NewInt(500000000)
-		delegation := sdk.NewCoin(uatoneDenom, delegationAmount) // 500 atom
+		delegation := sdk.NewCoin(ulDenom, delegationAmount) // 500 atom
 
 		// Alice delegate uatone to Validator A
 		s.execDelegate(s.chainA, 0, delegation.String(), validatorAddressA, delegatorAddress.String(), atomoneHomePath)
@@ -51,7 +51,7 @@ func (s *IntegrationTestSuite) testStaking() {
 		)
 
 		redelegationAmount := delegationAmount.Quo(math.NewInt(2))
-		redelegation := sdk.NewCoin(uatoneDenom, redelegationAmount) // 250 atom
+		redelegation := sdk.NewCoin(ulDenom, redelegationAmount) // 250 atom
 
 		// Alice re-delegate half of her uatone delegation from Validator A to Validator B
 		s.execRedelegate(s.chainA, 0, redelegation.String(), validatorAddressA, validatorAddressB, delegatorAddress.String(), atomoneHomePath)
@@ -82,7 +82,7 @@ func (s *IntegrationTestSuite) testStaking() {
 				s.Require().NoError(err)
 
 				currDelegationAmount = amt.TruncateInt()
-				currDelegation = sdk.NewCoin(uatoneDenom, currDelegationAmount)
+				currDelegation = sdk.NewCoin(ulDenom, currDelegationAmount)
 
 				return currDelegation.IsValid()
 			},

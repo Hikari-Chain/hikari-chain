@@ -10,18 +10,18 @@ import (
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	atomone "github.com/atomone-hub/atomone/app"
-	atomonehelpers "github.com/atomone-hub/atomone/app/helpers"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	hikari "github.com/Hikari-Chain/hikari-chain/app"
+	hikarihelpers "github.com/Hikari-Chain/hikari-chain/app/helpers"
+	govtypes "github.com/Hikari-Chain/hikari-chain/x/gov/types"
 )
 
 func TestAtomOneApp_BlockedModuleAccountAddrs(t *testing.T) {
-	app := atomone.NewAtomOneApp(
+	app := hikari.NewHikariApp(
 		log.NewNopLogger(),
 		dbm.NewMemDB(),
 		nil,
 		true,
-		atomone.EmptyAppOptions{},
+		hikari.EmptyAppOptions{},
 	)
 
 	moduleAccountAddresses := app.ModuleAccountAddrs()
@@ -31,7 +31,7 @@ func TestAtomOneApp_BlockedModuleAccountAddrs(t *testing.T) {
 }
 
 func TestAtomOneApp_Export(t *testing.T) {
-	app := atomonehelpers.Setup(t)
+	app := hikarihelpers.Setup(t)
 	_, err := app.ExportAppStateAndValidators(true, []string{}, []string{})
 	require.NoError(t, err, "ExportAppStateAndValidators should not have an error")
 }

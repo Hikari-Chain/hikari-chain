@@ -13,9 +13,9 @@ import (
 	moduletestutil "github.com/cosmos/cosmos-sdk/types/module/testutil"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/atomone-hub/atomone/x/dynamicfee/keeper"
-	"github.com/atomone-hub/atomone/x/dynamicfee/types"
-	govtypes "github.com/atomone-hub/atomone/x/gov/types"
+	"github.com/Hikari-Chain/hikari-chain/x/dynamicfee/keeper"
+	"github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types"
+	govtypes "github.com/Hikari-Chain/hikari-chain/x/gov/types"
 )
 
 func SetupMsgServer(t *testing.T, maxBlockGas uint64) (types.MsgServer, *keeper.Keeper, sdk.Context) {
