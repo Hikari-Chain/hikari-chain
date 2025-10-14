@@ -1,5 +1,5 @@
 ---
-project_name: atomone
+project_name: hikari
 
 builds:
   - main: ./cmd/hikarid
@@ -13,7 +13,7 @@ builds:
       - CGO_ENABLED=0
     ldflags:
       # .Env.TM_VERSION is provided in the workflow runner environment -> see .github/workflows/release.yml
-      - -X github.com/cosmos/cosmos-sdk/version.Name=atomone -X github.com/cosmos/cosmos-sdk/version.AppName=hikarid -X github.com/cosmos/cosmos-sdk/version.Version=v{{ .Version }} -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }} -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo -X github.com/cometbft/cometbft/version.TMCoreSemVer={{ .Env.TM_VERSION }} -w -s
+      - -X github.com/cosmos/cosmos-sdk/version.Name=hikari -X github.com/cosmos/cosmos-sdk/version.AppName=hikarid -X github.com/cosmos/cosmos-sdk/version.Version=v{{ .Version }} -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }} -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo -X github.com/cometbft/cometbft/version.TMCoreSemVer={{ .Env.TM_VERSION }} -w -s
     goos:
       - darwin
       - linux
