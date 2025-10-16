@@ -1,0 +1,80 @@
+sequenceDiagram
+    participant Alice
+    participant Client
+    participant Validator
+    participant Privacy as x/privacy
+
+    Alice->>Client: Transfer 60ulight to Bob
+
+    Note over Client: 1. Scan chain for Alice's notes
+    Note over Client: Found: note@42 (100ulight)
+
+    Note over Client: 2. Get Merkle path for index 42
+    Note over Client: path = [h43, h20-23, ...]
+    Note over Client: root = R1
+
+    Note over Client: 3. Create output notes
+    Note over Client: Note_Bob {
+    Note over Client:   amount: 60,
+    Note over Client:   recipient: Bob
+    Note over Client: }
+    Note over Client: Note_Change {
+    Note over Client:   amount: 40,
+    Note over Client:   recipient: Alice
+    Note over Client: }
+
+    Note over Client: 4. Compute nullifier
+    Note over Client: N1 = Hash(secret, commit_42)
+
+    Note over Client: 5. Generate ZK-SNARK Proof
+    Note over Client: [5-10 seconds]
+    rect rgb(200, 220, 250)
+        Note over Client: Circuit Proves:
+        Note over Client: • note@42 in tree
+        Note over Client: • nullifier correct
+        Note over Client: • 100 = 60 + 40
+        Note over Client: • outputs valid
+    end
+    Note over Client: Proof: π
+
+    Client->>Validator: MsgPrivateTransfer {<br/>  merkle_root: R1,<br/>  nullifier: N1,<br/>  outputs: [C_bob, C_change],<br/>  encrypted_notes,<br/>  proof: π<br/>}
+
+    Validator->>Privacy: ValidateBasic()
+    Privacy-->>Validator: OK
+
+    Validator->>Privacy: CheckMerkleRoot(R1)
+    Privacy-->>Validator: Current: R1 ✓
+
+    Validator->>Privacy: IsNullifierUsed(N1)?
+    Privacy-->>Validator: false ✓
+
+    Validator->>Privacy: VerifyZKProof(π)
+    rect rgb(220, 250, 220)
+        Note over Privacy: [~5ms]
+        Note over Privacy: Verify:
+        Note over Privacy: • Merkle root R1
+        Note over Privacy: • Nullifier N1
+        Note over Privacy: • Output commitments
+        Note over Privacy: • Proof π
+    end
+    Privacy-->>Validator: Valid ✓
+
+    Validator->>Privacy: MarkNullifier(N1)
+    Privacy-->>Validator: OK
+
+    Validator->>Privacy: AddToTree(C_bob)
+    Privacy-->>Validator: Index: 100
+
+    Validator->>Privacy: AddToTree(C_change)
+    Privacy-->>Validator: Index: 101<br/>New Root: R2
+
+    Privacy->>Privacy: EmitEvent(Transfer)
+
+    Validator-->>Client: Response {<br/>  output_indices: [100, 101],<br/>  new_root: R2<br/>}
+
+    Client-->>Alice: Success!
+
+    Note over Alice,Privacy: Validators CANNOT see:
+    Note over Alice,Privacy: • Which note was spent
+    Note over Alice,Privacy: • Transaction amounts
+    Note over Alice,Privacy: • Alice to Bob connection

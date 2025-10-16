@@ -1,0 +1,55 @@
+sequenceDiagram
+    participant Alice
+    participant Bob
+    participant Chain
+    participant Deposits
+    participant Observer
+
+    Note over Chain: Block 1000
+    Alice->>Chain: Shield 100ulight
+    Chain->>Deposits: Add deposit @ index 42
+    Deposits-->>Chain: OK
+    Observer->>Observer: 👀 Alice shielded<br/>at index 42
+
+    Note over Chain: Block 1005
+    Alice->>Chain: Private Transfer<br/>(input: 42, outputs: 100, 101)
+    Chain->>Chain: Verify signature ✓
+    Chain->>Chain: Verify commitment balance ✓
+    Chain->>Deposits: Mark nullifier for #42
+    Chain->>Deposits: Add deposit @ index 100
+    Chain->>Deposits: Add deposit @ index 101
+    Deposits-->>Chain: OK
+    Observer->>Observer: 👀 Deposit #42 spent<br/>created #100 and #101<br/>⚠️ TRANSACTION GRAPH VISIBLE!
+
+    Note over Chain: Block 1010
+    Bob->>Chain: Scan blocks 1000-1010
+    Chain-->>Bob: Encrypted deposits
+    Bob->>Bob: Decrypt deposit@100<br/>60ulight is mine! 🎉
+
+    Note over Chain: Block 1015
+    Bob->>Chain: Unshield from deposit #100
+    Chain->>Chain: Verify signature ✓
+    Chain->>Deposits: Mark nullifier for #100
+    Chain->>Bob: Mint 60ulight
+    Observer->>Observer: 👀 Deposit #100 unshielded<br/>by Bob (60ulight)
+
+    rect rgb(255, 220, 220)
+        Note over Observer: Observer's View (TOO MUCH INFO!):
+        Note over Observer: ✓ Alice shielded @ index 42
+        Note over Observer: ✓ Deposit #42 to #100 and #101 (LINKED!)
+        Note over Observer: ✓ Bob unshielded from #100
+        Note over Observer: ⚠️ CAN TRACE: 42 to 100 to Bob
+        Note over Observer: ⚠️ LIKELY: Alice sent to Bob
+        Note over Observer: ❌ Amounts hidden (only positive)
+    end
+
+    rect rgb(255, 240, 200)
+        Note over Alice,Bob: Phase 1 Privacy Limitations:
+        Note over Alice,Bob: ⚠️ Transaction graph visible
+        Note over Alice,Bob: ⚠️ Can link deposits by index
+        Note over Alice,Bob: ⚠️ Timing analysis possible
+        Note over Alice,Bob: ✓ Amounts hidden (commitments)
+        Note over Alice,Bob: ✓ Recipients hidden (stealth addr)
+        Note over Alice,Bob: .
+        Note over Alice,Bob: Phase 2 needed for full privacy!
+    end

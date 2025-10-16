@@ -1,0 +1,66 @@
+sequenceDiagram
+    participant Bob
+    participant Client
+    participant Validator
+    participant Privacy as x/privacy
+
+    Bob->>Client: Unshield 60ulight
+
+    Note over Client: 1. Scan chain for Bob's notes
+    Note over Client: Found: note@100 (60ulight)
+
+    Note over Client: 2. Get Merkle path for index 100
+    Note over Client: root = R2
+
+    Note over Client: 3. Compute nullifier
+    Note over Client: N2 = Hash(secret, commit_100)
+
+    Note over Client: 4. Generate ZK-SNARK Proof
+    Note over Client: [5-10 seconds]
+    rect rgb(200, 220, 250)
+        Note over Client: Circuit Proves:
+        Note over Client: • note@100 in tree
+        Note over Client: • nullifier correct
+        Note over Client: • amount = 60
+        Note over Client: • owner = Bob
+    end
+    Note over Client: Proof: π
+
+    Client->>Validator: MsgUnshield {<br/>  recipient: bob,<br/>  merkle_root: R2,<br/>  nullifier: N2,<br/>  amount: 60,<br/>  proof: π<br/>}
+
+    Validator->>Privacy: ValidateBasic()
+    Privacy-->>Validator: OK
+
+    Validator->>Privacy: CheckMerkleRoot(R2)
+    Privacy-->>Validator: Current: R2 ✓
+
+    Validator->>Privacy: IsNullifierUsed(N2)?
+    Privacy-->>Validator: false ✓
+
+    Validator->>Privacy: VerifyZKProof(π)
+    rect rgb(220, 250, 220)
+        Note over Privacy: [~5ms]
+        Note over Privacy: Verify:
+        Note over Privacy: • Note in tree
+        Note over Privacy: • Amount: 60
+        Note over Privacy: • Owner: Bob
+        Note over Privacy: • Nullifier: N2
+        Note over Privacy: • Proof π
+    end
+    Privacy-->>Validator: Valid ✓
+
+    Validator->>Privacy: MarkNullifier(N2)
+    Privacy-->>Validator: OK
+
+    Validator->>Privacy: MintCoins(bob, 60)
+    Privacy-->>Validator: OK
+
+    Privacy->>Privacy: EmitEvent(Unshield)
+
+    Validator-->>Client: Response {<br/>  withdrawn: 60ulight<br/>}
+
+    Client-->>Bob: Success!<br/>(60ulight in public balance)
+
+    Note over Bob,Privacy: Validators CANNOT see:
+    Note over Bob,Privacy: • Which note was spent
+    Note over Bob,Privacy: • (Could be any note in tree)

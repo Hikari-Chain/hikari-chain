@@ -215,6 +215,42 @@ Validators verify:
 
 **Anonymity set size**: Limited by timing and amounts
 
+#### Phase 1 Sequence Diagrams
+
+Detailed sequence diagrams illustrating Phase 1 operations (testnet-only validation):
+
+1. **[Shield Operation](diagrams/privacy-phase1/shield-operation.mmd)** - Depositing coins to private pool
+   - Client generates stealth address and Pedersen commitment
+   - Validator burns public coins and stores deposit at specific index
+   - ⚠️ Deposit index visible to observers
+
+2. **[Private Transfer Operation](diagrams/privacy-phase1/private-transfer-operation.mmd)** - Transfer with simple signature
+   - Client scans for owned deposits
+   - Signs with spend key (no ZK proof)
+   - Validator verifies signature and commitment balance
+   - ⚠️ Input deposit index visible (transaction graph exposed)
+
+3. **[Unshield Operation](diagrams/privacy-phase1/unshield-operation.mmd)** - Withdrawing to public balance
+   - Client signs spend with deposit key
+   - Validator verifies signature
+   - Mints coins to public balance
+   - ⚠️ Deposit index visible (can be traced)
+
+4. **[Complete User Journey](diagrams/privacy-phase1/complete-user-journey.mmd)** - Full Alice → Bob transfer showing privacy limitations
+   - Demonstrates what observers can see
+   - Shows transaction graph linkability (deposit #42 → #100 → Bob)
+   - Highlights why Phase 1 is testnet-only
+
+**Phase 1 Limitations Demonstrated:**
+- ❌ Transaction graph fully visible (deposit #42 → deposits #100, #101)
+- ❌ Can link Alice → Bob through deposit indices
+- ⚠️ Timing analysis straightforward
+- ✅ Amounts still hidden (commitments)
+- ✅ Recipients hidden (stealth addresses)
+
+**Why Testnet Only:**
+These diagrams clearly show why Phase 1 cannot be used for mainnet - the visible transaction graph compromises user privacy. Phase 1 validates architecture and UX with test tokens before investing in full zk-SNARK implementation.
+
 ### Phase 2: Zero-Knowledge Privacy (Mainnet Production)
 
 **Timeline**: 12-16 weeks after Phase 1 testnet validation
@@ -316,6 +352,38 @@ The circuit proves the following statement:
 - ⚠️ Entry/exit correlation: Possible (mitigate with mixing)
 
 **Anonymity set size**: All deposits in the tree (potentially millions)
+
+#### Phase 2 Sequence Diagrams
+
+Detailed sequence diagrams illustrating the complete flow of Phase 2 operations with zk-SNARK proofs:
+
+1. **[Shield Operation](diagrams/privacy-phase2/shield-operation.mmd)** - Depositing coins to the private pool
+   - Client generates commitment locally
+   - Validator burns public coins and adds commitment to Merkle tree
+   - No ZK proof required for shielding
+
+2. **[Private Transfer Operation](diagrams/privacy-phase2/private-transfer-operation.mmd)** - Anonymous transfer within private pool
+   - Client scans for owned notes
+   - Generates ZK-SNARK proof (~5-10 seconds)
+   - Validator verifies proof (~5ms) without knowing which note was spent
+   - Creates new output commitments in tree
+
+3. **[Unshield Operation](diagrams/privacy-phase2/unshield-operation.mmd)** - Withdrawing to public balance
+   - Client generates ZK proof of note ownership
+   - Validator verifies proof without knowing which note
+   - Mints coins to public balance
+
+4. **[Complete User Journey](diagrams/privacy-phase2/complete-user-journey.mmd)** - Full Alice → Bob transfer example
+   - Demonstrates privacy guarantees
+   - Shows what observers can and cannot see
+   - Illustrates large anonymity set
+
+**Key Properties Demonstrated:**
+- ✅ Transaction graph fully hidden (unlike Phase 1)
+- ✅ Constant verification time (~5ms) regardless of anonymity set size
+- ✅ Unlinkable inputs and outputs
+- ✅ Large anonymity sets (all notes in tree are potential sources)
+- ⚠️ Entry/exit points still visible (Shield/Unshield operations)
 
 ### Transition from Phase 1 to Phase 2
 

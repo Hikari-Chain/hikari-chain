@@ -1,0 +1,73 @@
+sequenceDiagram
+    participant Alice
+    participant Client
+    participant Validator
+    participant Privacy as x/privacy
+
+    Alice->>Client: Transfer 60ulight to Bob
+
+    Note over Client: 1. Scan deposits to find Alice's
+    Note over Client: Found: deposit@42 (100ulight)
+
+    Note over Client: 2. Derive spend key for deposit@42
+    Note over Client: spend_key = f(secret, index)
+
+    Note over Client: 3. Create outputs
+    Note over Client: Output 1 (Bob):
+    Note over Client:   OneTimeAddr_Bob
+    Note over Client:   C1 = 60*H + b1*G
+    Note over Client:
+    Note over Client: Output 2 (Alice change):
+    Note over Client:   OneTimeAddr_Alice
+    Note over Client:   C2 = 40*H + b2*G
+
+    Note over Client: 4. Compute nullifier (key image)
+    Note over Client: I = x*Hp(P)
+    Note over Client: Prevents double-spend
+
+    Note over Client: 5. Sign with spend key
+    Note over Client: Sign(transaction_data)
+
+    Client->>Validator: MsgPrivateTransfer {<br/>  sender: alice (fee payer),<br/>  input_deposit_index: 42,<br/>  nullifier: I,<br/>  outputs: [<br/>    {OneTimeAddr_Bob, C1, enc1},<br/>    {OneTimeAddr_Alice, C2, enc2}<br/>  ],<br/>  spend_signature<br/>}
+
+    Validator->>Privacy: ValidateBasic()
+    Privacy-->>Validator: OK
+
+    Validator->>Privacy: GetDeposit(42)
+    Privacy-->>Validator: Deposit found ✓
+
+    Validator->>Privacy: IsNullifierUsed(I)?
+    Privacy-->>Validator: false ✓
+
+    Validator->>Privacy: VerifySpendSignature()
+    Note over Privacy: Verify ECDSA signature<br/>with one-time public key
+    Privacy-->>Validator: Valid ✓
+
+    Validator->>Privacy: VerifyCommitmentBalance()
+    Note over Privacy: Check: C_in = C_out1 + C_out2
+    Note over Privacy: Verify: C@42 = C1 + C2
+    Note over Privacy: (EC point addition)
+    Privacy-->>Validator: Balance valid ✓
+
+    Validator->>Privacy: MarkNullifier(I)
+    Privacy-->>Validator: OK
+
+    Validator->>Privacy: AddDeposit(output1)
+    Privacy-->>Validator: Index: 100
+
+    Validator->>Privacy: AddDeposit(output2)
+    Privacy-->>Validator: Index: 101
+
+    Privacy->>Privacy: EmitEvent(PrivateTransfer)
+
+    Validator-->>Client: Response {<br/>  output_indices: [100, 101]<br/>}
+
+    Client-->>Alice: Success!
+
+    rect rgb(255, 220, 220)
+        Note over Alice,Privacy: ⚠️ Visible to observers:
+        Note over Alice,Privacy: • Input: deposit #42 (LINKABLE!)
+        Note over Alice,Privacy: • Outputs: deposits #100, #101
+        Note over Alice,Privacy: • Transaction graph: 42 to 100, 101
+        Note over Alice,Privacy: ✓ Hidden: amounts, recipients
+    end

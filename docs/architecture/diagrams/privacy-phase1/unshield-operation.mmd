@@ -1,0 +1,55 @@
+sequenceDiagram
+    participant Bob
+    participant Client
+    participant Validator
+    participant Privacy as x/privacy
+
+    Bob->>Client: Unshield 60ulight
+
+    Note over Client: 1. Scan deposits for Bob's notes
+    Note over Client: Found: deposit@100 (60ulight)
+
+    Note over Client: 2. Derive spend key for deposit@100
+    Note over Client: spend_key = f(secret, index)
+
+    Note over Client: 3. Compute nullifier (key image)
+    Note over Client: I = x*Hp(P)
+
+    Note over Client: 4. Sign with spend key
+    Note over Client: Sign(unshield_data)
+
+    Client->>Validator: MsgUnshield {<br/>  recipient: bob,<br/>  deposit_index: 100,<br/>  nullifier: I,<br/>  spend_signature<br/>}
+
+    Validator->>Privacy: ValidateBasic()
+    Privacy-->>Validator: OK
+
+    Validator->>Privacy: GetDeposit(100)
+    Privacy-->>Validator: Deposit found ✓
+
+    Validator->>Privacy: IsNullifierUsed(I)?
+    Privacy-->>Validator: false ✓
+
+    Validator->>Privacy: VerifySpendSignature()
+    Note over Privacy: Verify ECDSA signature<br/>with one-time public key
+    Privacy-->>Validator: Valid ✓
+
+    Validator->>Privacy: MarkNullifier(I)
+    Privacy-->>Validator: OK
+
+    Validator->>Privacy: DecryptAmount(deposit@100)
+    Note over Privacy: Extract amount from<br/>encrypted data (60ulight)
+    Privacy-->>Validator: Amount: 60ulight
+
+    Validator->>Privacy: MintCoins(bob, 60ulight)
+    Privacy-->>Validator: OK
+
+    Privacy->>Privacy: EmitEvent(Unshield)
+
+    Validator-->>Client: Response {<br/>  amount: 60ulight<br/>}
+
+    Client-->>Bob: Success!<br/>(60ulight in public balance)
+
+    Note over Bob,Privacy: ⚠️ Visible to observers:
+    Note over Bob,Privacy: • Deposit index: 100 (LINKABLE!)
+    Note over Bob,Privacy: • Recipient: Bob
+    Note over Bob,Privacy: • Amount: 60ulight

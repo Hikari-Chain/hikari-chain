@@ -1,0 +1,51 @@
+sequenceDiagram
+    participant Alice
+    participant Bob
+    participant Chain
+    participant Tree as Merkle Tree
+    participant Observer
+
+    Note over Chain: Block 1000
+    Alice->>Chain: Shield 100ulight
+    Chain->>Tree: Add C1 @ index 42
+    Tree-->>Chain: Root: R1
+    Observer->>Observer: 👀 Alice shielded<br/>SOME amount
+
+    Note over Chain: Block 1005
+    Alice->>Chain: Private Transfer<br/>(ZK proof π1)
+    Chain->>Chain: Verify proof π1 ✓
+    Chain->>Tree: Mark N1 used
+    Chain->>Tree: Add C2 @ index 100
+    Chain->>Tree: Add C3 @ index 101
+    Tree-->>Chain: Root: R2
+    Observer->>Observer: 👀 SOMEONE did transfer<br/>❓ Who? How much?<br/>❓ Can't tell!
+
+    Note over Chain: Block 1010
+    Bob->>Chain: Scan blocks 1000-1010
+    Chain-->>Bob: Encrypted notes
+    Bob->>Bob: Decrypt note@100<br/>60ulight is mine! 🎉
+
+    Note over Chain: Block 1015
+    Bob->>Chain: Unshield 60ulight<br/>(ZK proof π2)
+    Chain->>Chain: Verify proof π2 ✓
+    Chain->>Tree: Mark N2 used
+    Chain->>Bob: Mint 60ulight
+    Observer->>Observer: 👀 Bob unshielded 60
+
+    rect rgb(255, 220, 220)
+        Note over Observer: Observer's Limited View:
+        Note over Observer: ✓ Alice shielded (amount hidden)
+        Note over Observer: ✓ Someone transferred (all hidden)
+        Note over Observer: ✓ Bob unshielded 60
+        Note over Observer: ✗ CANNOT link Alice to Bob
+        Note over Observer: ✗ Could be ANYONE with notes
+        Note over Observer: Anonymity set: 100+ notes
+    end
+
+    rect rgb(220, 255, 220)
+        Note over Alice,Bob: Privacy Achieved:
+        Note over Alice,Bob: • Transaction graph hidden
+        Note over Alice,Bob: • Amounts hidden (except entry/exit)
+        Note over Alice,Bob: • Sender/recipient unlinkable
+        Note over Alice,Bob: • Large anonymity set
+    end

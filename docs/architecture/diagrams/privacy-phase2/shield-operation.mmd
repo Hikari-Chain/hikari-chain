@@ -1,0 +1,46 @@
+sequenceDiagram
+    participant Alice
+    participant Client
+    participant Validator
+    participant Privacy as x/privacy
+
+    Alice->>Client: Shield 100ulight
+
+    Note over Client: 1. Generate keys
+    Note over Client: - ephemeral_r
+    Note over Client: - secret
+    Note over Client: - blinding
+
+    Note over Client: 2. Create note
+    Note over Client: Note {
+    Note over Client:   amount: 100
+    Note over Client:   secret: s
+    Note over Client:   recipient: Alice
+    Note over Client:   blinding: b
+    Note over Client: }
+
+    Note over Client: 3. Compute commitment
+    Note over Client: C = Poseidon(note)
+
+    Note over Client: 4. Encrypt note
+    Note over Client: with ECDH
+
+    Client->>Validator: MsgShield {<br/>  sender: alice,<br/>  amount: 100,<br/>  commitment: C,<br/>  encrypted_note<br/>}
+
+    Validator->>Privacy: ValidateBasic()
+    Privacy-->>Validator: OK
+
+    Validator->>Privacy: CheckBalance(alice)
+    Privacy-->>Validator: Balance: 1000 ✓
+
+    Validator->>Privacy: BurnCoins(alice, 100)
+    Privacy-->>Validator: OK
+
+    Validator->>Privacy: AddToMerkleTree(C)
+    Privacy-->>Validator: Index: 42<br/>New Root: R1
+
+    Privacy->>Privacy: EmitEvent(Shield)
+
+    Validator-->>Client: Response {<br/>  index: 42,<br/>  merkle_root: R1<br/>}
+
+    Client-->>Alice: Success!<br/>(100ulight shielded)
