@@ -51,11 +51,11 @@ func ExportGenesis(ctx context.Context, k keeper.Keeper) (*types.GenesisState, e
 	// TODO: Export all deposits, nullifiers, and Merkle trees
 	// For now, return minimal genesis state
 	return &types.GenesisState{
-		Params:              params,
-		Deposits:            []types.PrivateDeposit{},
-		NextDepositIndices:  make(map[string]uint64),
-		UsedNullifiers:      []types.UsedNullifier{},
-		MerkleTrees:         []types.DenomMerkleTree{},
+		Params:             params,
+		Deposits:           []types.PrivateDeposit{},
+		NextDepositIndices: make(map[string]uint64),
+		UsedNullifiers:     []types.UsedNullifier{},
+		MerkleTrees:        []types.DenomMerkleTree{},
 	}, nil
 }
 

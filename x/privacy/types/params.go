@@ -7,19 +7,19 @@ import (
 // DefaultParams returns default privacy parameters
 func DefaultParams() Params {
 	return Params{
-		Enabled:                   false, // Start disabled, enable via governance
-		AllowedDenoms:             []string{},
-		MinShieldAmounts:          make(map[string]string),
-		MaxDepositsPerTx:          16,
-		MerkleTreeDepth:           32,
-		ProofSystem:               "groth16",
-		MaxMemoSize:               512,
-		NullifierCacheDuration:    100000,
-		Phase:                     "phase1",
-		ShieldGasCost:             50000,
-		UnshieldGasCost:           50000,
-		PrivateTransferGasCost:    100000,
-		VerifyProofGasCost:        500000,
+		Enabled:                false, // Start disabled, enable via governance
+		AllowedDenoms:          []string{},
+		MinShieldAmounts:       make(map[string]string),
+		MaxDepositsPerTx:       16,
+		MerkleTreeDepth:        32,
+		ProofSystem:            "groth16",
+		MaxMemoSize:            512,
+		NullifierCacheDuration: 100000,
+		Phase:                  "phase1",
+		ShieldGasCost:          50000,
+		UnshieldGasCost:        50000,
+		PrivateTransferGasCost: 100000,
+		VerifyProofGasCost:     500000,
 	}
 }
 

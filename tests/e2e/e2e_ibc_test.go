@@ -98,8 +98,8 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer(channelIdA, channelIdB strin
 		ibcTrace := fmt.Sprintf("transfer/%s/%s", channelIdA, ulDenom)
 		ibcDenom := fmt.Sprintf("ibc/%X", sha256.Sum256([]byte(ibcTrace)))
 
-		tokenChainA := sdk.NewInt64Coin(ulDenom, 1_000_000_000) // 1,000 atone
-		tokenChainB := sdk.NewCoin(ibcDenom, tokenChainA.Amount)    // 1,000 ibc/{port}/{channel}/{denom}
+		tokenChainA := sdk.NewInt64Coin(ulDenom, 1_000_000_000)  // 1,000 atone
+		tokenChainB := sdk.NewCoin(ibcDenom, tokenChainA.Amount) // 1,000 ibc/{port}/{channel}/{denom}
 
 		// Get balance before test
 		beforeBalanceChainA := s.queryBalance(chainAAPIEndpoint, sender, ulDenom)
@@ -153,8 +153,8 @@ func (s *IntegrationTestSuite) testIBCv2TokenTransfer(clientIdA, clientIdB strin
 		ibcTrace := fmt.Sprintf("transfer/%s/%s", clientIdA, ulDenom)
 		ibcDenom := fmt.Sprintf("ibc/%X", sha256.Sum256([]byte(ibcTrace)))
 
-		tokenChainA := sdk.NewInt64Coin(ulDenom, 1_000_000_000) // 1,000 atone
-		tokenChainB := sdk.NewCoin(ibcDenom, tokenChainA.Amount)    // 1,000 ibc/{port}/{channel}/{denom}
+		tokenChainA := sdk.NewInt64Coin(ulDenom, 1_000_000_000)  // 1,000 atone
+		tokenChainB := sdk.NewCoin(ibcDenom, tokenChainA.Amount) // 1,000 ibc/{port}/{channel}/{denom}
 
 		// Get balance before test
 		beforeBalanceChainA := s.queryBalance(chainAAPIEndpoint, sender, ulDenom)
