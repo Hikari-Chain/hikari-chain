@@ -1,0 +1,73 @@
+syntax = "proto3";
+package hikari.privacy.v1;
+
+option go_package = "github.com/Hikari-Chain/hikari-chain/x/privacy/types";
+
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+import "amino/amino.proto";
+
+// Params defines the parameters for the privacy module.
+message Params {
+  option (amino.name) = "hikari/x/privacy/v1/Params";
+
+  // Enabled controls whether the privacy module is active.
+  // If false, all privacy operations are disabled.
+  bool enabled = 1;
+
+  // AllowedDenoms is the list of denominations that can be shielded.
+  // This list is controlled by governance.
+  // Example: ["ulight", "uphoton"]
+  repeated string allowed_denoms = 2;
+
+  // MinShieldAmounts defines the minimum amount that can be shielded per denomination.
+  // This prevents dust attacks and spam.
+  // Map: denom -> minimum amount
+  // Example: {"ulight": "1", "uphoton": "1000000"}
+  map<string, string> min_shield_amounts = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.customvalue) = "cosmossdk.io/math.Int"
+  ];
+
+  // MaxDepositsPerTx limits the number of outputs in a single PrivateTransfer.
+  // This prevents DoS attacks via excessive computation.
+  // Recommended: 16
+  uint32 max_deposits_per_tx = 4;
+
+  // MerkleTreeDepth defines the depth of the Merkle tree used in Phase 2.
+  // A depth of 32 supports 2^32 (~4.3 billion) deposits per denomination.
+  // This parameter cannot be changed after genesis without a hard fork.
+  uint32 merkle_tree_depth = 5;
+
+  // ProofSystem specifies which zero-knowledge proof system to use in Phase 2.
+  // Valid values: "groth16", "plonk"
+  // This parameter is only used in Phase 2.
+  string proof_system = 6;
+
+  // MaxMemoSize limits the size of encrypted memos in notes.
+  // Recommended: 512 bytes
+  uint32 max_memo_size = 7;
+
+  // NullifierCacheDuration defines how many blocks to cache nullifiers
+  // for fast double-spend checking.
+  // Recommended: 100000 blocks (~7 days at 6s block time)
+  int64 nullifier_cache_duration = 8;
+
+  // Phase controls which implementation is active.
+  // Valid values: "phase1" (testnet), "phase2" (mainnet)
+  string phase = 9;
+
+  // ShieldGasCost is the base gas cost for a shield operation.
+  uint64 shield_gas_cost = 10;
+
+  // UnshieldGasCost is the base gas cost for an unshield operation.
+  uint64 unshield_gas_cost = 11;
+
+  // PrivateTransferGasCost is the base gas cost for a private transfer.
+  // Additional gas is charged per input/output.
+  uint64 private_transfer_gas_cost = 12;
+
+  // VerifyProofGasCost is the gas cost for verifying a ZK proof (Phase 2).
+  uint64 verify_proof_gas_cost = 13;
+}

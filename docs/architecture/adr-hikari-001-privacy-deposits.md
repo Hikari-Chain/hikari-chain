@@ -3,6 +3,7 @@
 ## Changelog
 
 - 2025-01-16: Initial draft
+- 2025-01-16: Added protobuf file definitions and updated references
 
 ## Status
 
@@ -132,60 +133,77 @@ Both phases implement the same user-facing operations:
 ❌ **Hidden Inputs**: Can see which deposit is being spent
 ❌ **Ring Signatures**: No decoy inputs
 
-#### State Design (Phase 1):
+#### State Design (Both Phases):
+
+Complete protobuf definitions are available in:
+- [`proto/hikari/privacy/v1/privacy.proto`](../../../proto/hikari/privacy/v1/privacy.proto) - Core types (ECPoint, OneTimeAddress, PedersenCommitment, Note, PrivateDeposit, ZKProof, etc.)
+- [`proto/hikari/privacy/v1/params.proto`](../../../proto/hikari/privacy/v1/params.proto) - Module parameters
+- [`proto/hikari/privacy/v1/tx.proto`](../../../proto/hikari/privacy/v1/tx.proto) - Message types
+- [`proto/hikari/privacy/v1/query.proto`](../../../proto/hikari/privacy/v1/query.proto) - Query service
+- [`proto/hikari/privacy/v1/genesis.proto`](../../../proto/hikari/privacy/v1/genesis.proto) - Genesis state
+
+**Key types (simplified overview)**:
 
 ```protobuf
-message OneTimeAddress {
-  ECPoint public_key = 1;    // P = Hs(r*V)*G + S
-  ECPoint tx_public_key = 2; // R = r*G
-}
+// Core types
+message ECPoint { bytes x = 1; bytes y = 2; }
+message OneTimeAddress { ECPoint address = 1; ECPoint tx_public_key = 2; }
+message PedersenCommitment { ECPoint commitment = 1; }
+message Note { bytes encrypted_data = 1; bytes nonce = 2; ECPoint ephemeral_key = 3; }
 
-message PedersenCommitment {
-  ECPoint point = 1; // C = amount*H + blinding*G
-}
-
+// On-chain deposit (what observers see)
 message PrivateDeposit {
-  OneTimeAddress one_time_address = 1;
-  PedersenCommitment commitment = 2;
-  bytes encrypted_amount = 3;
-  uint64 block_height = 4;
-  string denom = 5; // "ulight"
-}
-
-message Nullifier {
-  ECPoint key_image = 1; // I = x*Hp(P)
+  string denom = 1;                        // e.g., "ulight"
+  uint64 index = 2;                        // Global index per denom
+  PedersenCommitment commitment = 3;       // Hides amount
+  OneTimeAddress one_time_address = 4;     // Hides recipient
+  Note encrypted_note = 5;                 // Only recipient can decrypt
+  bytes nullifier = 6;                     // Prevents double-spending
+  int64 created_at_height = 7;
+  string tx_hash = 8;
 }
 ```
 
-#### Message Types (Phase 1):
+#### Message Types (Both Phases):
 
 ```protobuf
-// Deposit coins to private pool
+// Shield: Deposit coins to private pool
 message MsgShield {
   string sender = 1;
   cosmos.base.v1beta1.Coin amount = 2;
-  OneTimeAddress stealth_address = 3;
+  OneTimeAddress one_time_address = 3;
   PedersenCommitment commitment = 4;
-  bytes encrypted_amount = 5;
+  Note encrypted_note = 5;
 }
 
-// Transfer within private pool
+// Private Transfer: Transfer within pool
+// Phase 1: Uses signatures (TransferInput.signature)
+// Phase 2: Uses ZK proof (MsgPrivateTransfer.zk_proof)
 message MsgPrivateTransfer {
-  string sender = 1;                      // Fee payer
-  uint64 input_deposit_index = 2;         // Which deposit to spend
-  Nullifier nullifier = 3;                // Prevent double-spend
-  repeated PrivateDepositOutput outputs = 4;
-  bytes spend_signature = 5;              // Proves ownership
+  string sender = 1;                       // Fee payer only
+  string denom = 2;
+  repeated TransferInput inputs = 3;       // 1-16 inputs
+  repeated TransferOutput outputs = 4;     // 1-16 outputs
+  ZKProof zk_proof = 5;                    // Phase 2 only
+  PedersenCommitment balance_commitment = 6;
+  cosmos.base.v1beta1.Coin fee = 7;
 }
 
-// Withdraw from private pool
+// Unshield: Withdraw from pool to public balance
 message MsgUnshield {
-  string recipient = 1;
-  uint64 deposit_index = 2;
-  Nullifier nullifier = 3;
-  bytes spend_signature = 4;
+  string sender = 1;
+  string denom = 2;
+  string recipient = 3;
+  string amount = 4;
+  uint64 deposit_index = 5;                // Phase 1: visible, Phase 2: hidden in proof
+  bytes nullifier = 6;
+  bytes signature = 7;                     // Phase 1 only
+  ZKProof zk_proof = 8;                    // Phase 2 only
+  PedersenCommitment commitment = 9;
 }
 ```
+
+See the complete protobuf files for all fields, validation rules, and documentation.
 
 #### Validation Logic (Phase 1):
 

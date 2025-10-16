@@ -1,0 +1,64 @@
+syntax = "proto3";
+package hikari.privacy.v1;
+
+option go_package = "github.com/Hikari-Chain/hikari-chain/x/privacy/types";
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "hikari/privacy/v1/params.proto";
+import "hikari/privacy/v1/privacy.proto";
+
+// GenesisState defines the privacy module's genesis state.
+message GenesisState {
+  // Module parameters
+  Params params = 1 [(gogoproto.nullable) = false];
+
+  // All private deposits across all denominations
+  repeated PrivateDeposit deposits = 2 [(gogoproto.nullable) = false];
+
+  // Next deposit index per denomination
+  // Map: denom -> next_index
+  map<string, uint64> next_deposit_indices = 3;
+
+  // Used nullifiers to prevent double-spending
+  repeated UsedNullifier used_nullifiers = 4 [(gogoproto.nullable) = false];
+
+  // Merkle tree state per denomination (Phase 2 only)
+  repeated DenomMerkleTree merkle_trees = 5 [(gogoproto.nullable) = false];
+}
+
+// UsedNullifier tracks a spent nullifier with metadata.
+message UsedNullifier {
+  // The nullifier hash
+  bytes nullifier = 1;
+
+  // Block height where it was spent
+  int64 spent_at_height = 2;
+
+  // Transaction hash that spent it
+  string spent_tx_hash = 3;
+
+  // Denomination of the spent deposit
+  string denom = 4;
+}
+
+// DenomMerkleTree represents the Merkle tree state for a denomination (Phase 2).
+message DenomMerkleTree {
+  // Denomination
+  string denom = 1;
+
+  // Current Merkle root
+  bytes root = 2;
+
+  // Tree depth (should match params.merkle_tree_depth)
+  uint32 depth = 3;
+
+  // Number of leaves in the tree
+  uint64 leaf_count = 4;
+
+  // Merkle tree nodes stored as key-value pairs
+  // This is a sparse representation storing only non-empty nodes
+  // Key format: level || index (5 bytes: 1 byte level + 4 bytes index)
+  // Value: 32-byte hash
+  map<string, bytes> nodes = 5;
+}

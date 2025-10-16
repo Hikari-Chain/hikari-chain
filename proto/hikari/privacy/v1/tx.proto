@@ -1,0 +1,177 @@
+syntax = "proto3";
+package hikari.privacy.v1;
+
+import "hikari/privacy/v1/privacy.proto";
+import "hikari/privacy/v1/params.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/msg/v1/msg.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/Hikari-Chain/hikari-chain/x/privacy/types";
+
+// Msg defines the privacy module's message service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // Shield moves coins from public balance to the privacy pool.
+  rpc Shield(MsgShield) returns (MsgShieldResponse);
+
+  // PrivateTransfer transfers coins within the privacy pool.
+  rpc PrivateTransfer(MsgPrivateTransfer) returns (MsgPrivateTransferResponse);
+
+  // Unshield moves coins from the privacy pool back to public balance.
+  rpc Unshield(MsgUnshield) returns (MsgUnshieldResponse);
+
+  // UpdateParams updates the module parameters.
+  // Authority defaults to the x/gov module account.
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+}
+
+// MsgShield defines a message for shielding (depositing) coins into the privacy pool.
+// The sender's public coins are burned and a new private deposit is created.
+message MsgShield {
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "hikari/x/privacy/v1/MsgShield";
+
+  // Sender's address (must have sufficient public balance)
+  string sender = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // Amount to shield (e.g., "100ulight")
+  cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
+
+  // One-time address for this deposit
+  OneTimeAddress one_time_address = 3 [(gogoproto.nullable) = false];
+
+  // Pedersen commitment to the amount
+  PedersenCommitment commitment = 4 [(gogoproto.nullable) = false];
+
+  // Encrypted note for the recipient
+  Note encrypted_note = 5 [(gogoproto.nullable) = false];
+}
+
+// MsgShieldResponse returns the deposit index assigned to the new private deposit.
+message MsgShieldResponse {
+  // Denomination of the shielded deposit
+  string denom = 1;
+
+  // Index assigned to the new deposit within its denomination pool
+  uint64 deposit_index = 2;
+
+  // Merkle tree root after insertion (Phase 2 only)
+  bytes merkle_root = 3;
+}
+
+// MsgPrivateTransfer defines a message for transferring coins within the privacy pool.
+// Phase 1: Uses simple signatures, deposit indices are visible.
+// Phase 2: Uses ZK proofs, transaction graph is completely hidden.
+message MsgPrivateTransfer {
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "hikari/x/privacy/v1/MsgPrivateTransfer";
+
+  // Sender's address (only for signature verification, not linked to deposits)
+  string sender = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // Denomination being transferred (e.g., "ulight")
+  string denom = 2;
+
+  // Inputs to spend (1-16 inputs)
+  repeated TransferInput inputs = 3 [(gogoproto.nullable) = false];
+
+  // Outputs to create (1-16 outputs)
+  repeated TransferOutput outputs = 4 [(gogoproto.nullable) = false];
+
+  // Phase 1: Empty (uses signatures in TransferInput)
+  // Phase 2: ZK proof that:
+  //   - All inputs are in the Merkle tree
+  //   - Nullifiers are correctly derived
+  //   - Sum(input amounts) = Sum(output amounts)
+  //   - All commitments are well-formed
+  ZKProof zk_proof = 5;
+
+  // Commitment balance proof (proves inputs = outputs)
+  // C_total = Sum(C_inputs) - Sum(C_outputs) = 0*H + b*G
+  // Where 'b' is the difference in blinding factors
+  PedersenCommitment balance_commitment = 6 [(gogoproto.nullable) = false];
+
+  // Fee paid for this transaction (from public balance or included in private balance)
+  // For simplicity in Phase 1, fee is paid from sender's public balance
+  cosmos.base.v1beta1.Coin fee = 7 [(gogoproto.nullable) = false];
+}
+
+// MsgPrivateTransferResponse returns the indices of newly created outputs.
+message MsgPrivateTransferResponse {
+  // Indices assigned to the new output deposits
+  repeated uint64 output_indices = 1;
+
+  // Merkle tree root after insertion (Phase 2 only)
+  bytes merkle_root = 2;
+}
+
+// MsgUnshield defines a message for unshielding (withdrawing) coins from the privacy pool.
+// The private deposit is spent and public coins are minted to the recipient.
+message MsgUnshield {
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "hikari/x/privacy/v1/MsgUnshield";
+
+  // Sender's address (receives the unshielded coins)
+  string sender = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // Denomination to unshield (e.g., "ulight")
+  string denom = 2;
+
+  // Recipient address for the unshielded coins
+  // Can be the same as sender or different
+  string recipient = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // Amount to unshield
+  string amount = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  // Phase 1: Deposit index being spent (visible)
+  // Phase 2: Hidden in ZK proof
+  uint64 deposit_index = 5;
+
+  // Nullifier to mark this deposit as spent
+  bytes nullifier = 6;
+
+  // Phase 1: Signature proving ownership of the deposit
+  // Phase 2: Empty (ownership proven in ZK proof)
+  bytes signature = 7;
+
+  // Phase 2 only: ZK proof that:
+  //   - Deposit exists in Merkle tree
+  //   - Nullifier is correctly derived
+  //   - Amount matches commitment
+  ZKProof zk_proof = 8;
+
+  // Pedersen commitment to the amount being unshielded
+  PedersenCommitment commitment = 9 [(gogoproto.nullable) = false];
+}
+
+// MsgUnshieldResponse confirms the unshield operation.
+message MsgUnshieldResponse {
+  // Amount that was unshielded and minted to recipient
+  cosmos.base.v1beta1.Coin amount = 1 [(gogoproto.nullable) = false];
+}
+
+// MsgUpdateParams defines the message for updating module parameters.
+// This message can only be executed via governance proposal.
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "hikari/x/privacy/v1/MsgUpdateParams";
+
+  // Authority is the address that controls the module parameters.
+  // Defaults to the x/gov module account.
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // Params defines the new parameters for the privacy module.
+  Params params = 2 [(gogoproto.nullable) = false];
+}
+
+// MsgUpdateParamsResponse is the response for MsgUpdateParams.
+message MsgUpdateParamsResponse {}

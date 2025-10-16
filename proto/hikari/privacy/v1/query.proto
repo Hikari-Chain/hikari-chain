@@ -1,0 +1,244 @@
+syntax = "proto3";
+package hikari.privacy.v1;
+
+option go_package = "github.com/Hikari-Chain/hikari-chain/x/privacy/types";
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "amino/amino.proto";
+import "hikari/privacy/v1/params.proto";
+import "hikari/privacy/v1/privacy.proto";
+
+// Query defines the gRPC query service for the privacy module.
+service Query {
+  // Params returns the current privacy module parameters.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/hikari/privacy/v1/params";
+  }
+
+  // Deposit returns a specific private deposit by denomination and index.
+  rpc Deposit(QueryDepositRequest) returns (QueryDepositResponse) {
+    option (google.api.http).get = "/hikari/privacy/v1/deposits/{denom}/{index}";
+  }
+
+  // Deposits returns all deposits for a specific denomination with pagination.
+  rpc Deposits(QueryDepositsRequest) returns (QueryDepositsResponse) {
+    option (google.api.http).get = "/hikari/privacy/v1/deposits/{denom}";
+  }
+
+  // AllDeposits returns deposits across all denominations with pagination.
+  rpc AllDeposits(QueryAllDepositsRequest) returns (QueryAllDepositsResponse) {
+    option (google.api.http).get = "/hikari/privacy/v1/deposits";
+  }
+
+  // NextDepositIndex returns the next available deposit index for a denomination.
+  rpc NextDepositIndex(QueryNextDepositIndexRequest) returns (QueryNextDepositIndexResponse) {
+    option (google.api.http).get = "/hikari/privacy/v1/next_index/{denom}";
+  }
+
+  // IsNullifierUsed checks if a nullifier has been used.
+  rpc IsNullifierUsed(QueryIsNullifierUsedRequest) returns (QueryIsNullifierUsedResponse) {
+    option (google.api.http).get = "/hikari/privacy/v1/nullifier/{nullifier}";
+  }
+
+  // MerkleRoot returns the current Merkle tree root for a denomination (Phase 2).
+  rpc MerkleRoot(QueryMerkleRootRequest) returns (QueryMerkleRootResponse) {
+    option (google.api.http).get = "/hikari/privacy/v1/merkle_root/{denom}";
+  }
+
+  // MerklePath returns the Merkle path for a specific leaf (Phase 2).
+  rpc MerklePath(QueryMerklePathRequest) returns (QueryMerklePathResponse) {
+    option (google.api.http).get = "/hikari/privacy/v1/merkle_path/{denom}/{index}";
+  }
+
+  // DepositsByRange returns deposits within a specific index range.
+  // This is useful for clients scanning for their deposits.
+  rpc DepositsByRange(QueryDepositsByRangeRequest) returns (QueryDepositsByRangeResponse) {
+    option (google.api.http).get = "/hikari/privacy/v1/deposits/{denom}/range/{start_index}/{end_index}";
+  }
+
+  // Stats returns statistics about the privacy pool.
+  rpc Stats(QueryStatsRequest) returns (QueryStatsResponse) {
+    option (google.api.http).get = "/hikari/privacy/v1/stats";
+  }
+}
+
+// QueryParamsRequest is the request for querying module parameters.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response for querying module parameters.
+message QueryParamsResponse {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryDepositRequest requests a specific deposit by denomination and index.
+message QueryDepositRequest {
+  // Denomination of the deposit
+  string denom = 1;
+
+  // Index of the deposit within the denomination pool
+  uint64 index = 2;
+}
+
+// QueryDepositResponse returns the requested deposit.
+message QueryDepositResponse {
+  PrivateDeposit deposit = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryDepositsRequest requests all deposits for a denomination.
+message QueryDepositsRequest {
+  // Denomination to query
+  string denom = 1;
+
+  // Pagination parameters
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryDepositsResponse returns deposits for a denomination.
+message QueryDepositsResponse {
+  repeated PrivateDeposit deposits = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryAllDepositsRequest requests deposits across all denominations.
+message QueryAllDepositsRequest {
+  // Pagination parameters
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryAllDepositsResponse returns deposits across all denominations.
+message QueryAllDepositsResponse {
+  repeated PrivateDeposit deposits = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryNextDepositIndexRequest requests the next deposit index for a denomination.
+message QueryNextDepositIndexRequest {
+  // Denomination to query
+  string denom = 1;
+}
+
+// QueryNextDepositIndexResponse returns the next available index.
+message QueryNextDepositIndexResponse {
+  // Next available deposit index
+  uint64 next_index = 1;
+
+  // Total number of deposits for this denomination
+  uint64 total_deposits = 2;
+}
+
+// QueryIsNullifierUsedRequest checks if a nullifier has been spent.
+message QueryIsNullifierUsedRequest {
+  // Nullifier to check (hex-encoded bytes)
+  string nullifier = 1;
+}
+
+// QueryIsNullifierUsedResponse returns whether the nullifier is used.
+message QueryIsNullifierUsedResponse {
+  // True if nullifier has been used
+  bool used = 1;
+
+  // If used, the block height where it was spent
+  int64 spent_at_height = 2;
+
+  // If used, the transaction hash that spent it
+  string spent_tx_hash = 3;
+}
+
+// QueryMerkleRootRequest requests the Merkle tree root (Phase 2).
+message QueryMerkleRootRequest {
+  // Denomination to query
+  string denom = 1;
+}
+
+// QueryMerkleRootResponse returns the current Merkle root.
+message QueryMerkleRootResponse {
+  // Current Merkle tree root
+  bytes root = 1;
+
+  // Tree depth
+  uint32 depth = 2;
+
+  // Number of leaves in the tree
+  uint64 leaf_count = 3;
+}
+
+// QueryMerklePathRequest requests a Merkle proof for a specific leaf.
+message QueryMerklePathRequest {
+  // Denomination to query
+  string denom = 1;
+
+  // Leaf index
+  uint64 index = 2;
+}
+
+// QueryMerklePathResponse returns the Merkle path.
+message QueryMerklePathResponse {
+  MerkleProof proof = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryDepositsByRangeRequest requests deposits within an index range.
+message QueryDepositsByRangeRequest {
+  // Denomination to query
+  string denom = 1;
+
+  // Start index (inclusive)
+  uint64 start_index = 2;
+
+  // End index (exclusive)
+  uint64 end_index = 3;
+}
+
+// QueryDepositsByRangeResponse returns deposits in the range.
+message QueryDepositsByRangeResponse {
+  repeated PrivateDeposit deposits = 1 [(gogoproto.nullable) = false];
+
+  // Actual range returned (may be capped by server limits)
+  uint64 start_index = 2;
+  uint64 end_index = 3;
+}
+
+// QueryStatsRequest requests privacy pool statistics.
+message QueryStatsRequest {}
+
+// QueryStatsResponse returns privacy pool statistics.
+message QueryStatsResponse {
+  // Total number of deposits across all denominations
+  uint64 total_deposits = 1;
+
+  // Total number of spent deposits
+  uint64 total_spent = 2;
+
+  // Number of active (unspent) deposits
+  uint64 active_deposits = 3;
+
+  // Per-denomination statistics
+  repeated DenomStats denom_stats = 4 [(gogoproto.nullable) = false];
+
+  // Current phase ("phase1" or "phase2")
+  string phase = 5;
+}
+
+// DenomStats contains statistics for a single denomination.
+message DenomStats {
+  // Denomination
+  string denom = 1;
+
+  // Total deposits for this denom
+  uint64 total_deposits = 2;
+
+  // Active (unspent) deposits
+  uint64 active_deposits = 3;
+
+  // Total value locked (sum of all active deposits)
+  // Note: This is only available if amounts are not fully hidden
+  string total_value_locked = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  // Merkle tree root (Phase 2 only)
+  bytes merkle_root = 5;
+}

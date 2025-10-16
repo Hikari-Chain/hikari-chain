@@ -1,0 +1,176 @@
+syntax = "proto3";
+package hikari.privacy.v1;
+
+option go_package = "github.com/Hikari-Chain/hikari-chain/x/privacy/types";
+
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+import "amino/amino.proto";
+
+// ECPoint represents an elliptic curve point on secp256k1.
+// Both coordinates are 32-byte big-endian encoded field elements.
+message ECPoint {
+  // X coordinate (32 bytes)
+  bytes x = 1;
+  // Y coordinate (32 bytes)
+  bytes y = 2;
+}
+
+// OneTimeAddress represents a stealth address generated for a single payment.
+// It includes the ephemeral public key (R) used in ECDH and the actual
+// one-time address (P = Hs(r*V)*G + S).
+message OneTimeAddress {
+  // One-time public key derived from stealth address protocol
+  ECPoint address = 1 [(gogoproto.nullable) = false];
+
+  // Ephemeral transaction public key (R = r*G) used for ECDH
+  ECPoint tx_public_key = 2 [(gogoproto.nullable) = false];
+}
+
+// PedersenCommitment represents a cryptographic commitment to an amount.
+// C = aH + bG where 'a' is the amount and 'b' is the blinding factor.
+message PedersenCommitment {
+  // Commitment point C = aH + bG
+  ECPoint commitment = 1 [(gogoproto.nullable) = false];
+}
+
+// Note represents encrypted transaction data that only the recipient can decrypt.
+// It contains all information needed to claim ownership of a private deposit.
+message Note {
+  // Encrypted payload containing:
+  // - amount (8 bytes)
+  // - blinding factor (32 bytes)
+  // - memo (variable, up to 512 bytes)
+  // Total encrypted size: up to 552 bytes + 16 bytes auth tag
+  bytes encrypted_data = 1;
+
+  // Nonce for AES-GCM encryption (12 bytes)
+  bytes nonce = 2;
+
+  // Ephemeral public key for ECDH shared secret derivation
+  ECPoint ephemeral_key = 3 [(gogoproto.nullable) = false];
+}
+
+// PrivateDeposit represents a shielded deposit in the privacy pool.
+// This is stored on-chain and visible to all observers, but the amount
+// and recipient are cryptographically hidden.
+message PrivateDeposit {
+  // Denomination of the deposit (e.g., "ulight", "uphoton")
+  string denom = 1;
+
+  // Global index of this deposit within its denomination pool
+  uint64 index = 2;
+
+  // Pedersen commitment to the amount
+  PedersenCommitment commitment = 3 [(gogoproto.nullable) = false];
+
+  // One-time stealth address (recipient can scan and identify)
+  OneTimeAddress one_time_address = 4 [(gogoproto.nullable) = false];
+
+  // Encrypted note containing amount, blinding factor, and memo
+  Note encrypted_note = 5 [(gogoproto.nullable) = false];
+
+  // Nullifier hash (used to prevent double-spending)
+  // In Phase 1: key image (I = x*Hp(P))
+  // In Phase 2: hash-based nullifier
+  bytes nullifier = 6;
+
+  // Block height when this deposit was created
+  int64 created_at_height = 7;
+
+  // Transaction hash that created this deposit
+  string tx_hash = 8;
+}
+
+// Commitment represents a balance commitment in a transaction.
+// Used to prove that inputs equal outputs without revealing amounts.
+message Commitment {
+  // Pedersen commitment point
+  PedersenCommitment commitment = 1 [(gogoproto.nullable) = false];
+
+  // Range proof (Phase 2 only) - proves amount is in valid range [0, 2^64)
+  // In Phase 1, this field is empty
+  bytes range_proof = 2;
+}
+
+// MerkleProof represents a proof that a commitment exists in the Merkle tree.
+// Used in Phase 2 to prove deposit membership without revealing which deposit.
+message MerkleProof {
+  // Root of the Merkle tree
+  bytes root = 1;
+
+  // Leaf index (hidden in ZK proof, only used for verification)
+  uint64 leaf_index = 2;
+
+  // Path from leaf to root (array of sibling hashes)
+  // Length should be equal to tree depth (32 for a tree of 2^32 leaves)
+  repeated bytes path = 3;
+}
+
+// ZKProof represents a zero-knowledge proof for Phase 2 operations.
+// The proof system can be Groth16 or PLONK.
+message ZKProof {
+  // Serialized proof bytes (format depends on proof system)
+  // Groth16: ~128-256 bytes
+  // PLONK: ~512-768 bytes
+  bytes proof = 1;
+
+  // Public inputs to the circuit
+  repeated bytes public_inputs = 2;
+
+  // Proof system identifier ("groth16" or "plonk")
+  string proof_system = 3;
+}
+
+// TransferInput represents an input to a private transfer.
+message TransferInput {
+  // Nullifier to mark this input as spent
+  bytes nullifier = 1;
+
+  // For Phase 1: deposit index (visible on-chain)
+  // For Phase 2: hidden in ZK proof
+  uint64 deposit_index = 2;
+
+  // Signature proving ownership (Phase 1 only)
+  // In Phase 2, ownership is proven via ZK proof
+  bytes signature = 3;
+}
+
+// TransferOutput represents an output of a private transfer.
+message TransferOutput {
+  // Denomination (must match input denomination)
+  string denom = 1;
+
+  // Pedersen commitment to output amount
+  PedersenCommitment commitment = 2 [(gogoproto.nullable) = false];
+
+  // One-time address for the recipient
+  OneTimeAddress one_time_address = 3 [(gogoproto.nullable) = false];
+
+  // Encrypted note for the recipient
+  Note encrypted_note = 4 [(gogoproto.nullable) = false];
+}
+
+// ViewKey represents a user's view key pair for scanning deposits.
+message ViewKey {
+  // Private view key (32 bytes scalar)
+  bytes private_key = 1;
+
+  // Public view key (EC point)
+  ECPoint public_key = 2 [(gogoproto.nullable) = false];
+}
+
+// SpendKey represents a user's spend key pair for spending deposits.
+message SpendKey {
+  // Private spend key (32 bytes scalar)
+  bytes private_key = 1;
+
+  // Public spend key (EC point)
+  ECPoint public_key = 2 [(gogoproto.nullable) = false];
+}
+
+// KeyPair combines view and spend keys for a user.
+message KeyPair {
+  ViewKey view_key = 1 [(gogoproto.nullable) = false];
+  SpendKey spend_key = 2 [(gogoproto.nullable) = false];
+}
