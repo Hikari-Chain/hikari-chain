@@ -24,11 +24,7 @@ message Params {
   // This prevents dust attacks and spam.
   // Map: denom -> minimum amount
   // Example: {"ulight": "1", "uphoton": "1000000"}
-  map<string, string> min_shield_amounts = 3 [
-    (gogoproto.nullable) = false,
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.customvalue) = "cosmossdk.io/math.Int"
-  ];
+  map<string, string> min_shield_amounts = 3;
 
   // MaxDepositsPerTx limits the number of outputs in a single PrivateTransfer.
   // This prevents DoS attacks via excessive computation.

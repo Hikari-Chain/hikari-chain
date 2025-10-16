@@ -61,6 +61,8 @@ import (
 	govv1beta1 "github.com/Hikari-Chain/hikari-chain/x/gov/types/v1beta1"
 	photonkeeper "github.com/Hikari-Chain/hikari-chain/x/photon/keeper"
 	photontypes "github.com/Hikari-Chain/hikari-chain/x/photon/types"
+	privacykeeper "github.com/Hikari-Chain/hikari-chain/x/privacy/keeper"
+	privacytypes "github.com/Hikari-Chain/hikari-chain/x/privacy/types"
 )
 
 type AppKeepers struct {
@@ -90,6 +92,7 @@ type AppKeepers struct {
 	PhotonKeeper          *photonkeeper.Keeper
 	DynamicfeeKeeper      *dynamicfeekeeper.Keeper
 	CoreDaosKeeper        *coredaoskeeper.Keeper
+	PrivacyKeeper         *privacykeeper.Keeper
 
 	// Modules
 	ICAModule      ica.AppModule
@@ -314,6 +317,14 @@ func NewAppKeeper(
 		appKeepers.keys[dynamicfeetypes.StoreKey],
 		appKeepers.PhotonKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	appKeepers.PrivacyKeeper = privacykeeper.NewKeeper(
+		appCodec,
+		appKeepers.keys[privacytypes.StoreKey],
+		authorityStr,
+		appKeepers.AccountKeeper,
+		appKeepers.BankKeeper,
 	)
 
 	// Middleware Stacks

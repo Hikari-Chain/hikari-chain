@@ -126,11 +126,7 @@ message MsgUnshield {
   string recipient = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // Amount to unshield
-  string amount = 4 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
+  string amount = 4 [(cosmos_proto.scalar) = "cosmos.Int"];
 
   // Phase 1: Deposit index being spent (visible)
   // Phase 2: Hidden in ZK proof

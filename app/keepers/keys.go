@@ -24,6 +24,7 @@ import (
 	dynamicfeetypes "github.com/Hikari-Chain/hikari-chain/x/dynamicfee/types"
 	govtypes "github.com/Hikari-Chain/hikari-chain/x/gov/types"
 	photontypes "github.com/Hikari-Chain/hikari-chain/x/photon/types"
+	privacytypes "github.com/Hikari-Chain/hikari-chain/x/privacy/types"
 )
 
 func (appKeepers *AppKeepers) GenerateKeys() {
@@ -49,6 +50,7 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		photontypes.StoreKey,
 		dynamicfeetypes.StoreKey,
 		coredaostypes.StoreKey,
+		privacytypes.StoreKey,
 	)
 
 	// Define transient store keys

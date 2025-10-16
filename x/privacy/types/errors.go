@@ -1,0 +1,37 @@
+package types
+
+import (
+	"cosmossdk.io/errors"
+)
+
+var (
+	ErrInvalidDenom            = errors.Register(ModuleName, 2, "invalid denomination")
+	ErrInvalidAmount           = errors.Register(ModuleName, 3, "invalid amount")
+	ErrModuleDisabled          = errors.Register(ModuleName, 4, "privacy module is disabled")
+	ErrDenomNotAllowed         = errors.Register(ModuleName, 5, "denomination not allowed for privacy operations")
+	ErrAmountBelowMinimum      = errors.Register(ModuleName, 6, "amount below minimum shield amount")
+	ErrInvalidCommitment       = errors.Register(ModuleName, 7, "invalid Pedersen commitment")
+	ErrInvalidOneTimeAddress   = errors.Register(ModuleName, 8, "invalid one-time address")
+	ErrInvalidNote             = errors.Register(ModuleName, 9, "invalid encrypted note")
+	ErrInvalidNullifier        = errors.Register(ModuleName, 10, "invalid nullifier")
+	ErrNullifierAlreadyUsed    = errors.Register(ModuleName, 11, "nullifier already used (double-spend attempt)")
+	ErrDepositNotFound         = errors.Register(ModuleName, 12, "deposit not found")
+	ErrInvalidDepositIndex     = errors.Register(ModuleName, 13, "invalid deposit index")
+	ErrInvalidSignature        = errors.Register(ModuleName, 14, "invalid signature")
+	ErrInvalidZKProof          = errors.Register(ModuleName, 15, "invalid zero-knowledge proof")
+	ErrTooManyInputs           = errors.Register(ModuleName, 16, "too many inputs in transaction")
+	ErrTooManyOutputs          = errors.Register(ModuleName, 17, "too many outputs in transaction")
+	ErrEmptyInputs             = errors.Register(ModuleName, 18, "no inputs provided")
+	ErrEmptyOutputs            = errors.Register(ModuleName, 19, "no outputs provided")
+	ErrBalanceMismatch         = errors.Register(ModuleName, 20, "input and output amounts do not balance")
+	ErrInvalidBalanceCommitment = errors.Register(ModuleName, 21, "invalid balance commitment")
+	ErrInvalidECPoint          = errors.Register(ModuleName, 22, "invalid elliptic curve point")
+	ErrInvalidMerkleProof      = errors.Register(ModuleName, 23, "invalid Merkle proof")
+	ErrMerkleRootMismatch      = errors.Register(ModuleName, 24, "Merkle root mismatch")
+	ErrInvalidPhase            = errors.Register(ModuleName, 25, "operation not supported in current phase")
+	ErrMemoTooLarge            = errors.Register(ModuleName, 26, "memo size exceeds maximum")
+	ErrDuplicateDepositIndex   = errors.Register(ModuleName, 27, "duplicate deposit index in genesis")
+	ErrDuplicateNullifier      = errors.Register(ModuleName, 28, "duplicate nullifier in genesis")
+	ErrInvalidProofSystem      = errors.Register(ModuleName, 29, "invalid or unsupported proof system")
+	ErrInsufficientFunds       = errors.Register(ModuleName, 30, "insufficient funds")
+)

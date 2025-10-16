@@ -3,6 +3,7 @@ package hikari.privacy.v1;
 
 option go_package = "github.com/Hikari-Chain/hikari-chain/x/privacy/types";
 
+import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
@@ -233,11 +234,7 @@ message DenomStats {
 
   // Total value locked (sum of all active deposits)
   // Note: This is only available if amounts are not fully hidden
-  string total_value_locked = 4 [
-    (cosmos_proto.scalar) = "cosmos.Int",
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
+  string total_value_locked = 4 [(cosmos_proto.scalar) = "cosmos.Int"];
 
   // Merkle tree root (Phase 2 only)
   bytes merkle_root = 5;

@@ -47,6 +47,8 @@ import (
 	govtypes "github.com/Hikari-Chain/hikari-chain/x/gov/types"
 	"github.com/Hikari-Chain/hikari-chain/x/photon"
 	photontypes "github.com/Hikari-Chain/hikari-chain/x/photon/types"
+	"github.com/Hikari-Chain/hikari-chain/x/privacy"
+	privacytypes "github.com/Hikari-Chain/hikari-chain/x/privacy/types"
 )
 
 var maccPerms = map[string][]string{
@@ -100,6 +102,7 @@ func appModules(
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		dynamicfee.NewAppModule(appCodec, *app.DynamicfeeKeeper),
 		coredaos.NewAppModule(appCodec, *app.CoreDaosKeeper, app.GovKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
+		privacy.NewAppModule(appCodec, *app.PrivacyKeeper, app.AccountKeeper, app.BankKeeper),
 
 		app.TransferModule,
 		app.ICAModule,
@@ -142,6 +145,7 @@ func orderBeginBlockers() []string {
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		coredaostypes.ModuleName,
+		privacytypes.ModuleName,
 	}
 }
 
@@ -176,6 +180,7 @@ func orderEndBlockers() []string {
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		coredaostypes.ModuleName,
+		privacytypes.ModuleName,
 	}
 }
 
@@ -209,5 +214,6 @@ func orderInitBlockers() []string {
 		consensusparamtypes.ModuleName,
 		dynamicfeetypes.ModuleName,
 		coredaostypes.ModuleName,
+		privacytypes.ModuleName,
 	}
 }
