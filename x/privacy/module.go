@@ -121,8 +121,7 @@ func (am AppModule) IsOnePerModuleType() {}
 
 // RegisterServices registers gRPC services
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-	// TODO: Register message server when implemented
-	// types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
+	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
 	// TODO: Register query server when implemented
 	// types.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServerImpl(am.keeper))
 }
