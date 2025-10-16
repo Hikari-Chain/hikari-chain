@@ -218,7 +218,7 @@ func (k msgServer) PrivateTransfer(goCtx context.Context, msg *types.MsgPrivateT
 		}
 
 		// Check if nullifier already used (double-spend check)
-		used, err := k.IsNullifierUsed(ctx, input.Nullifier)
+		used, err := k.CheckNullifierUsed(ctx, input.Nullifier)
 		if err != nil {
 			return nil, errors.Wrapf(err, "failed to check nullifier for input %d", i)
 		}
@@ -401,7 +401,7 @@ func (k msgServer) Unshield(goCtx context.Context, msg *types.MsgUnshield) (*typ
 	}
 
 	// Check if nullifier already used
-	used, err := k.IsNullifierUsed(ctx, msg.Nullifier)
+	used, err := k.CheckNullifierUsed(ctx, msg.Nullifier)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to check nullifier")
 	}

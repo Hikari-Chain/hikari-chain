@@ -139,8 +139,8 @@ func (k Keeper) GetDeposit(ctx context.Context, denom string, index uint64) (*ty
 	return &deposit, nil
 }
 
-// IsNullifierUsed checks if a nullifier has been used
-func (k Keeper) IsNullifierUsed(ctx context.Context, nullifier []byte) (bool, error) {
+// CheckNullifierUsed checks if a nullifier has been used (internal helper)
+func (k Keeper) CheckNullifierUsed(ctx context.Context, nullifier []byte) (bool, error) {
 	store := k.storeService(ctx)
 	key := types.NullifierKey(nullifier)
 	bz := store.Get(key)
