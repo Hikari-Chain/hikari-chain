@@ -6,7 +6,26 @@ layout: home
 
 # Hikari Chain Documentation
 
-Welcome to the documentation of the **AtomOne application: `hikari`**.
+Welcome to the documentation of **Hikari Chain**.
+
+Hikari Chain is a Cosmos SDK-based blockchain forked from AtomOne, designed as a privacy-focused sidechain within the AtomOne ecosystem. Similar to how Juno operates alongside Cosmos Hub, Hikari Chain provides enhanced privacy features while maintaining interoperability with AtomOne and the broader Cosmos network.
+
+## About Hikari Chain
+
+Hikari Chain inherits AtomOne's robust governance and economic mechanisms while introducing privacy-preserving transaction capabilities. The chain uses:
+- **Binary**: `hikarid`
+- **Address Prefix**: `hikari`
+- **Bond Denomination**: `ulight`
+
+Key features inherited from AtomOne:
+- Dynamic fee mechanism (EIP-1559 style via x/dynamicfee)
+- PHOTON token economics (x/photon)
+- Enhanced governance with validator-only voting
+- Nakamoto bonus and dynamic quorum
+
+Hikari-specific features:
+- Privacy-preserving transactions (in development)
+- Enhanced anonymity for financial privacy
 
 ## Generate a key from manual entropy generation
 
@@ -43,10 +62,10 @@ Copy/paste the mnemonic and you're done.
 ## Testing Chain Upgrade
 
 Chain upgrade is an important procedure that should be tested carefully. This
-section aims to provide a guide for testing chain upgrades in AtomOne using a
+section aims to provide a guide for testing chain upgrades in Hikari Chain using a
 localnet. 
 
-1. Git checkout the version of AtomOne you want to upgrade from.
+1. Git checkout the version of Hikari Chain you want to upgrade from.
 2. Update `contrib/localnet/upgrade_proposal.json` with the correct plan name,
    which means the exact `UpgradeName` used to qualify the upgrade in the
    next version. For instance for the v2 upgrade, the plan name is `v2` (see
@@ -64,7 +83,7 @@ localnet.
    ```
    This means it is time to upgrade the binary.
 7. Stop the `make localnet-start`
-8. Git checkout the version of AtomOne you want to upgrade to.
+8. Git checkout the version of Hikari Chain you want to upgrade to.
 9. Run `make localnet-restart` (/!\ not `localnet-start` which would delete all
    the chain data). Block production should restart.
 10. Check that the upgrade procedure has been executed properly.

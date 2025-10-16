@@ -15,7 +15,7 @@ import (
 	govtypes "github.com/Hikari-Chain/hikari-chain/x/gov/types"
 )
 
-func TestAtomOneApp_BlockedModuleAccountAddrs(t *testing.T) {
+func TestHikariApp_BlockedModuleAccountAddrs(t *testing.T) {
 	app := hikari.NewHikariApp(
 		log.NewNopLogger(),
 		dbm.NewMemDB(),
@@ -30,7 +30,7 @@ func TestAtomOneApp_BlockedModuleAccountAddrs(t *testing.T) {
 	require.NotContains(t, blockedAddrs, authtypes.NewModuleAddress(govtypes.ModuleName).String())
 }
 
-func TestAtomOneApp_Export(t *testing.T) {
+func TestHikariApp_Export(t *testing.T) {
 	app := hikarihelpers.Setup(t)
 	_, err := app.ExportAppStateAndValidators(true, []string{}, []string{})
 	require.NoError(t, err, "ExportAppStateAndValidators should not have an error")

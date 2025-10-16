@@ -27,7 +27,7 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	atomoneapp "github.com/Hikari-Chain/hikari-chain/app"
+	hikariapp "github.com/Hikari-Chain/hikari-chain/app"
 )
 
 // SimAppChainID hardcoded chainID for simulation
@@ -36,7 +36,7 @@ const (
 )
 
 // DefaultConsensusParams defines the default Tendermint consensus params used
-// in AtomOneApp testing.
+// in HikariApp testing.
 var DefaultConsensusParams = &tmproto.ConsensusParams{
 	Block: &tmproto.BlockParams{
 		MaxBytes: 200000,
@@ -58,7 +58,7 @@ type PV struct {
 	PrivKey cryptotypes.PrivKey
 }
 
-func Setup(t *testing.T) *atomoneapp.AtomOneApp {
+func Setup(t *testing.T) *hikariapp.HikariApp {
 	t.Helper()
 
 	privVal := mock.NewPV()
@@ -84,11 +84,11 @@ func Setup(t *testing.T) *atomoneapp.AtomOneApp {
 	return app
 }
 
-// SetupWithGenesisValSet initializes a new AtomOneApp with a validator set and genesis accounts
+// SetupWithGenesisValSet initializes a new HikariApp with a validator set and genesis accounts
 // that also act as delegators. For simplicity, each validator is bonded with a delegation
-// of one consensus engine unit in the default token of the AtomOneApp from first genesis
-// account. A Nop logger is set in AtomOneApp.
-func SetupWithGenesisValSet(t *testing.T, valSet *tmtypes.ValidatorSet, genAccs []authtypes.GenesisAccount, balances ...banktypes.Balance) *atomoneapp.AtomOneApp {
+// of one consensus engine unit in the default token of the HikariApp from first genesis
+// account. A Nop logger is set in HikariApp.
+func SetupWithGenesisValSet(t *testing.T, valSet *tmtypes.ValidatorSet, genAccs []authtypes.GenesisAccount, balances ...banktypes.Balance) *hikariapp.HikariApp {
 	t.Helper()
 
 	atomoneApp, genesisState := setup()
@@ -118,13 +118,13 @@ func SetupWithGenesisValSet(t *testing.T, valSet *tmtypes.ValidatorSet, genAccs 
 	return atomoneApp
 }
 
-func setup() (*atomoneapp.AtomOneApp, atomoneapp.GenesisState) {
+func setup() (*hikariapp.HikariApp, hikariapp.GenesisState) {
 	db := dbm.NewMemDB()
 	appOptions := make(simtestutil.AppOptionsMap, 0)
 	appOptions[server.FlagInvCheckPeriod] = 5
 	appOptions[server.FlagMinGasPrices] = "0ul"
 
-	atomoneApp := atomoneapp.NewHikariApp(
+	atomoneApp := hikariapp.NewHikariApp(
 		log.NewNopLogger(),
 		db,
 		nil,
@@ -135,10 +135,10 @@ func setup() (*atomoneapp.AtomOneApp, atomoneapp.GenesisState) {
 }
 
 func genesisStateWithValSet(t *testing.T,
-	app *atomoneapp.AtomOneApp, genesisState atomoneapp.GenesisState,
+	app *hikariapp.HikariApp, genesisState hikariapp.GenesisState,
 	valSet *tmtypes.ValidatorSet, genAccs []authtypes.GenesisAccount,
 	balances ...banktypes.Balance,
-) atomoneapp.GenesisState {
+) hikariapp.GenesisState {
 	t.Helper()
 	// set genesis accounts
 	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), genAccs)

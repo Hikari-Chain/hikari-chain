@@ -1,5 +1,5 @@
 package atomone
 
 const (
-	appName = "AtomOneApp"
+	appName = "HikariApp"
 )

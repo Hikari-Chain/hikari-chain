@@ -64,7 +64,7 @@ var maccPerms = map[string][]string{
 }
 
 func appModules(
-	app *AtomOneApp,
+	app *HikariApp,
 	appCodec codec.Codec,
 	txConfig client.TxConfig,
 ) []module.AppModule {

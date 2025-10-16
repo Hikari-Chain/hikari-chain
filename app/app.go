@@ -72,15 +72,15 @@ var (
 )
 
 var (
-	_ runtime.AppI            = (*AtomOneApp)(nil)
-	_ servertypes.Application = (*AtomOneApp)(nil)
-	_ ibctesting.TestingApp   = (*AtomOneApp)(nil)
+	_ runtime.AppI            = (*HikariApp)(nil)
+	_ servertypes.Application = (*HikariApp)(nil)
+	_ ibctesting.TestingApp   = (*HikariApp)(nil)
 )
 
-// AtomOneApp extends an ABCI application, but with most of its parameters exported.
+// HikariApp extends an ABCI application, but with most of its parameters exported.
 // They are exported for convenience in creating helper functions, as object
 // capabilities aren't needed for testing.
-type AtomOneApp struct { //nolint: revive
+type HikariApp struct { //nolint: revive
 	*baseapp.BaseApp
 	keepers.AppKeepers
 
@@ -116,7 +116,7 @@ func NewHikariApp(
 	loadLatest bool,
 	appOpts servertypes.AppOptions,
 	baseAppOptions ...func(*baseapp.BaseApp),
-) *AtomOneApp {
+) *HikariApp {
 	interfaceRegistry, _ := types.NewInterfaceRegistryWithOptions(types.InterfaceRegistryOptions{
 		ProtoFiles: proto.HybridResolver,
 		SigningOptions: signing.Options{
@@ -154,7 +154,7 @@ func NewHikariApp(
 	bApp.SetInterfaceRegistry(interfaceRegistry)
 	bApp.SetTxEncoder(txConfig.TxEncoder())
 
-	app := &AtomOneApp{
+	app := &HikariApp{
 		BaseApp:           bApp,
 		legacyAmino:       legacyAmino,
 		txConfig:          txConfig,
@@ -311,35 +311,35 @@ func NewHikariApp(
 }
 
 // Name returns the name of the App
-func (app *AtomOneApp) Name() string { return app.BaseApp.Name() }
+func (app *HikariApp) Name() string { return app.BaseApp.Name() }
 
 // DefaultGenesis returns a default genesis from the registered AppModuleBasic's.
-func (a *AtomOneApp) DefaultGenesis() map[string]json.RawMessage {
+func (a *HikariApp) DefaultGenesis() map[string]json.RawMessage {
 	return a.bmm.DefaultGenesis(a.appCodec)
 }
 
 // BasicModuleManager returns the BasicModuleManager of the app.
-func (app *AtomOneApp) BasicModuleManager() module.BasicManager {
+func (app *HikariApp) BasicModuleManager() module.BasicManager {
 	return app.bmm
 }
 
 // PreBlocker application updates every pre block
-func (app *AtomOneApp) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
+func (app *HikariApp) PreBlocker(ctx sdk.Context, req *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
 	return app.mm.PreBlock(ctx)
 }
 
 // BeginBlocker application updates every begin block
-func (app *AtomOneApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
+func (app *HikariApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
 	return app.mm.BeginBlock(ctx)
 }
 
 // EndBlocker application updates every end block
-func (app *AtomOneApp) EndBlocker(ctx sdk.Context) (sdk.EndBlock, error) {
+func (app *HikariApp) EndBlocker(ctx sdk.Context) (sdk.EndBlock, error) {
 	return app.mm.EndBlock(ctx)
 }
 
 // InitChainer application update at chain initialization
-func (app *AtomOneApp) InitChainer(ctx sdk.Context, req *abci.RequestInitChain) (*abci.ResponseInitChain, error) {
+func (app *HikariApp) InitChainer(ctx sdk.Context, req *abci.RequestInitChain) (*abci.ResponseInitChain, error) {
 	var genesisState GenesisState
 	if err := json.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal genesis state: %w", err)
@@ -352,12 +352,12 @@ func (app *AtomOneApp) InitChainer(ctx sdk.Context, req *abci.RequestInitChain) 
 }
 
 // LoadHeight loads a particular height
-func (app *AtomOneApp) LoadHeight(height int64) error {
+func (app *HikariApp) LoadHeight(height int64) error {
 	return app.LoadVersion(height)
 }
 
 // ModuleAccountAddrs returns all the app's module account addresses.
-func (app *AtomOneApp) ModuleAccountAddrs() map[string]bool {
+func (app *HikariApp) ModuleAccountAddrs() map[string]bool {
 	modAccAddrs := make(map[string]bool)
 	for acc := range maccPerms {
 		modAccAddrs[authtypes.NewModuleAddress(acc).String()] = true
@@ -368,18 +368,18 @@ func (app *AtomOneApp) ModuleAccountAddrs() map[string]bool {
 
 // BlockedModuleAccountAddrs returns all the app's blocked module account
 // addresses.
-func (app *AtomOneApp) BlockedModuleAccountAddrs(modAccAddrs map[string]bool) map[string]bool {
+func (app *HikariApp) BlockedModuleAccountAddrs(modAccAddrs map[string]bool) map[string]bool {
 	// remove module accounts that are ALLOWED to received funds
 	delete(modAccAddrs, authtypes.NewModuleAddress(govtypes.ModuleName).String())
 
 	return modAccAddrs
 }
 
-// LegacyAmino returns AtomOneApp's amino codec.
+// LegacyAmino returns HikariApp's amino codec.
 //
 // NOTE: This is solely to be used for testing purposes as it may be desirable
 // for modules to register their own custom testing types.
-func (app *AtomOneApp) LegacyAmino() *codec.LegacyAmino {
+func (app *HikariApp) LegacyAmino() *codec.LegacyAmino {
 	return app.legacyAmino
 }
 
@@ -387,22 +387,22 @@ func (app *AtomOneApp) LegacyAmino() *codec.LegacyAmino {
 //
 // NOTE: This is solely to be used for testing purposes as it may be desirable
 // for modules to register their own custom testing types.
-func (app *AtomOneApp) AppCodec() codec.Codec {
+func (app *HikariApp) AppCodec() codec.Codec {
 	return app.appCodec
 }
 
 // InterfaceRegistry returns AtomOne's InterfaceRegistry
-func (app *AtomOneApp) InterfaceRegistry() types.InterfaceRegistry {
+func (app *HikariApp) InterfaceRegistry() types.InterfaceRegistry {
 	return app.interfaceRegistry
 }
 
 // TxConfig returns AtomOne's TxConfig
-func (app *AtomOneApp) TxConfig() client.TxConfig {
+func (app *HikariApp) TxConfig() client.TxConfig {
 	return app.txConfig
 }
 
 // AutoCliOpts returns the autocli options for the app.
-func (app *AtomOneApp) AutoCliOpts() autocli.AppOptions {
+func (app *HikariApp) AutoCliOpts() autocli.AppOptions {
 	modules := make(map[string]appmodule.AppModule, 0)
 	for _, m := range app.mm.Modules {
 		if moduleWithName, ok := m.(module.HasName); ok {
@@ -423,13 +423,13 @@ func (app *AtomOneApp) AutoCliOpts() autocli.AppOptions {
 }
 
 // SimulationManager implements the SimulationApp interface
-func (app *AtomOneApp) SimulationManager() *module.SimulationManager {
+func (app *HikariApp) SimulationManager() *module.SimulationManager {
 	return app.sm
 }
 
 // RegisterAPIRoutes registers all application module routes with the provided
 // API server.
-func (app *AtomOneApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig) {
+func (app *HikariApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig) {
 	clientCtx := apiSvr.ClientCtx
 	// Register new tx routes from grpc-gateway.
 	authtx.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
@@ -447,17 +447,17 @@ func (app *AtomOneApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.AP
 }
 
 // RegisterTxService allows query minimum-gas-prices in app.toml
-func (app *AtomOneApp) RegisterNodeService(clientCtx client.Context, cfg config.Config) {
+func (app *HikariApp) RegisterNodeService(clientCtx client.Context, cfg config.Config) {
 	nodeservice.RegisterNodeService(clientCtx, app.GRPCQueryRouter(), cfg)
 }
 
 // RegisterTxService implements the Application.RegisterTxService method.
-func (app *AtomOneApp) RegisterTxService(clientCtx client.Context) {
+func (app *HikariApp) RegisterTxService(clientCtx client.Context) {
 	authtx.RegisterTxService(app.BaseApp.GRPCQueryRouter(), clientCtx, app.BaseApp.Simulate, app.interfaceRegistry)
 }
 
 // RegisterTendermintService implements the Application.RegisterTendermintService method.
-func (app *AtomOneApp) RegisterTendermintService(clientCtx client.Context) {
+func (app *HikariApp) RegisterTendermintService(clientCtx client.Context) {
 	cmtservice.RegisterTendermintService(
 		clientCtx,
 		app.BaseApp.GRPCQueryRouter(),
@@ -467,7 +467,7 @@ func (app *AtomOneApp) RegisterTendermintService(clientCtx client.Context) {
 }
 
 // configure store loader that checks if version == upgradeHeight and applies store upgrades
-func (app *AtomOneApp) setupUpgradeStoreLoaders() {
+func (app *HikariApp) setupUpgradeStoreLoaders() {
 	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
 	if err != nil {
 		panic(fmt.Sprintf("failed to read upgrade info from disk %s", err))
@@ -485,7 +485,7 @@ func (app *AtomOneApp) setupUpgradeStoreLoaders() {
 	}
 }
 
-func (app *AtomOneApp) setupUpgradeHandlers() {
+func (app *HikariApp) setupUpgradeHandlers() {
 	for _, upgrade := range Upgrades {
 		app.UpgradeKeeper.SetUpgradeHandler(
 			upgrade.UpgradeName,
@@ -513,17 +513,17 @@ func RegisterSwaggerAPI(rtr *mux.Router) {
 // TestingApp functions
 
 // GetBaseApp implements the TestingApp interface.
-func (app *AtomOneApp) GetBaseApp() *baseapp.BaseApp {
+func (app *HikariApp) GetBaseApp() *baseapp.BaseApp {
 	return app.BaseApp
 }
 
 // GetTxConfig implements the TestingApp interface.
-func (app *AtomOneApp) GetTxConfig() client.TxConfig {
+func (app *HikariApp) GetTxConfig() client.TxConfig {
 	return app.txConfig
 }
 
 // GetIBCKeeper implements the TestingApp interface.
-func (app *AtomOneApp) GetIBCKeeper() *ibckeeper.Keeper {
+func (app *HikariApp) GetIBCKeeper() *ibckeeper.Keeper {
 	return app.IBCKeeper
 }
 
