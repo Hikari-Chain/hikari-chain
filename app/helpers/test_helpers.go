@@ -32,7 +32,7 @@ import (
 
 // SimAppChainID hardcoded chainID for simulation
 const (
-	SimAppChainID = "atomone-app"
+	SimAppChainID = "hikari-app"
 )
 
 // DefaultConsensusParams defines the default Tendermint consensus params used
