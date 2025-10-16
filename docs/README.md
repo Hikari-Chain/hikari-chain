@@ -4,9 +4,9 @@ parent:
 layout: home
 -->
 
-# AtomOne Documentation
+# Hikari Chain Documentation
 
-Welcome to the documentation of the **AtomOne application: `atomone`**.
+Welcome to the documentation of the **AtomOne application: `hikari`**.
 
 ## Generate a key from manual entropy generation
 
