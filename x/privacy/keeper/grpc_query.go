@@ -5,13 +5,13 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	"cosmossdk.io/store/prefix"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/cosmos/cosmos-sdk/types/query"
+	"cosmossdk.io/store/prefix"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 
 	"github.com/Hikari-Chain/hikari-chain/x/privacy/types"
 )
@@ -81,7 +81,6 @@ func (k Keeper) Deposits(goCtx context.Context, req *types.QueryDepositsRequest)
 		deposits = append(deposits, deposit)
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, fmt.Sprintf("failed to paginate deposits: %v", err))
 	}
@@ -111,7 +110,6 @@ func (k Keeper) AllDeposits(goCtx context.Context, req *types.QueryAllDepositsRe
 		deposits = append(deposits, deposit)
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, fmt.Sprintf("failed to paginate deposits: %v", err))
 	}
@@ -330,11 +328,11 @@ func (k Keeper) Stats(goCtx context.Context, req *types.QueryStatsRequest) (*typ
 		activeCount := nextIndex - spentCount
 
 		denomStats = append(denomStats, types.DenomStats{
-			Denom:          denom,
-			TotalDeposits:  nextIndex,
-			ActiveDeposits: activeCount,
+			Denom:            denom,
+			TotalDeposits:    nextIndex,
+			ActiveDeposits:   activeCount,
 			TotalValueLocked: "0", // Cannot determine from commitments
-			MerkleRoot:     nil,   // Phase 2 only
+			MerkleRoot:       nil, // Phase 2 only
 		})
 
 		totalDeposits += nextIndex

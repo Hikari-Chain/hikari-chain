@@ -16,6 +16,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
+	"github.com/Hikari-Chain/hikari-chain/x/privacy/client/cli"
 	"github.com/Hikari-Chain/hikari-chain/x/privacy/keeper"
 	"github.com/Hikari-Chain/hikari-chain/x/privacy/types"
 )
@@ -76,14 +77,12 @@ func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *r
 
 // GetTxCmd returns the root Tx command
 func (a AppModuleBasic) GetTxCmd() *cobra.Command {
-	// TODO: Implement CLI commands
-	return nil
+	return cli.GetTxCmd()
 }
 
 // GetQueryCmd returns the root query command
 func (AppModuleBasic) GetQueryCmd() *cobra.Command {
-	// TODO: Implement CLI query commands
-	return nil
+	return cli.GetQueryCmd()
 }
 
 // ----------------------------------------------------------------------------
