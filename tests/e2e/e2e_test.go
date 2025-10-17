@@ -16,6 +16,7 @@ var (
 	runPhotonTest                 = true
 	runDynamicfeeTest             = true
 	runCoreDAOsTest               = true
+	runPrivacyTest                = true
 )
 
 func (s *IntegrationTestSuite) TestRestInterfaces() {
@@ -137,4 +138,14 @@ func (s *IntegrationTestSuite) TestCoreDAOs() {
 		s.T().Skip()
 	}
 	s.testCoreDAOs()
+}
+
+func (s *IntegrationTestSuite) TestPrivacy() {
+	if !runPrivacyTest {
+		s.T().Skip()
+	}
+	s.testPrivacyParams()
+	s.testPrivacyShieldAndUnshield()
+	s.testPrivacyTransfer()
+	s.testPrivacyMultiOutputTransfer()
 }
