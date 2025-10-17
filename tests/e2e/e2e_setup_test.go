@@ -438,6 +438,34 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 	return appGenState
 }
 
+func (s *IntegrationTestSuite) configurePrivacyModule(appGenState map[string]json.RawMessage) map[string]json.RawMessage {
+	privacytypes := "privacy"
+
+	var privacyGenState map[string]interface{}
+	err := json.Unmarshal(appGenState[privacytypes], &privacyGenState)
+	s.Require().NoError(err)
+
+	// Enable privacy module
+	params := privacyGenState["params"].(map[string]interface{})
+	params["enabled"] = true
+	params["phase"] = "phase1"
+
+	// Allow ulight and uphoton denominations
+	params["allowed_denoms"] = []string{ulDenom, uphotonDenom}
+
+	// Set minimum shield amounts
+	minShieldAmounts := make(map[string]string)
+	minShieldAmounts[ulDenom] = "1"
+	minShieldAmounts[uphotonDenom] = "1"
+	params["min_shield_amounts"] = minShieldAmounts
+
+	// Update privacy module state
+	appGenState[privacytypes], err = json.Marshal(privacyGenState)
+	s.Require().NoError(err)
+
+	return appGenState
+}
+
 func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValMnemonic string) {
 	var (
 		serverCtx = server.NewDefaultContext()
@@ -463,6 +491,9 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 		jailedValMnemonic,
 		appGenState,
 	)
+
+	// Enable privacy module for e2e tests
+	appGenState = s.configurePrivacyModule(appGenState)
 
 	var evidenceGenState evidencetypes.GenesisState
 	s.Require().NoError(s.cdc.UnmarshalJSON(appGenState[evidencetypes.ModuleName], &evidenceGenState))

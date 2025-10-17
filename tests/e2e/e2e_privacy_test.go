@@ -1,6 +1,7 @@
 package e2e
 
 import (
+	"context"
 	"encoding/hex"
 	"fmt"
 	"math/big"
@@ -68,7 +69,7 @@ func (s *IntegrationTestSuite) testPrivacyShieldAndUnshield() {
 		found := false
 		for _, deposit := range deposits {
 			// Try to scan this deposit with our keys
-			if s.scanDeposit(deposit, keyPair.ViewPrivateKey, keyPair.SpendPublicKey, keyPair.SpendPrivateKey) {
+			if s.scanDeposit(deposit, keyPair.ViewPrivateKey, keyPair.SpendPublicKey) {
 				ownedDepositIndex = deposit.Index
 				found = true
 				s.T().Logf("Found our deposit at index %d", ownedDepositIndex)
@@ -154,7 +155,7 @@ func (s *IntegrationTestSuite) testPrivacyTransfer() {
 		var senderDepositIndex uint64
 		found := false
 		for _, deposit := range deposits {
-			if s.scanDeposit(deposit, senderKeys.ViewPrivateKey, senderKeys.SpendPublicKey, senderKeys.SpendPrivateKey) {
+			if s.scanDeposit(deposit, senderKeys.ViewPrivateKey, senderKeys.SpendPublicKey) {
 				// Check if this deposit is unspent
 				if len(deposit.Nullifier) == 0 {
 					senderDepositIndex = deposit.Index
@@ -199,7 +200,7 @@ func (s *IntegrationTestSuite) testPrivacyTransfer() {
 		deposits = s.queryPrivacyDeposits(chainEndpoint, ulDenom)
 		recipientFound := false
 		for _, deposit := range deposits {
-			if s.scanDeposit(deposit, recipientKeys.ViewPrivateKey, recipientKeys.SpendPublicKey, recipientKeys.SpendPrivateKey) {
+			if s.scanDeposit(deposit, recipientKeys.ViewPrivateKey, recipientKeys.SpendPublicKey) {
 				if len(deposit.Nullifier) == 0 {
 					recipientFound = true
 					s.T().Logf("Recipient found their deposit at index %d", deposit.Index)
@@ -254,7 +255,7 @@ func (s *IntegrationTestSuite) testPrivacyMultiOutputTransfer() {
 		var senderDepositIndex uint64
 		found := false
 		for _, deposit := range deposits {
-			if s.scanDeposit(deposit, senderKeys.ViewPrivateKey, senderKeys.SpendPublicKey, senderKeys.SpendPrivateKey) {
+			if s.scanDeposit(deposit, senderKeys.ViewPrivateKey, senderKeys.SpendPublicKey) {
 				if len(deposit.Nullifier) == 0 {
 					senderDepositIndex = deposit.Index
 					found = true
@@ -305,11 +306,11 @@ func (s *IntegrationTestSuite) testPrivacyMultiOutputTransfer() {
 
 		for _, deposit := range deposits {
 			if len(deposit.Nullifier) == 0 {
-				if s.scanDeposit(deposit, recipient1Keys.ViewPrivateKey, recipient1Keys.SpendPublicKey, recipient1Keys.SpendPrivateKey) {
+				if s.scanDeposit(deposit, recipient1Keys.ViewPrivateKey, recipient1Keys.SpendPublicKey) {
 					recipient1Found = true
 					s.T().Logf("Recipient 1 found deposit at index %d", deposit.Index)
 				}
-				if s.scanDeposit(deposit, recipient2Keys.ViewPrivateKey, recipient2Keys.SpendPublicKey, recipient2Keys.SpendPrivateKey) {
+				if s.scanDeposit(deposit, recipient2Keys.ViewPrivateKey, recipient2Keys.SpendPublicKey) {
 					recipient2Found = true
 					s.T().Logf("Recipient 2 found deposit at index %d", deposit.Index)
 				}
@@ -331,20 +332,22 @@ func (s *IntegrationTestSuite) testPrivacyParams() {
 
 		params := s.queryPrivacyParams(chainEndpoint)
 		s.Require().NotNil(params)
-		s.T().Logf("Privacy params - Phase: %s, Shield enabled: %t, Transfer enabled: %t, Unshield enabled: %t",
-			params.Phase, params.ShieldEnabled, params.PrivateTransferEnabled, params.UnshieldEnabled)
+		s.T().Logf("Privacy params - Phase: %s, Enabled: %t, Allowed denoms: %v",
+			params.Phase, params.Enabled, params.AllowedDenoms)
 
 		s.Require().Equal("phase1", params.Phase, "Should be in phase1")
-		s.Require().True(params.ShieldEnabled, "Shield should be enabled")
-		s.Require().True(params.PrivateTransferEnabled, "Private transfer should be enabled")
-		s.Require().True(params.UnshieldEnabled, "Unshield should be enabled")
+		s.Require().True(params.Enabled, "Privacy module should be enabled")
+		s.Require().NotEmpty(params.AllowedDenoms, "Should have allowed denominations")
 	})
 }
 
 // Helper functions for privacy module operations
 
 func (s *IntegrationTestSuite) execPrivacyShield(c *chain, valIdx int, from, amount, viewPubKey, spendPubKey string, expectErr bool, opt ...flagOption) {
-	ctx, cancel := newTimeoutContext()
+	opt = append(opt, withKeyValue(flagFrom, from))
+	opts := applyOptions(c.id, opt)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
 	hikaridCommand := []string{
@@ -355,25 +358,23 @@ func (s *IntegrationTestSuite) execPrivacyShield(c *chain, valIdx int, from, amo
 		amount,
 		viewPubKey,
 		spendPubKey,
-		fmt.Sprintf("--%s=%s", flagFrom, from),
-		fmt.Sprintf("--%s=%s", flagKeyringBackend, keyringPassphrase),
-		fmt.Sprintf("--%s=%s", flagChainID, c.id),
-		fmt.Sprintf("--%s=%s", flagGasAdjustment, "1.5"),
-		"--gas=auto",
-		fmt.Sprintf("--%s=%s", flagFees, standardFees.String()),
+		"-y",
 	}
 
-	for _, o := range opt {
-		hikaridCommand = applyFlag(hikaridCommand, o)
+	for flag, value := range opts {
+		hikaridCommand = append(hikaridCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
 	s.T().Logf("Executing shield command: %s", strings.Join(hikaridCommand, " "))
-	s.executeAtomoneTxCommand(ctx, c, hikaridCommand, valIdx, s.defaultTxValidation(c, expectErr))
+	s.executeAtomoneTxCommand(ctx, c, hikaridCommand, valIdx, s.expectErrExecValidation(c, valIdx, expectErr))
 	s.T().Log("Shield transaction completed")
 }
 
 func (s *IntegrationTestSuite) execPrivacyUnshield(c *chain, valIdx int, from, recipient, amount, denom string, depositIndex uint64, viewPrivKey, spendPrivKey string, expectErr bool, opt ...flagOption) {
-	ctx, cancel := newTimeoutContext()
+	opt = append(opt, withKeyValue(flagFrom, from))
+	opts := applyOptions(c.id, opt)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
 	hikaridCommand := []string{
@@ -387,25 +388,23 @@ func (s *IntegrationTestSuite) execPrivacyUnshield(c *chain, valIdx int, from, r
 		fmt.Sprintf("%d", depositIndex),
 		fmt.Sprintf("--view-key=%s", viewPrivKey),
 		fmt.Sprintf("--spend-key=%s", spendPrivKey),
-		fmt.Sprintf("--%s=%s", flagFrom, from),
-		fmt.Sprintf("--%s=%s", flagKeyringBackend, keyringPassphrase),
-		fmt.Sprintf("--%s=%s", flagChainID, c.id),
-		fmt.Sprintf("--%s=%s", flagGasAdjustment, "1.5"),
-		"--gas=auto",
-		fmt.Sprintf("--%s=%s", flagFees, standardFees.String()),
+		"-y",
 	}
 
-	for _, o := range opt {
-		hikaridCommand = applyFlag(hikaridCommand, o)
+	for flag, value := range opts {
+		hikaridCommand = append(hikaridCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
 	s.T().Logf("Executing unshield command")
-	s.executeAtomoneTxCommand(ctx, c, hikaridCommand, valIdx, s.defaultTxValidation(c, expectErr))
+	s.executeAtomoneTxCommand(ctx, c, hikaridCommand, valIdx, s.expectErrExecValidation(c, valIdx, expectErr))
 	s.T().Log("Unshield transaction completed")
 }
 
 func (s *IntegrationTestSuite) execPrivacyTransfer(c *chain, valIdx int, from, denom string, depositIndex uint64, outputs, viewPrivKey, spendPrivKey string, expectErr bool, opt ...flagOption) {
-	ctx, cancel := newTimeoutContext()
+	opt = append(opt, withKeyValue(flagFrom, from))
+	opts := applyOptions(c.id, opt)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
 	hikaridCommand := []string{
@@ -418,29 +417,25 @@ func (s *IntegrationTestSuite) execPrivacyTransfer(c *chain, valIdx int, from, d
 		outputs,
 		fmt.Sprintf("--view-key=%s", viewPrivKey),
 		fmt.Sprintf("--spend-key=%s", spendPrivKey),
-		fmt.Sprintf("--%s=%s", flagFrom, from),
-		fmt.Sprintf("--%s=%s", flagKeyringBackend, keyringPassphrase),
-		fmt.Sprintf("--%s=%s", flagChainID, c.id),
-		fmt.Sprintf("--%s=%s", flagGasAdjustment, "1.5"),
-		"--gas=auto",
-		fmt.Sprintf("--%s=%s", flagFees, standardFees.String()),
+		"-y",
 	}
 
-	for _, o := range opt {
-		hikaridCommand = applyFlag(hikaridCommand, o)
+	for flag, value := range opts {
+		hikaridCommand = append(hikaridCommand, fmt.Sprintf("--%s=%v", flag, value))
 	}
 
 	s.T().Logf("Executing private transfer command")
-	s.executeAtomoneTxCommand(ctx, c, hikaridCommand, valIdx, s.defaultTxValidation(c, expectErr))
+	s.executeAtomoneTxCommand(ctx, c, hikaridCommand, valIdx, s.expectErrExecValidation(c, valIdx, expectErr))
 	s.T().Log("Private transfer transaction completed")
 }
 
 func (s *IntegrationTestSuite) queryPrivacyParams(endpoint string) *types.Params {
 	path := fmt.Sprintf("%s/hikari/privacy/v1/params", endpoint)
-	body := httpGet(path)
+	body, err := httpGet(path)
+	s.Require().NoError(err)
 
 	var res types.QueryParamsResponse
-	err := s.cdc.UnmarshalJSON(body, &res)
+	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 
 	return &res.Params
@@ -448,43 +443,47 @@ func (s *IntegrationTestSuite) queryPrivacyParams(endpoint string) *types.Params
 
 func (s *IntegrationTestSuite) queryPrivacyStats(endpoint string) *types.QueryStatsResponse {
 	path := fmt.Sprintf("%s/hikari/privacy/v1/stats", endpoint)
-	body := httpGet(path)
+	body, err := httpGet(path)
+	s.Require().NoError(err)
 
 	var res types.QueryStatsResponse
-	err := s.cdc.UnmarshalJSON(body, &res)
+	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 
 	return &res
 }
 
-func (s *IntegrationTestSuite) queryPrivacyDeposits(endpoint, denom string) []*types.PrivateDeposit {
+func (s *IntegrationTestSuite) queryPrivacyDeposits(endpoint, denom string) []types.PrivateDeposit {
 	path := fmt.Sprintf("%s/hikari/privacy/v1/deposits/%s", endpoint, denom)
-	body := httpGet(path)
+	body, err := httpGet(path)
+	s.Require().NoError(err)
 
 	var res types.QueryDepositsResponse
-	err := s.cdc.UnmarshalJSON(body, &res)
+	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 
 	return res.Deposits
 }
 
-func (s *IntegrationTestSuite) queryPrivacyDeposit(endpoint, denom string, index uint64) *types.PrivateDeposit {
+func (s *IntegrationTestSuite) queryPrivacyDeposit(endpoint, denom string, index uint64) types.PrivateDeposit {
 	path := fmt.Sprintf("%s/hikari/privacy/v1/deposit/%s/%d", endpoint, denom, index)
-	body := httpGet(path)
+	body, err := httpGet(path)
+	s.Require().NoError(err)
 
 	var res types.QueryDepositResponse
-	err := s.cdc.UnmarshalJSON(body, &res)
+	err = s.cdc.UnmarshalJSON(body, &res)
 	s.Require().NoError(err)
 
 	return res.Deposit
 }
 
 // scanDeposit attempts to scan a deposit and returns true if it belongs to the given keys
-func (s *IntegrationTestSuite) scanDeposit(deposit *types.PrivateDeposit, viewPrivKey *big.Int, spendPubKey, spendPrivKey *crypto.ECPoint) bool {
+func (s *IntegrationTestSuite) scanDeposit(deposit types.PrivateDeposit, viewPrivKey *big.Int, spendPubKey *crypto.ECPoint) bool {
 	// This is a simplified check - in real CLI, we'd decrypt the note and verify ownership
 	// For e2e tests, we'll check if we can derive the shared secret
 
-	if deposit == nil || deposit.OneTimeAddress == nil || deposit.OneTimeAddress.TxPublicKey == nil {
+	// Check if one-time address data is present
+	if len(deposit.OneTimeAddress.Address.X) == 0 || len(deposit.OneTimeAddress.TxPublicKey.X) == 0 {
 		return false
 	}
 
