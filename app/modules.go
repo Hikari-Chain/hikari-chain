@@ -63,6 +63,7 @@ var maccPerms = map[string][]string{
 	photontypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
 	dynamicfeetypes.ModuleName:     nil,
 	coredaostypes.ModuleName:       nil,
+	privacytypes.ModuleName:        {authtypes.Minter, authtypes.Burner},
 }
 
 func appModules(

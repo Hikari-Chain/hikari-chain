@@ -42,6 +42,9 @@ func (s *IntegrationTestSuite) testPrivacyShieldAndUnshield() {
 		// Execute shield transaction
 		s.execPrivacyShield(c, 0, alice.String(), shieldAmount.String(), viewPubKeyHex, spendPubKeyHex, false)
 
+		// Wait for transaction to be included in a block
+		time.Sleep(10 * time.Second)
+
 		// Wait for balance to decrease (shield + fees)
 		s.Require().Eventually(
 			func() bool {
@@ -187,9 +190,13 @@ func (s *IntegrationTestSuite) testPrivacyTransfer() {
 		recipientViewPubKeyHex := hex.EncodeToString(recipientKeys.ViewPublicKey.Compressed())
 		recipientSpendPubKeyHex := hex.EncodeToString(recipientKeys.SpendPublicKey.Compressed())
 
-		// Execute private transfer
-		// Format: amount,view-pub-key,spend-pub-key
-		outputSpec := fmt.Sprintf("%d,%s,%s", transferAmount, recipientViewPubKeyHex, recipientSpendPubKeyHex)
+		// Execute private transfer with change output
+		// Format: amount,view-pub-key,spend-pub-key (space-separated for multiple outputs)
+		// Send 100k to recipient, 100k change back to sender (total = 200k input)
+		changeAmount := uint64(100000)
+		outputSpec := fmt.Sprintf("%d,%s,%s %d,%s,%s",
+			transferAmount, recipientViewPubKeyHex, recipientSpendPubKeyHex,
+			changeAmount, senderViewPubKeyHex, senderSpendPubKeyHex)
 		s.execPrivacyTransfer(c, 0, alice.String(), ulDenom, senderDepositIndex,
 			outputSpec, senderViewPrivKeyHex, senderSpendPrivKeyHex, false)
 
@@ -210,9 +217,16 @@ func (s *IntegrationTestSuite) testPrivacyTransfer() {
 		}
 		s.Require().True(recipientFound, "Recipient should find their deposit")
 
-		// Verify sender's deposit is now spent (nullifier is set)
-		senderDeposit := s.queryPrivacyDeposit(chainEndpoint, ulDenom, senderDepositIndex)
-		s.Require().NotEmpty(senderDeposit.Nullifier, "Sender's deposit should be spent")
+		// Verify sender's original deposit is now spent by checking all deposits
+		senderDepositSpent := false
+		for _, deposit := range deposits {
+			if deposit.Index == senderDepositIndex && len(deposit.Nullifier) > 0 {
+				senderDepositSpent = true
+				s.T().Logf("Sender's deposit at index %d is spent (nullifier set)", senderDepositIndex)
+				break
+			}
+		}
+		s.Require().True(senderDepositSpent, "Sender's deposit should be spent")
 
 		s.T().Logf("Successfully completed private-to-private transfer")
 	})
@@ -414,11 +428,21 @@ func (s *IntegrationTestSuite) execPrivacyTransfer(c *chain, valIdx int, from, d
 		"transfer",
 		denom,
 		fmt.Sprintf("%d", depositIndex),
-		outputs,
+	}
+
+	// Split outputs by space and add each as a separate argument
+	outputSpecs := strings.Split(outputs, " ")
+	for _, outputSpec := range outputSpecs {
+		if strings.TrimSpace(outputSpec) != "" {
+			hikaridCommand = append(hikaridCommand, outputSpec)
+		}
+	}
+
+	hikaridCommand = append(hikaridCommand,
 		fmt.Sprintf("--view-key=%s", viewPrivKey),
 		fmt.Sprintf("--spend-key=%s", spendPrivKey),
 		"-y",
-	}
+	)
 
 	for flag, value := range opts {
 		hikaridCommand = append(hikaridCommand, fmt.Sprintf("--%s=%v", flag, value))
@@ -463,18 +487,6 @@ func (s *IntegrationTestSuite) queryPrivacyDeposits(endpoint, denom string) []ty
 	s.Require().NoError(err)
 
 	return res.Deposits
-}
-
-func (s *IntegrationTestSuite) queryPrivacyDeposit(endpoint, denom string, index uint64) types.PrivateDeposit {
-	path := fmt.Sprintf("%s/hikari/privacy/v1/deposit/%s/%d", endpoint, denom, index)
-	body, err := httpGet(path)
-	s.Require().NoError(err)
-
-	var res types.QueryDepositResponse
-	err = s.cdc.UnmarshalJSON(body, &res)
-	s.Require().NoError(err)
-
-	return res.Deposit
 }
 
 // scanDeposit attempts to scan a deposit and returns true if it belongs to the given keys
