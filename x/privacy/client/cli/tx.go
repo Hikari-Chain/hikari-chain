@@ -33,6 +33,7 @@ func GetTxCmd() *cobra.Command {
 		GetTxShieldCmd(),
 		GetTxPrivateTransferCmd(),
 		GetTxUnshieldCmd(),
+		GetTxGenerateKeysCmd(),
 	)
 
 	return cmd
@@ -632,4 +633,120 @@ func splitOutputSpec(spec string) []string {
 	}
 
 	return parts
+}
+
+// GetTxGenerateKeysCmd returns the command to generate privacy key pairs
+func GetTxGenerateKeysCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "generate-keys",
+		Short: "Generate a new privacy key pair (view key and spend key)",
+		Long: `Generate a new privacy key pair for use with the privacy module.
+
+This command generates two key pairs:
+1. View Key Pair: Used for scanning deposits to identify which ones belong to you
+2. Spend Key Pair: Used for spending deposits (generating nullifiers and signatures)
+
+The private keys should be stored securely and never shared. The public keys
+can be shared with others who wish to send you private transactions.
+
+SECURITY WARNING: The generated private keys are displayed in plaintext.
+Store them securely and never commit them to version control or share them publicly.`,
+		Example: fmt.Sprintf(`
+# Generate a new privacy key pair
+%s tx privacy generate-keys
+
+# Save output to a file (recommended)
+%s tx privacy generate-keys > my-privacy-keys.txt
+`, version.AppName, version.AppName),
+		Args: cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			// Generate stealth key pair (view key + spend key)
+			keyPair, err := crypto.GenerateStealthKeyPair()
+			if err != nil {
+				return fmt.Errorf("failed to generate key pair: %w", err)
+			}
+
+			// Convert private keys to 32-byte format
+			viewPrivKeyBytes := make([]byte, 32)
+			viewPrivKeyB := keyPair.ViewPrivateKey.Bytes()
+			copy(viewPrivKeyBytes[32-len(viewPrivKeyB):], viewPrivKeyB)
+
+			spendPrivKeyBytes := make([]byte, 32)
+			spendPrivKeyB := keyPair.SpendPrivateKey.Bytes()
+			copy(spendPrivKeyBytes[32-len(spendPrivKeyB):], spendPrivKeyB)
+
+			// Convert to hex for display
+			viewPrivKeyHex := hex.EncodeToString(viewPrivKeyBytes)
+			viewPubKeyHex := hex.EncodeToString(keyPair.ViewPublicKey.Compressed())
+			spendPrivKeyHex := hex.EncodeToString(spendPrivKeyBytes)
+			spendPubKeyHex := hex.EncodeToString(keyPair.SpendPublicKey.Compressed())
+
+			// Display the keys with clear formatting
+			fmt.Println()
+			fmt.Println("╔════════════════════════════════════════════════════════════════════╗")
+			fmt.Println("║                    PRIVACY KEY PAIR GENERATED                      ║")
+			fmt.Println("╚════════════════════════════════════════════════════════════════════╝")
+			fmt.Println()
+			fmt.Println("⚠️  SECURITY WARNING: Store these keys securely and never share them!")
+			fmt.Println()
+			fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+			fmt.Println("VIEW KEY PAIR (for scanning deposits)")
+			fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+			fmt.Println()
+			fmt.Println("Private Key (hex, 32 bytes):")
+			fmt.Printf("  %s\n", viewPrivKeyHex)
+			fmt.Println()
+			fmt.Println("Public Key (hex, compressed, 33 bytes):")
+			fmt.Printf("  %s\n", viewPubKeyHex)
+			fmt.Println()
+			fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+			fmt.Println("SPEND KEY PAIR (for spending deposits)")
+			fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+			fmt.Println()
+			fmt.Println("Private Key (hex, 32 bytes):")
+			fmt.Printf("  %s\n", spendPrivKeyHex)
+			fmt.Println()
+			fmt.Println("Public Key (hex, compressed, 33 bytes):")
+			fmt.Printf("  %s\n", spendPubKeyHex)
+			fmt.Println()
+			fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+			fmt.Println("USAGE INSTRUCTIONS")
+			fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+			fmt.Println()
+			fmt.Println("1. Store your PRIVATE keys securely (never share or commit to git)")
+			fmt.Println("2. Share your PUBLIC keys with others to receive private transfers")
+			fmt.Println("3. Use the view and spend private keys with CLI commands:")
+			fmt.Println()
+			fmt.Println("   # Scan for your deposits")
+			fmt.Printf("   %s query privacy scan <denom> \\\n", version.AppName)
+			fmt.Printf("     --view-key %s \\\n", viewPrivKeyHex)
+			fmt.Printf("     --spend-key %s\n", spendPrivKeyHex)
+			fmt.Println()
+			fmt.Println("   # Check your balance")
+			fmt.Printf("   %s query privacy balance \\\n", version.AppName)
+			fmt.Printf("     --view-key %s \\\n", viewPrivKeyHex)
+			fmt.Printf("     --spend-key %s\n", spendPrivKeyHex)
+			fmt.Println()
+			fmt.Println("   # Unshield (withdraw) to public account")
+			fmt.Printf("   %s tx privacy unshield <recipient> <denom> <amount> <deposit-index> \\\n", version.AppName)
+			fmt.Printf("     --view-key %s \\\n", viewPrivKeyHex)
+			fmt.Printf("     --spend-key %s \\\n", spendPrivKeyHex)
+			fmt.Println("     --from <your-account>")
+			fmt.Println()
+			fmt.Println("4. To receive private transfers, share these public keys:")
+			fmt.Println()
+			fmt.Printf("   View Public Key:  %s\n", viewPubKeyHex)
+			fmt.Printf("   Spend Public Key: %s\n", spendPubKeyHex)
+			fmt.Println()
+			fmt.Println("╔════════════════════════════════════════════════════════════════════╗")
+			fmt.Println("║  Remember: Anyone with your private keys can spend your deposits  ║")
+			fmt.Println("╚════════════════════════════════════════════════════════════════════╝")
+			fmt.Println()
+
+			return nil
+		},
+	}
+
+	// This command doesn't need transaction flags since it doesn't broadcast anything
+	return cmd
 }
