@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/big"
 	"strconv"
+	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -35,6 +36,7 @@ func GetQueryCmd() *cobra.Command {
 		GetQueryNullifierUsedCmd(),
 		GetQueryDepositsByRangeCmd(),
 		GetQueryScanCmd(),
+		GetQueryBalanceCmd(),
 	)
 
 	return cmd
@@ -503,4 +505,197 @@ func protoPointToCryptoQuery(point *types.ECPoint) (*crypto.ECPoint, error) {
 	}
 
 	return ecPoint, nil
+}
+
+// GetQueryBalanceCmd returns the command to query total private balance
+func GetQueryBalanceCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "balance",
+		Short: "Show your total private balance across all denominations",
+		Long: `Query your total private balance by scanning all deposits across all denominations.
+
+This command scans the privacy pool for all denominations and calculates your
+total balance. For each denomination with deposits, it will show:
+- Total balance (unspent only)
+- Number of spendable deposits
+- Denomination name
+
+This command requires your view and spend private keys.`,
+		Example: fmt.Sprintf(`
+# Show your total private balance
+%s query privacy balance --view-key <hex> --spend-key <hex>
+
+# Show balance for specific denominations only
+%s query privacy balance --view-key <hex> --spend-key <hex> --denoms ulight,uphoton
+`, version.AppName, version.AppName),
+		Args: cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			// Get private keys from flags
+			viewKeyHex, err := cmd.Flags().GetString("view-key")
+			if err != nil || viewKeyHex == "" {
+				return fmt.Errorf("view-key flag is required")
+			}
+
+			spendKeyHex, err := cmd.Flags().GetString("spend-key")
+			if err != nil || spendKeyHex == "" {
+				return fmt.Errorf("spend-key flag is required")
+			}
+
+			// Parse private keys
+			viewPrivKey, spendPrivKey, err := utils.ParsePrivateKeys(viewKeyHex, spendKeyHex)
+			if err != nil {
+				return fmt.Errorf("failed to parse private keys: %w", err)
+			}
+
+			// Compute public keys
+			_, spendPubKey, err := utils.ComputePublicKeys(viewPrivKey, spendPrivKey)
+			if err != nil {
+				return fmt.Errorf("failed to compute public keys: %w", err)
+			}
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			// Get statistics to find all denominations
+			statsRes, err := queryClient.Stats(cmd.Context(), &types.QueryStatsRequest{})
+			if err != nil {
+				return fmt.Errorf("failed to query stats: %w", err)
+			}
+
+			// Get denoms filter from flag (optional)
+			denomsFilter, _ := cmd.Flags().GetStringSlice("denoms")
+			denomsMap := make(map[string]bool)
+			if len(denomsFilter) > 0 {
+				for _, d := range denomsFilter {
+					denomsMap[d] = true
+				}
+			}
+
+			// Track balances per denomination
+			type denomBalance struct {
+				Denom             string
+				TotalBalance      uint64
+				SpendableDeposits int
+			}
+			balances := make([]denomBalance, 0)
+
+			// Scan each denomination
+			for _, stat := range statsRes.DenomStats {
+				denom := stat.Denom
+
+				// Skip if not in filter (when filter is specified)
+				if len(denomsMap) > 0 && !denomsMap[denom] {
+					continue
+				}
+
+				// Skip if no deposits
+				if stat.TotalDeposits == 0 {
+					continue
+				}
+
+				fmt.Printf("Scanning %s deposits (0 to %d)...\n", denom, stat.TotalDeposits-1)
+
+				// Query all deposits for this denom
+				depositsRes, err := queryClient.DepositsByRange(cmd.Context(), &types.QueryDepositsByRangeRequest{
+					Denom:      denom,
+					StartIndex: 0,
+					EndIndex:   stat.TotalDeposits - 1,
+				})
+				if err != nil {
+					fmt.Printf("Warning: failed to query %s deposits: %v\n", denom, err)
+					continue
+				}
+
+				// Scan deposits
+				totalBalance := uint64(0)
+				spendableCount := 0
+
+				for _, deposit := range depositsRes.Deposits {
+					// Convert deposit to crypto types
+					oneTimeAddr, err := protoPointToCryptoQuery(&deposit.OneTimeAddress.Address)
+					if err != nil {
+						continue
+					}
+
+					txPubKey, err := protoPointToCryptoQuery(&deposit.OneTimeAddress.TxPublicKey)
+					if err != nil {
+						continue
+					}
+
+					commitment, err := protoPointToCryptoQuery(&deposit.Commitment.Commitment)
+					if err != nil {
+						continue
+					}
+
+					// Try to scan this deposit
+					ownedDeposit, err := utils.ScanDeposit(
+						denom,
+						deposit.Index,
+						oneTimeAddr,
+						txPubKey,
+						commitment,
+						deposit.EncryptedNote.EncryptedData,
+						deposit.EncryptedNote.Nonce,
+						deposit.CreatedAtHeight,
+						deposit.TxHash,
+						viewPrivKey,
+						spendPubKey,
+						spendPrivKey,
+					)
+					if err != nil {
+						continue // Not ours
+					}
+
+					if ownedDeposit != nil {
+						// Check if spent
+						isSpent := len(deposit.Nullifier) > 0
+						if !isSpent {
+							// Only count unspent deposits in balance
+							totalBalance += ownedDeposit.Amount
+							spendableCount++
+						}
+					}
+				}
+
+				// Add to results if we have balance
+				if totalBalance > 0 || spendableCount > 0 {
+					balances = append(balances, denomBalance{
+						Denom:             denom,
+						TotalBalance:      totalBalance,
+						SpendableDeposits: spendableCount,
+					})
+				}
+			}
+
+			// Display results
+			fmt.Println("\n" + strings.Repeat("=", 60))
+			fmt.Println("Private Balance Summary")
+			fmt.Println(strings.Repeat("=", 60))
+
+			if len(balances) == 0 {
+				fmt.Println("\nNo private balance found.")
+				return nil
+			}
+
+			for _, balance := range balances {
+				fmt.Printf("\n%s:\n", balance.Denom)
+				fmt.Printf("  Total Balance:        %d %s\n", balance.TotalBalance, balance.Denom)
+				fmt.Printf("  Spendable Deposits:   %d\n", balance.SpendableDeposits)
+			}
+
+			fmt.Println("\n" + strings.Repeat("=", 60))
+
+			return nil
+		},
+	}
+
+	cmd.Flags().String("view-key", "", "Your view private key (hex) - required")
+	cmd.Flags().String("spend-key", "", "Your spend private key (hex) - required")
+	cmd.Flags().StringSlice("denoms", []string{}, "Filter by specific denominations (comma-separated, optional)")
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
 }
