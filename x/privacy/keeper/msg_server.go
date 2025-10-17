@@ -237,13 +237,15 @@ func (k msgServer) PrivateTransfer(goCtx context.Context, msg *types.MsgPrivateT
 			}
 
 			// Validate signature (Phase 1 only)
-			// In a real implementation, this would verify ECDSA signature over nullifier
-			// proving ownership of the one-time private key
+			// Verifies ECDSA signature over nullifier, proving ownership of the one-time private key
 			if len(input.Signature) == 0 {
 				return nil, errors.Wrapf(types.ErrInvalidSignature, "input %d missing signature (required in Phase 1)", i)
 			}
-			// TODO: Implement actual signature verification using secp256k1
-			// For now, we accept any non-empty signature in Phase 1
+
+			// Verify the signature proves ownership of the one-time private key
+			if err := k.VerifyNullifierSignature(deposit, input.Nullifier, input.Signature); err != nil {
+				return nil, errors.Wrapf(types.ErrInvalidSignature, "input %d signature verification failed: %v", i, err)
+			}
 		}
 
 		// Mark nullifier as used
@@ -428,8 +430,11 @@ func (k msgServer) Unshield(goCtx context.Context, msg *types.MsgUnshield) (*typ
 		if len(msg.Signature) == 0 {
 			return nil, errors.Wrap(types.ErrInvalidSignature, "signature required in Phase 1")
 		}
-		// TODO: Implement actual ECDSA signature verification
-		// Should verify signature over (nullifier || recipient || amount)
+
+		// Verify signature over (nullifier || recipient || amount)
+		if err := k.VerifyUnshieldSignature(deposit, msg.Nullifier, msg.Recipient, msg.Amount, msg.Signature); err != nil {
+			return nil, errors.Wrapf(types.ErrInvalidSignature, "signature verification failed: %v", err)
+		}
 	}
 
 	// Phase 2: Verify zk-SNARK proof

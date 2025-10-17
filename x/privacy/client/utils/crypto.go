@@ -192,18 +192,62 @@ func CheckIfDepositIsMine(
 // SignNullifier creates an ECDSA signature over the nullifier using the one-time private key
 // This proves ownership of the deposit in Phase 1
 func SignNullifier(nullifier []byte, oneTimePrivKey *big.Int) ([]byte, error) {
-	// TODO: Implement proper ECDSA signature
-	// For Phase 1, we need to sign the nullifier with the one-time private key
-	// This proves we know the private key corresponding to the one-time address
-	// without revealing it.
-	//
-	// Placeholder: In a real implementation, use:
-	// - crypto/ecdsa or btcec package
-	// - Sign Hash(nullifier) with oneTimePrivKey
-	// - Return DER-encoded signature
+	if oneTimePrivKey == nil {
+		return nil, fmt.Errorf("one-time private key is nil")
+	}
+	if len(nullifier) == 0 {
+		return nil, fmt.Errorf("nullifier is empty")
+	}
 
-	// For now, return a placeholder signature
-	return crypto.Hash256(append(nullifier, oneTimePrivKey.Bytes()...)), nil
+	// Convert nullifier bytes to crypto.Nullifier
+	cryptoNullifier, err := crypto.NullifierFromBytes(nullifier)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse nullifier: %w", err)
+	}
+
+	// Sign the nullifier
+	signature, err := crypto.SignNullifier(oneTimePrivKey, cryptoNullifier)
+	if err != nil {
+		return nil, fmt.Errorf("failed to sign nullifier: %w", err)
+	}
+
+	return signature, nil
+}
+
+// SignUnshield creates an ECDSA signature for an unshield operation
+// Signs: nullifier || recipient_address || amount
+func SignUnshield(
+	nullifier []byte,
+	oneTimePrivKey *big.Int,
+	recipientAddr string,
+	amount string,
+) ([]byte, error) {
+	if oneTimePrivKey == nil {
+		return nil, fmt.Errorf("one-time private key is nil")
+	}
+	if len(nullifier) == 0 {
+		return nil, fmt.Errorf("nullifier is empty")
+	}
+	if recipientAddr == "" {
+		return nil, fmt.Errorf("recipient address is empty")
+	}
+	if amount == "" {
+		return nil, fmt.Errorf("amount is empty")
+	}
+
+	// Convert nullifier bytes to crypto.Nullifier
+	cryptoNullifier, err := crypto.NullifierFromBytes(nullifier)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse nullifier: %w", err)
+	}
+
+	// Sign the unshield request
+	signature, err := crypto.SignUnshield(oneTimePrivKey, cryptoNullifier, recipientAddr, amount)
+	if err != nil {
+		return nil, fmt.Errorf("failed to sign unshield: %w", err)
+	}
+
+	return signature, nil
 }
 
 // GenerateKeyPair generates a new stealth address key pair
@@ -231,4 +275,147 @@ func ExportPrivateKeys(keyPair *crypto.StealthKeyPair) (viewPrivHex, spendPrivHe
 	spendPrivHex = fmt.Sprintf("%x", spendPriv32)
 
 	return
+}
+
+// OwnedDeposit represents a deposit that belongs to the user
+type OwnedDeposit struct {
+	Denom           string
+	Index           uint64
+	Amount          uint64
+	Blinding        *big.Int
+	OneTimePrivKey  *big.Int
+	OneTimeAddress  *crypto.ECPoint
+	TxPublicKey     *crypto.ECPoint
+	Commitment      *crypto.ECPoint
+	CreatedAtHeight int64
+	TxHash          string
+}
+
+// ScanDeposit checks if a deposit belongs to the user and decrypts it if so
+// Returns: (deposit info if mine, nil if not mine, error)
+func ScanDeposit(
+	denom string,
+	index uint64,
+	oneTimeAddr, txPubKey, commitment *crypto.ECPoint,
+	encryptedData, nonce []byte,
+	createdAtHeight int64,
+	txHash string,
+	viewPrivKey *big.Int,
+	spendPubKey *crypto.ECPoint,
+	spendPrivKey *big.Int,
+) (*OwnedDeposit, error) {
+	// Check if this deposit is mine
+	isMine, oneTimePrivKey := crypto.CheckIfMine(
+		oneTimeAddr,
+		txPubKey,
+		viewPrivKey,
+		spendPubKey,
+		spendPrivKey,
+	)
+
+	if !isMine {
+		return nil, nil
+	}
+
+	// Compute shared secret to decrypt the note
+	sharedSecret := crypto.ComputeSharedSecret(viewPrivKey, txPubKey)
+	if sharedSecret == nil {
+		return nil, fmt.Errorf("failed to compute shared secret")
+	}
+
+	// Decrypt the note
+	amount, blinding, err := DecryptNote(encryptedData, nonce, sharedSecret)
+	if err != nil {
+		return nil, fmt.Errorf("failed to decrypt note: %w", err)
+	}
+
+	return &OwnedDeposit{
+		Denom:           denom,
+		Index:           index,
+		Amount:          amount,
+		Blinding:        blinding,
+		OneTimePrivKey:  oneTimePrivKey,
+		OneTimeAddress:  oneTimeAddr,
+		TxPublicKey:     txPubKey,
+		Commitment:      commitment,
+		CreatedAtHeight: createdAtHeight,
+		TxHash:          txHash,
+	}, nil
+}
+
+// PreparePrivateTransferInput prepares an input for a private transfer
+// Returns: (nullifier bytes, signature, error)
+func PreparePrivateTransferInput(deposit *OwnedDeposit) ([]byte, []byte, error) {
+	if deposit == nil {
+		return nil, nil, fmt.Errorf("deposit is nil")
+	}
+
+	// Generate nullifier
+	nullifierBytes, err := GenerateNullifier(deposit.OneTimePrivKey, deposit.OneTimeAddress)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to generate nullifier: %w", err)
+	}
+
+	// Sign the nullifier
+	signature, err := SignNullifier(nullifierBytes, deposit.OneTimePrivKey)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to sign nullifier: %w", err)
+	}
+
+	return nullifierBytes, signature, nil
+}
+
+// PrepareUnshield prepares an unshield transaction
+// Returns: (nullifier bytes, signature, error)
+func PrepareUnshield(deposit *OwnedDeposit, recipientAddr string, amount string) ([]byte, []byte, error) {
+	if deposit == nil {
+		return nil, nil, fmt.Errorf("deposit is nil")
+	}
+
+	// Generate nullifier
+	nullifierBytes, err := GenerateNullifier(deposit.OneTimePrivKey, deposit.OneTimeAddress)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to generate nullifier: %w", err)
+	}
+
+	// Sign the unshield request
+	signature, err := SignUnshield(nullifierBytes, deposit.OneTimePrivKey, recipientAddr, amount)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to sign unshield: %w", err)
+	}
+
+	return nullifierBytes, signature, nil
+}
+
+// ParsePrivateKeys parses hex-encoded private keys
+func ParsePrivateKeys(viewKeyHex, spendKeyHex string) (*big.Int, *big.Int, error) {
+	// Use existing function for view key
+	viewPrivKey, err := ParsePrivateKeyHex(viewKeyHex)
+	if err != nil {
+		return nil, nil, fmt.Errorf("invalid view key: %w", err)
+	}
+
+	// Use existing function for spend key
+	spendPrivKey, err := ParsePrivateKeyHex(spendKeyHex)
+	if err != nil {
+		return nil, nil, fmt.Errorf("invalid spend key: %w", err)
+	}
+
+	return viewPrivKey, spendPrivKey, nil
+}
+
+// ComputePublicKeys computes public keys from private keys
+func ComputePublicKeys(viewPrivKey, spendPrivKey *big.Int) (*crypto.ECPoint, *crypto.ECPoint, error) {
+	if viewPrivKey == nil || spendPrivKey == nil {
+		return nil, nil, fmt.Errorf("private keys cannot be nil")
+	}
+
+	viewPubKey := crypto.ScalarBaseMult(viewPrivKey)
+	spendPubKey := crypto.ScalarBaseMult(spendPrivKey)
+
+	if viewPubKey == nil || spendPubKey == nil {
+		return nil, nil, fmt.Errorf("failed to compute public keys")
+	}
+
+	return viewPubKey, spendPubKey, nil
 }

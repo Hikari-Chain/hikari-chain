@@ -3,6 +3,8 @@ package cli
 import (
 	"encoding/hex"
 	"fmt"
+	"math/big"
+	"strconv"
 
 	"github.com/spf13/cobra"
 
@@ -13,6 +15,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 
 	"github.com/Hikari-Chain/hikari-chain/x/privacy/client/utils"
+	"github.com/Hikari-Chain/hikari-chain/x/privacy/crypto"
 	"github.com/Hikari-Chain/hikari-chain/x/privacy/types"
 )
 
@@ -208,19 +211,150 @@ You must provide your view and spend private keys to generate the necessary proo
 `, version.AppName),
 		Args: cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			// TODO: Implement full unshield with:
-			// 1. Fetch deposit from chain
-			// 2. Verify it's yours using CheckIfMine
-			// 3. Decrypt note to get amount and blinding
-			// 4. Generate nullifier
-			// 5. Create signature
-			// For now, return an error indicating this is not yet implemented
-			return fmt.Errorf("unshield requires deposit scanning and proof generation - full implementation pending")
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			// Parse arguments
+			recipientAddr := args[0]
+			denom := args[1]
+			amount := args[2]
+			depositIndex, err := strconv.ParseUint(args[3], 10, 64)
+			if err != nil {
+				return fmt.Errorf("invalid deposit index: %w", err)
+			}
+
+			// Validate recipient address
+			if _, err := sdk.AccAddressFromBech32(recipientAddr); err != nil {
+				return fmt.Errorf("invalid recipient address: %w", err)
+			}
+
+			// Get private keys from flags
+			viewKeyHex, err := cmd.Flags().GetString("view-key")
+			if err != nil || viewKeyHex == "" {
+				return fmt.Errorf("view-key flag is required")
+			}
+
+			spendKeyHex, err := cmd.Flags().GetString("spend-key")
+			if err != nil || spendKeyHex == "" {
+				return fmt.Errorf("spend-key flag is required")
+			}
+
+			// Parse private keys
+			viewPrivKey, spendPrivKey, err := utils.ParsePrivateKeys(viewKeyHex, spendKeyHex)
+			if err != nil {
+				return fmt.Errorf("failed to parse private keys: %w", err)
+			}
+
+			// Compute spend public key (view public key not needed for unshield)
+			_, spendPubKey, err := utils.ComputePublicKeys(viewPrivKey, spendPrivKey)
+			if err != nil {
+				return fmt.Errorf("failed to compute public keys: %w", err)
+			}
+
+			// Query the deposit from the chain
+			queryClient := types.NewQueryClient(clientCtx)
+			depositRes, err := queryClient.Deposit(cmd.Context(), &types.QueryDepositRequest{
+				Denom: denom,
+				Index: depositIndex,
+			})
+			if err != nil {
+				return fmt.Errorf("failed to query deposit: %w", err)
+			}
+
+			deposit := depositRes.Deposit
+
+			// Convert deposit to crypto types for scanning
+			oneTimeAddr, err := protoPointToCrypto(&deposit.OneTimeAddress.Address)
+			if err != nil {
+				return fmt.Errorf("invalid one-time address: %w", err)
+			}
+
+			txPubKey, err := protoPointToCrypto(&deposit.OneTimeAddress.TxPublicKey)
+			if err != nil {
+				return fmt.Errorf("invalid tx public key: %w", err)
+			}
+
+			commitment, err := protoPointToCrypto(&deposit.Commitment.Commitment)
+			if err != nil {
+				return fmt.Errorf("invalid commitment: %w", err)
+			}
+
+			// Scan the deposit to check if it's mine and decrypt it
+			ownedDeposit, err := utils.ScanDeposit(
+				denom,
+				depositIndex,
+				oneTimeAddr,
+				txPubKey,
+				commitment,
+				deposit.EncryptedNote.EncryptedData,
+				deposit.EncryptedNote.Nonce,
+				deposit.CreatedAtHeight,
+				deposit.TxHash,
+				viewPrivKey,
+				spendPubKey,
+				spendPrivKey,
+			)
+			if err != nil {
+				return fmt.Errorf("failed to scan deposit: %w", err)
+			}
+
+			if ownedDeposit == nil {
+				return fmt.Errorf("deposit %d does not belong to you", depositIndex)
+			}
+
+			// Prepare the unshield transaction
+			nullifierBytes, signature, err := utils.PrepareUnshield(ownedDeposit, recipientAddr, amount)
+			if err != nil {
+				return fmt.Errorf("failed to prepare unshield: %w", err)
+			}
+
+			// Convert commitment to proto format
+			commitmentProto := types.PedersenCommitment{
+				Commitment: types.ECPoint{
+					X: ownedDeposit.Commitment.X.Bytes(),
+					Y: ownedDeposit.Commitment.Y.Bytes(),
+				},
+			}
+
+			// Create the unshield message
+			msg := &types.MsgUnshield{
+				Recipient:    recipientAddr,
+				Denom:        denom,
+				Amount:       amount,
+				DepositIndex: depositIndex,
+				Nullifier:    nullifierBytes,
+				Commitment:   commitmentProto,
+				Signature:    signature,
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
-	cmd.Flags().String("view-key", "", "Your view private key (hex)")
-	cmd.Flags().String("spend-key", "", "Your spend private key (hex)")
+	cmd.Flags().String("view-key", "", "Your view private key (hex) - required")
+	cmd.Flags().String("spend-key", "", "Your spend private key (hex) - required")
 	flags.AddTxFlagsToCmd(cmd)
 	return cmd
+}
+
+// protoPointToCrypto converts a protobuf ECPoint to a crypto.ECPoint
+func protoPointToCrypto(point *types.ECPoint) (*crypto.ECPoint, error) {
+	if point == nil {
+		return nil, fmt.Errorf("point is nil")
+	}
+	if len(point.X) != 32 || len(point.Y) != 32 {
+		return nil, fmt.Errorf("invalid point coordinates: X=%d bytes, Y=%d bytes", len(point.X), len(point.Y))
+	}
+
+	x := new(big.Int).SetBytes(point.X)
+	y := new(big.Int).SetBytes(point.Y)
+
+	ecPoint := crypto.NewECPoint(x, y)
+	if !ecPoint.IsOnCurve() {
+		return nil, fmt.Errorf("point is not on curve")
+	}
+
+	return ecPoint, nil
 }
