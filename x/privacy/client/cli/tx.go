@@ -39,6 +39,18 @@ func GetTxCmd() *cobra.Command {
 	return cmd
 }
 
+// bigIntTo32Bytes converts a big.Int to a 32-byte array, padding with leading zeros if necessary
+func bigIntTo32Bytes(n *big.Int) []byte {
+	b := n.Bytes()
+	if len(b) >= 32 {
+		return b[len(b)-32:]
+	}
+	// Pad with leading zeros
+	result := make([]byte, 32)
+	copy(result[32-len(b):], b)
+	return result
+}
+
 // GetTxShieldCmd returns the command to shield coins into the privacy pool
 func GetTxShieldCmd() *cobra.Command {
 	cmd := &cobra.Command{
@@ -120,20 +132,20 @@ For self-shielding, use your own view and spend public keys.`,
 			// Convert stealth address to proto format
 			oneTimeAddress := types.OneTimeAddress{
 				Address: types.ECPoint{
-					X: stealthAddr.OneTimeAddress.X.Bytes(),
-					Y: stealthAddr.OneTimeAddress.Y.Bytes(),
+					X: bigIntTo32Bytes(stealthAddr.OneTimeAddress.X),
+					Y: bigIntTo32Bytes(stealthAddr.OneTimeAddress.Y),
 				},
 				TxPublicKey: types.ECPoint{
-					X: stealthAddr.TxPublicKey.X.Bytes(),
-					Y: stealthAddr.TxPublicKey.Y.Bytes(),
+					X: bigIntTo32Bytes(stealthAddr.TxPublicKey.X),
+					Y: bigIntTo32Bytes(stealthAddr.TxPublicKey.Y),
 				},
 			}
 
 			// Convert commitment to proto format
 			pedersenCommitment := types.PedersenCommitment{
 				Commitment: types.ECPoint{
-					X: commitment.X.Bytes(),
-					Y: commitment.Y.Bytes(),
+					X: bigIntTo32Bytes(commitment.X),
+					Y: bigIntTo32Bytes(commitment.Y),
 				},
 			}
 
@@ -142,8 +154,8 @@ For self-shielding, use your own view and spend public keys.`,
 				EncryptedData: encryptedNote.Ciphertext,
 				Nonce:         encryptedNote.Nonce,
 				EphemeralKey: types.ECPoint{
-					X: encryptedNote.EphemeralKey.X.Bytes(),
-					Y: encryptedNote.EphemeralKey.Y.Bytes(),
+					X: bigIntTo32Bytes(encryptedNote.EphemeralKey.X),
+					Y: bigIntTo32Bytes(encryptedNote.EphemeralKey.Y),
 				},
 			}
 
@@ -460,13 +472,14 @@ You must provide your view and spend private keys to generate the necessary proo
 			// Convert commitment to proto format
 			commitmentProto := types.PedersenCommitment{
 				Commitment: types.ECPoint{
-					X: ownedDeposit.Commitment.X.Bytes(),
-					Y: ownedDeposit.Commitment.Y.Bytes(),
+					X: bigIntTo32Bytes(ownedDeposit.Commitment.X),
+					Y: bigIntTo32Bytes(ownedDeposit.Commitment.Y),
 				},
 			}
 
 			// Create the unshield message
 			msg := &types.MsgUnshield{
+				Sender:       clientCtx.GetFromAddress().String(),
 				Recipient:    recipientAddr,
 				Denom:        denom,
 				Amount:       amount,
@@ -577,26 +590,26 @@ func parseTransferOutput(spec string, denom string, _ int) (types.TransferOutput
 		Denom: denom,
 		Commitment: types.PedersenCommitment{
 			Commitment: types.ECPoint{
-				X: commitment.X.Bytes(),
-				Y: commitment.Y.Bytes(),
+				X: bigIntTo32Bytes(commitment.X),
+				Y: bigIntTo32Bytes(commitment.Y),
 			},
 		},
 		OneTimeAddress: types.OneTimeAddress{
 			Address: types.ECPoint{
-				X: stealthAddr.OneTimeAddress.X.Bytes(),
-				Y: stealthAddr.OneTimeAddress.Y.Bytes(),
+				X: bigIntTo32Bytes(stealthAddr.OneTimeAddress.X),
+				Y: bigIntTo32Bytes(stealthAddr.OneTimeAddress.Y),
 			},
 			TxPublicKey: types.ECPoint{
-				X: stealthAddr.TxPublicKey.X.Bytes(),
-				Y: stealthAddr.TxPublicKey.Y.Bytes(),
+				X: bigIntTo32Bytes(stealthAddr.TxPublicKey.X),
+				Y: bigIntTo32Bytes(stealthAddr.TxPublicKey.Y),
 			},
 		},
 		EncryptedNote: types.Note{
 			EncryptedData: encryptedNote.Ciphertext,
 			Nonce:         encryptedNote.Nonce,
 			EphemeralKey: types.ECPoint{
-				X: encryptedNote.EphemeralKey.X.Bytes(),
-				Y: encryptedNote.EphemeralKey.Y.Bytes(),
+				X: bigIntTo32Bytes(encryptedNote.EphemeralKey.X),
+				Y: bigIntTo32Bytes(encryptedNote.EphemeralKey.Y),
 			},
 		},
 	}

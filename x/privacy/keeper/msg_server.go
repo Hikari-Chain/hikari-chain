@@ -246,6 +246,12 @@ func (k msgServer) PrivateTransfer(goCtx context.Context, msg *types.MsgPrivateT
 			if err := k.VerifyNullifierSignature(deposit, input.Nullifier, input.Signature); err != nil {
 				return nil, errors.Wrapf(types.ErrInvalidSignature, "input %d signature verification failed: %v", i, err)
 			}
+
+			// Update the deposit to mark it as spent with the nullifier
+			deposit.Nullifier = input.Nullifier
+			if err := k.SetDeposit(ctx, deposit); err != nil {
+				return nil, errors.Wrapf(err, "failed to update deposit %d with nullifier", i)
+			}
 		}
 
 		// Mark nullifier as used
@@ -434,6 +440,12 @@ func (k msgServer) Unshield(goCtx context.Context, msg *types.MsgUnshield) (*typ
 		// Verify signature over (nullifier || recipient || amount)
 		if err := k.VerifyUnshieldSignature(deposit, msg.Nullifier, msg.Recipient, msg.Amount, msg.Signature); err != nil {
 			return nil, errors.Wrapf(types.ErrInvalidSignature, "signature verification failed: %v", err)
+		}
+
+		// Update the deposit to mark it as spent with the nullifier
+		deposit.Nullifier = msg.Nullifier
+		if err := k.SetDeposit(ctx, deposit); err != nil {
+			return nil, errors.Wrap(err, "failed to update deposit with nullifier")
 		}
 	}
 

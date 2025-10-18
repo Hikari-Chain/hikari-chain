@@ -43,14 +43,15 @@ func (s *IntegrationTestSuite) testPrivacyShieldAndUnshield() {
 		s.execPrivacyShield(c, 0, alice.String(), shieldAmount.String(), viewPubKeyHex, spendPubKeyHex, false)
 
 		// Wait for transaction to be included in a block
-		time.Sleep(10 * time.Second)
+		time.Sleep(3 * time.Second)
 
-		// Wait for balance to decrease (shield + fees)
+		// Wait for balance to decrease
+		// Note: Fees are paid in PHOTON, so ulight balance decreases by exactly the shield amount
 		s.Require().Eventually(
 			func() bool {
 				newBalance := s.queryBalance(chainEndpoint, alice.String(), ulDenom)
-				// Balance should decrease by at least the shielded amount
-				return newBalance.Amount.LT(initialBalance.Amount.Sub(shieldAmount.Amount))
+				expectedBalance := initialBalance.Sub(shieldAmount)
+				return newBalance.IsEqual(expectedBalance)
 			},
 			15*time.Second,
 			time.Second,
@@ -104,7 +105,7 @@ func (s *IntegrationTestSuite) testPrivacyShieldAndUnshield() {
 		spendPrivKeyHex := hex.EncodeToString(spendPrivKeyBytes)
 
 		// Execute unshield transaction
-		s.execPrivacyUnshield(c, 0, alice.String(), bob.String(), unshieldAmount.String(), ulDenom,
+		s.execPrivacyUnshield(c, 0, alice.String(), bob.String(), unshieldAmount.Amount.String(), ulDenom,
 			ownedDepositIndex, viewPrivKeyHex, spendPrivKeyHex, false)
 
 		// Wait for Bob's balance to increase
@@ -431,8 +432,8 @@ func (s *IntegrationTestSuite) execPrivacyTransfer(c *chain, valIdx int, from, d
 	}
 
 	// Split outputs by space and add each as a separate argument
-	outputSpecs := strings.Split(outputs, " ")
-	for _, outputSpec := range outputSpecs {
+	outputSpecs := strings.SplitSeq(outputs, " ")
+	for outputSpec := range outputSpecs {
 		if strings.TrimSpace(outputSpec) != "" {
 			hikaridCommand = append(hikaridCommand, outputSpec)
 		}
